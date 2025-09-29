@@ -262,6 +262,7 @@ npm run test:coverage
 
 ## 📦 Build & Deploy
 
+### Local Build
 ```bash
 # Build for production
 npm run build
@@ -270,11 +271,54 @@ npm run build
 npm run preview
 
 # Type check
-npm run type-check
+tsc --noEmit
 
 # Lint code
 npm run lint
 ```
+
+### Deploy to Vercel
+
+#### Option A: Deploy via GitHub (Recommended)
+1. Push code to GitHub repository
+2. Visit [vercel.com](https://vercel.com) and import your project
+3. Set environment variables in Vercel dashboard:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Deploy!
+
+#### Option B: Deploy via Vercel CLI
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login to Vercel
+vercel login
+
+# Deploy
+vercel
+
+# Set environment variables
+vercel env add VITE_SUPABASE_URL
+vercel env add VITE_SUPABASE_ANON_KEY
+
+# Deploy to production
+vercel --prod
+```
+
+#### Vercel Configuration
+The project includes `vercel.json` with optimized settings:
+- SPA routing support
+- Asset caching headers
+- Build optimization
+- Environment variable mapping
+
+#### Deploy Steps
+1. **Prepare Environment**: Copy `.env.example` to `.env` and fill values
+2. **Test Build**: Run `npm run build` locally to ensure no errors
+3. **Deploy**: Use GitHub integration or Vercel CLI
+4. **Configure Domain**: Set up custom domain if needed
+5. **Monitor**: Check Vercel dashboard for deployment status
 
 ---
 

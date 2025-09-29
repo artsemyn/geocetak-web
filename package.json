@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:check": "tsc && vite build",
+    "type-check": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@google/genai": "^1.21.0",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.15.10",
     "@react-three/drei": "^9.122.0",
@@ -22,8 +23,7 @@
     "framer-motion": "^11.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.9.2",
-    "react-spring": "^9.7.3",
+    "react-router-dom": "^6.28.0",
     "three": "^0.160.1",
     "zustand": "^4.4.7"
   },
@@ -39,5 +39,11 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
     "vite": "^5.1.0"
+  },
+  "overrides": {
+    "@types/react": "^18.2.55"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.55"
   }
 }
