@@ -68,40 +68,115 @@ function InteractiveCylinder() {
 function InteractiveCone() {
   const { geometryParams } = useLearningStore()
   const scale = 0.3
+  const { radius, height } = geometryParams
+
+  // Calculate slant height for proper cone geometry
+  const slantHeight = Math.sqrt(radius * radius + height * height)
 
   return (
-    <mesh position={[0, 0, 0]} castShadow receiveShadow scale={[scale, scale, scale]}>
-      <coneGeometry
-        args={[geometryParams.radius, geometryParams.height, 32]}
-      />
-      <meshStandardMaterial
-        color="#f39c12"
-        metalness={0.2}
-        roughness={0.4}
-        transparent={false}
-        opacity={1}
-      />
-    </mesh>
+    <group scale={[scale, scale, scale]}>
+      {/* Main cone body */}
+      <mesh position={[0, 0, 0]} castShadow receiveShadow>
+        <coneGeometry
+          args={[radius, height, 32]}
+        />
+        <meshStandardMaterial
+          color="#f39c12"
+          metalness={0.3}
+          roughness={0.3}
+          transparent={true}
+          opacity={0.9}
+        />
+      </mesh>
+
+      {/* Base circle outline */}
+      <mesh position={[0, -height / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[radius - 0.05, radius + 0.05, 32]} />
+        <meshStandardMaterial color="#e67e22" />
+      </mesh>
+
+      {/* Wireframe for educational visualization */}
+      <mesh position={[0, 0, 0]}>
+        <coneGeometry args={[radius, height, 32]} />
+        <meshBasicMaterial
+          color="#d35400"
+          wireframe={true}
+          transparent={true}
+          opacity={0.3}
+        />
+      </mesh>
+
+      {/* Slant height line visualization */}
+      <mesh position={[radius / 2, 0, 0]} rotation={[0, 0, Math.atan2(height, radius)]}>
+        <cylinderGeometry args={[0.02, 0.02, slantHeight, 8]} />
+        <meshStandardMaterial color="#c0392b" />
+      </mesh>
+    </group>
   )
 }
 
 function InteractiveSphere() {
   const { geometryParams } = useLearningStore()
   const scale = 0.3
+  const { radius } = geometryParams
 
   return (
-    <mesh position={[0, 0, 0]} castShadow receiveShadow scale={[scale, scale, scale]}>
-      <sphereGeometry
-        args={[geometryParams.radius, 32, 32]}
-      />
-      <meshStandardMaterial
-        color="#e74c3c"
-        metalness={0.2}
-        roughness={0.4}
-        transparent={false}
-        opacity={1}
-      />
-    </mesh>
+    <group scale={[scale, scale, scale]}>
+      {/* Main sphere body */}
+      <mesh position={[0, 0, 0]} castShadow receiveShadow>
+        <sphereGeometry
+          args={[radius, 32, 32]}
+        />
+        <meshStandardMaterial
+          color="#e74c3c"
+          metalness={0.2}
+          roughness={0.3}
+          transparent={true}
+          opacity={0.85}
+        />
+      </mesh>
+
+      {/* Equatorial circle for reference */}
+      <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[radius - 0.05, radius + 0.05, 64]} />
+        <meshStandardMaterial color="#c0392b" />
+      </mesh>
+
+      {/* Meridian circle */}
+      <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
+        <ringGeometry args={[radius - 0.05, radius + 0.05, 64]} />
+        <meshStandardMaterial color="#8e44ad" />
+      </mesh>
+
+      {/* Another meridian circle perpendicular */}
+      <mesh position={[0, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <ringGeometry args={[radius - 0.05, radius + 0.05, 64]} />
+        <meshStandardMaterial color="#8e44ad" />
+      </mesh>
+
+      {/* Wireframe for educational visualization */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[radius, 16, 16]} />
+        <meshBasicMaterial
+          color="#a93226"
+          wireframe={true}
+          transparent={true}
+          opacity={0.2}
+        />
+      </mesh>
+
+      {/* Center point */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
+        <meshStandardMaterial color="#2c3e50" />
+      </mesh>
+
+      {/* Radius line */}
+      <mesh position={[radius / 2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
+        <meshStandardMaterial color="#f1c40f" />
+      </mesh>
+    </group>
   )
 }
 
@@ -147,6 +222,92 @@ function CylinderNet() {
       </mesh>
     </group>
   )
+}
+
+function ConeNet() {
+  const { geometryParams } = useLearningStore()
+  const { radius, height } = geometryParams
+  const slantHeight = Math.sqrt(radius * radius + height * height)
+
+  // Calculate sector angle for the cone net
+  const sectorAngle = (2 * Math.PI * radius) / slantHeight
+  const scale = 0.3
+
+  return (
+    <group scale={[scale, scale, scale]}>
+      {/* Base circle */}
+      <mesh position={[0, -2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[radius, 32]} />
+        <meshStandardMaterial color="#f39c12" side={2} />
+      </mesh>
+
+      {/* Sector (cone lateral surface) */}
+      <mesh position={[radius + 2, 0, 0]} rotation={[0, 0, 0]}>
+        <ringGeometry args={[0, slantHeight, 32, 1, 0, sectorAngle]} />
+        <meshStandardMaterial color="#e67e22" side={2} />
+      </mesh>
+
+      {/* Guide lines showing how the sector wraps around */}
+      <mesh position={[radius + 2, 0, 0]} rotation={[0, 0, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, slantHeight, 8]} />
+        <meshStandardMaterial color="#d35400" />
+      </mesh>
+
+      <mesh position={[radius + 2, 0, 0]} rotation={[0, 0, sectorAngle]}>
+        <cylinderGeometry args={[0.02, 0.02, slantHeight, 8]} />
+        <meshStandardMaterial color="#d35400" />
+      </mesh>
+    </group>
+  )
+}
+
+function SphereNet() {
+  const { geometryParams } = useLearningStore()
+  const { radius } = geometryParams
+  const scale = 0.3
+
+  return (
+    <group scale={[scale, scale, scale]}>
+      {/* Show sphere as orange slices/segments */}
+      {Array.from({ length: 8 }, (_, i) => {
+        const angle = (i * Math.PI * 2) / 8
+        const x = Math.cos(angle) * (radius + 1) * 2
+        const z = Math.sin(angle) * (radius + 1) * 2
+
+        return (
+          <mesh key={i} position={[x, 0, z]} rotation={[0, angle, 0]}>
+            <sphereGeometry args={[radius, 32, 32, 0, Math.PI / 4]} />
+            <meshStandardMaterial
+              color={`hsl(${i * 45}, 70%, 60%)`}
+              side={2}
+              transparent={true}
+              opacity={0.8}
+            />
+          </mesh>
+        )
+      })}
+
+      {/* Central sphere for reference */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.2, 16, 16]} />
+        <meshStandardMaterial color="#2c3e50" />
+      </mesh>
+    </group>
+  )
+}
+
+// Function to get the appropriate net component based on module
+function getNetComponent(moduleSlug: string) {
+  switch (moduleSlug) {
+    case 'tabung':
+      return <CylinderNet />
+    case 'kerucut':
+      return <ConeNet />
+    case 'bola':
+      return <SphereNet />
+    default:
+      return <CylinderNet />
+  }
 }
 
 // Helper functions untuk perhitungan berdasarkan tipe modul
@@ -341,7 +502,7 @@ export default function LearningModule() {
                     <ambientLight intensity={0.7} />
                     <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
                     <Environment preset="studio" />
-                    {showNetAnimation ? <CylinderNet /> : getGeometryComponent(moduleSlug || 'tabung')}
+                    {showNetAnimation ? getNetComponent(moduleSlug || 'tabung') : getGeometryComponent(moduleSlug || 'tabung')}
                     <ContactShadows opacity={0.5} scale={8} blur={1} far={10} resolution={256} color="#000000" />
                     <OrbitControls minDistance={2} maxDistance={25} />
                   </Canvas>

@@ -176,14 +176,22 @@ export interface ProblemAttempt {
 // Model Exports table
 export interface ModelExport {
   id: number
-  student_id: number
-  lesson_id: number | null
+  user_id: string
+  student_id: number | null
+  project_name: string
   model_type: string
-  model_parameters: any | null
-  glb_file_url: string | null
+  model_data: any | null
   stl_file_url: string | null
-  export_status: string | null
+  stl_file_size: number | null
+  thumbnail_url: string | null
+  description: string | null
+  geometry_params: any | null
+  export_status: string
+  download_count: number
+  is_public: boolean
+  tags: string[] | null
   created_at: string
+  updated_at: string
 }
 
 // For backward compatibility and computed user stats

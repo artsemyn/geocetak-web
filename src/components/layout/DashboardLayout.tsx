@@ -30,7 +30,9 @@ import {
   Info,
   Dashboard as DashboardIcon,
   Article,
-  Menu as MenuIcon
+  Menu as MenuIcon,
+  Build,
+  ViewInAr
 } from '@mui/icons-material'
 import { useAuthStore } from '../../stores/authStore'
 import { useLearningStore } from '../../stores/learningStore'
@@ -147,6 +149,20 @@ export default function DashboardLayout() {
                 </Button>
                 <Button
                   color="inherit"
+                  startIcon={<Build />}
+                  onClick={() => navigate('/three-editor')}
+                  sx={{
+                    color: 'white',
+                    backgroundColor: location.pathname === '/three-editor' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.1)'
+                    }
+                  }}
+                >
+                  3D Editor
+                </Button>
+                <Button
+                  color="inherit"
                   startIcon={<Article />}
                   onClick={() => navigate('/credits')}
                   sx={{
@@ -216,6 +232,10 @@ export default function DashboardLayout() {
               <Person sx={{ mr: 2 }} />
               Profile
             </MenuItem>
+            <MenuItem onClick={() => { navigate('/my-models'); handleCloseMenu(); }}>
+              <ViewInAr sx={{ mr: 2 }} />
+              Model Saya
+            </MenuItem>
             <MenuItem onClick={handleCloseMenu}>
               <Settings sx={{ mr: 2 }} />
               Settings
@@ -246,6 +266,10 @@ export default function DashboardLayout() {
               <School sx={{ mr: 2 }} />
               Modul
             </MenuItem>
+            <MenuItem onClick={() => handleNavigate('/three-editor')}>
+              <Build sx={{ mr: 2 }} />
+              3D Editor
+            </MenuItem>
             <MenuItem onClick={() => handleNavigate('/credits')}>
               <Article sx={{ mr: 2 }} />
               Credits
@@ -269,29 +293,39 @@ export default function DashboardLayout() {
       </AppBar>
 
       {/* Main Content */}
-      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
-        <Outlet />
-      </Container>
-
-      {/* Footer */}
-      <Paper
-        component="footer"
-        elevation={0}
-        sx={{
-          bgcolor: 'grey.100',
-          py: 2,
-          px: 3,
-          mt: 'auto',
-          borderTop: '1px solid',
-          borderColor: 'grey.300'
-        }}
-      >
-        <Container maxWidth="xl">
-          <Typography variant="body2" color="textSecondary" textAlign="center">
-            © 2025 GeoCetak - Platform Pembelajaran Geometri 3D Interaktif
-          </Typography>
+      {location.pathname === '/three-editor' ? (
+        // Full viewport for Three.js Editor
+        <Box sx={{ flexGrow: 1 }}>
+          <Outlet />
+        </Box>
+      ) : (
+        // Regular container for other pages
+        <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
+          <Outlet />
         </Container>
-      </Paper>
+      )}
+
+      {/* Footer - Hide for Three.js Editor */}
+      {location.pathname !== '/three-editor' && (
+        <Paper
+          component="footer"
+          elevation={0}
+          sx={{
+            bgcolor: 'grey.100',
+            py: 2,
+            px: 3,
+            mt: 'auto',
+            borderTop: '1px solid',
+            borderColor: 'grey.300'
+          }}
+        >
+          <Container maxWidth="xl">
+            <Typography variant="body2" color="textSecondary" textAlign="center">
+              © 2025 GeoCetak - Platform Pembelajaran Geometri 3D Interaktif
+            </Typography>
+          </Container>
+        </Paper>
+      )}
     </Box>
   )
 }

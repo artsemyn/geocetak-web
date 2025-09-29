@@ -68,28 +68,45 @@ export default function Login() {
   }
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight="100vh"
-        py={4}
-      >
-        {/* Logo & Brand */}
-        <Box display="flex" alignItems="center" mb={4}>
-          <Calculate sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
-          <Typography variant="h3" component="h1" fontWeight="bold" color="primary">
-            GeoCetak
-          </Typography>
-        </Box>
-        
-        <Typography variant="subtitle1" color="textSecondary" mb={4} textAlign="center">
-          Platform Pembelajaran Geometri 3D Interaktif
-        </Typography>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      sx={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        px: 2
+      }}
+    >
+      <Container maxWidth="sm">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {/* Logo & Brand */}
+          <Box display="flex" alignItems="center" mb={4}>
+            <Calculate sx={{ fontSize: 40, color: 'white', mr: 2 }} />
+            <Typography variant="h3" component="h1" fontWeight="bold" color="white">
+              GeoCetak
+            </Typography>
+          </Box>
 
-        <Paper elevation={3} sx={{ width: '100%', p: 4 }}>
+          <Typography variant="subtitle1" color="rgba(255,255,255,0.8)" mb={4} textAlign="center">
+            Platform Pembelajaran Geometri 3D Interaktif
+          </Typography>
+
+          <Paper
+            elevation={8}
+            sx={{
+              width: '100%',
+              p: 4,
+              borderRadius: 3,
+              backgroundColor: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)} centered>
               <Tab label="Masuk" />
@@ -185,21 +202,22 @@ export default function Login() {
             </form>
           </TabPanel>
 
-          <Box mt={3} textAlign="center">
-            <Typography variant="body2" color="textSecondary">
-              Dengan masuk, Anda setuju dengan syarat dan ketentuan GeoCetak
+            <Box mt={3} textAlign="center">
+              <Typography variant="body2" color="textSecondary">
+                Dengan masuk, Anda setuju dengan syarat dan ketentuan GeoCetak
+              </Typography>
+            </Box>
+          </Paper>
+
+          <Box mt={4} textAlign="center">
+            <Typography variant="body2" color="rgba(255,255,255,0.8)">
+              🎯 Pelajari Geometri dengan Cara yang Menyenangkan<br />
+              🎮 Gamifikasi & Interaksi 3D<br />
+              🏆 Track Progress & Achievements
             </Typography>
           </Box>
-        </Paper>
-
-        <Box mt={4} textAlign="center">
-          <Typography variant="body2" color="textSecondary">
-            🎯 Pelajari Geometri dengan Cara yang Menyenangkan<br />
-            🎮 Gamifikasi & Interaksi 3D<br />
-            🏆 Track Progress & Achievements
-          </Typography>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   )
 }

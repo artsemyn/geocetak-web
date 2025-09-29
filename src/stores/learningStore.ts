@@ -68,48 +68,144 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   fetchModules: async () => {
     set({ loading: true })
 
-    // Use static modules data directly
-    const staticModules = [
-      {
-        id: 1,
-        name: 'Tabung',
-        slug: 'tabung',
-        description: 'Mempelajari bentuk geometri tabung dan rumus-rumusnya',
-        icon_url: null,
-        order_index: 1,
-        is_published: true,
-        xp_reward: 100,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 2,
-        name: 'Kerucut',
-        slug: 'kerucut',
-        description: 'Mempelajari bentuk geometri kerucut dan rumus-rumusnya',
-        icon_url: null,
-        order_index: 2,
-        is_published: true,
-        xp_reward: 100,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 3,
-        name: 'Bola',
-        slug: 'bola',
-        description: 'Mempelajari bentuk geometri bola dan rumus-rumusnya',
-        icon_url: null,
-        order_index: 3,
-        is_published: true,
-        xp_reward: 100,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    ]
+    try {
+      const { data, error } = await supabase
+        .from('modules')
+        .select('*')
+        .eq('is_published', true)
+        .order('order_index')
 
-    console.log('Loading static modules:', staticModules.length, 'modules')
-    set({ modules: staticModules, loading: false })
+      if (error) {
+        console.warn('Database error, using fallback modules:', error.message)
+        // Fallback to static data if database fails
+        const fallbackModules = [
+          {
+            id: 1,
+            name: 'Tabung',
+            slug: 'tabung',
+            description: 'Mempelajari bentuk geometri tabung dan rumus-rumusnya',
+            icon_url: null,
+            order_index: 1,
+            is_published: true,
+            xp_reward: 100,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 2,
+            name: 'Kerucut',
+            slug: 'kerucut',
+            description: 'Mempelajari bentuk geometri kerucut dan rumus-rumusnya',
+            icon_url: null,
+            order_index: 2,
+            is_published: true,
+            xp_reward: 100,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 3,
+            name: 'Bola',
+            slug: 'bola',
+            description: 'Mempelajari bentuk geometri bola dan rumus-rumusnya',
+            icon_url: null,
+            order_index: 3,
+            is_published: true,
+            xp_reward: 100,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ]
+        set({ modules: fallbackModules, loading: false })
+      } else if (data && data.length > 0) {
+        console.log('✅ Modules loaded from database:', data.length, 'modules')
+        set({ modules: data, loading: false })
+      } else {
+        console.warn('No modules found in database, using fallback')
+        // Fallback if no data
+        const fallbackModules = [
+          {
+            id: 1,
+            name: 'Tabung',
+            slug: 'tabung',
+            description: 'Mempelajari bentuk geometri tabung dan rumus-rumusnya',
+            icon_url: null,
+            order_index: 1,
+            is_published: true,
+            xp_reward: 100,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 2,
+            name: 'Kerucut',
+            slug: 'kerucut',
+            description: 'Mempelajari bentuk geometri kerucut dan rumus-rumusnya',
+            icon_url: null,
+            order_index: 2,
+            is_published: true,
+            xp_reward: 100,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 3,
+            name: 'Bola',
+            slug: 'bola',
+            description: 'Mempelajari bentuk geometri bola dan rumus-rumusnya',
+            icon_url: null,
+            order_index: 3,
+            is_published: true,
+            xp_reward: 100,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ]
+        set({ modules: fallbackModules, loading: false })
+      }
+    } catch (error) {
+      console.error('Failed to fetch modules:', error)
+      // Fallback on any error
+      const fallbackModules = [
+        {
+          id: 1,
+          name: 'Tabung',
+          slug: 'tabung',
+          description: 'Mempelajari bentuk geometri tabung dan rumus-rumusnya',
+          icon_url: null,
+          order_index: 1,
+          is_published: true,
+          xp_reward: 100,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 2,
+          name: 'Kerucut',
+          slug: 'kerucut',
+          description: 'Mempelajari bentuk geometri kerucut dan rumus-rumusnya',
+          icon_url: null,
+          order_index: 2,
+          is_published: true,
+          xp_reward: 100,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 3,
+          name: 'Bola',
+          slug: 'bola',
+          description: 'Mempelajari bentuk geometri bola dan rumus-rumusnya',
+          icon_url: null,
+          order_index: 3,
+          is_published: true,
+          xp_reward: 100,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ]
+      set({ modules: fallbackModules, loading: false })
+    }
   },
 
   setCurrentModule: async (moduleId: number) => {
@@ -123,57 +219,172 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
 
   fetchLessons: async (moduleId: number) => {
-    // Use static lessons data directly
-    const staticLessons = [
-      {
-        id: 1,
-        module_id: moduleId,
-        title: 'Konsep Dasar',
-        slug: 'konsep-dasar',
-        order_index: 1,
-        lesson_type: 'concept',
-        content_data: null,
-        interactive_config: null,
-        xp_reward: 50,
-        estimated_duration: 15,
-        is_published: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 2,
-        module_id: moduleId,
-        title: 'Rumus dan Perhitungan',
-        slug: 'rumus-perhitungan',
-        order_index: 2,
-        lesson_type: 'formula',
-        content_data: null,
-        interactive_config: null,
-        xp_reward: 50,
-        estimated_duration: 20,
-        is_published: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 3,
-        module_id: moduleId,
-        title: 'Jaring-jaring 3D',
-        slug: 'jaring-jaring',
-        order_index: 3,
-        lesson_type: 'interactive',
-        content_data: null,
-        interactive_config: null,
-        xp_reward: 50,
-        estimated_duration: 25,
-        is_published: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    ]
+    try {
+      const { data, error } = await supabase
+        .from('lessons')
+        .select('*')
+        .eq('module_id', moduleId)
+        .eq('is_published', true)
+        .order('order_index')
 
-    console.log('Loading static lessons:', staticLessons.length, 'lessons for module', moduleId)
-    set({ lessons: staticLessons })
+      if (error) {
+        console.warn('Database error, using fallback lessons:', error.message)
+        // Fallback to static data
+        const fallbackLessons = [
+          {
+            id: 1,
+            module_id: moduleId,
+            title: 'Konsep Dasar',
+            slug: 'konsep-dasar',
+            order_index: 1,
+            lesson_type: 'concept',
+            content_data: null,
+            interactive_config: null,
+            xp_reward: 50,
+            estimated_duration: 15,
+            is_published: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 2,
+            module_id: moduleId,
+            title: 'Rumus dan Perhitungan',
+            slug: 'rumus-perhitungan',
+            order_index: 2,
+            lesson_type: 'formula',
+            content_data: null,
+            interactive_config: null,
+            xp_reward: 50,
+            estimated_duration: 20,
+            is_published: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 3,
+            module_id: moduleId,
+            title: 'Jaring-jaring 3D',
+            slug: 'jaring-jaring',
+            order_index: 3,
+            lesson_type: 'interactive',
+            content_data: null,
+            interactive_config: null,
+            xp_reward: 50,
+            estimated_duration: 25,
+            is_published: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ]
+        set({ lessons: fallbackLessons })
+      } else if (data && data.length > 0) {
+        console.log('✅ Lessons loaded from database:', data.length, 'lessons for module', moduleId)
+        set({ lessons: data })
+      } else {
+        console.warn('No lessons found in database, using fallback')
+        // Fallback if no data
+        const fallbackLessons = [
+          {
+            id: 1,
+            module_id: moduleId,
+            title: 'Konsep Dasar',
+            slug: 'konsep-dasar',
+            order_index: 1,
+            lesson_type: 'concept',
+            content_data: null,
+            interactive_config: null,
+            xp_reward: 50,
+            estimated_duration: 15,
+            is_published: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 2,
+            module_id: moduleId,
+            title: 'Rumus dan Perhitungan',
+            slug: 'rumus-perhitungan',
+            order_index: 2,
+            lesson_type: 'formula',
+            content_data: null,
+            interactive_config: null,
+            xp_reward: 50,
+            estimated_duration: 20,
+            is_published: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 3,
+            module_id: moduleId,
+            title: 'Jaring-jaring 3D',
+            slug: 'jaring-jaring',
+            order_index: 3,
+            lesson_type: 'interactive',
+            content_data: null,
+            interactive_config: null,
+            xp_reward: 50,
+            estimated_duration: 25,
+            is_published: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ]
+        set({ lessons: fallbackLessons })
+      }
+    } catch (error) {
+      console.error('Failed to fetch lessons:', error)
+      // Fallback on any error
+      const fallbackLessons = [
+        {
+          id: 1,
+          module_id: moduleId,
+          title: 'Konsep Dasar',
+          slug: 'konsep-dasar',
+          order_index: 1,
+          lesson_type: 'concept',
+          content_data: null,
+          interactive_config: null,
+          xp_reward: 50,
+          estimated_duration: 15,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 2,
+          module_id: moduleId,
+          title: 'Rumus dan Perhitungan',
+          slug: 'rumus-perhitungan',
+          order_index: 2,
+          lesson_type: 'formula',
+          content_data: null,
+          interactive_config: null,
+          xp_reward: 50,
+          estimated_duration: 20,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 3,
+          module_id: moduleId,
+          title: 'Jaring-jaring 3D',
+          slug: 'jaring-jaring',
+          order_index: 3,
+          lesson_type: 'interactive',
+          content_data: null,
+          interactive_config: null,
+          xp_reward: 50,
+          estimated_duration: 25,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ]
+      set({ lessons: fallbackLessons })
+    }
   },
 
   setCurrentLesson: (lessonId: number) => {

@@ -9,6 +9,8 @@ import Modules from './pages/Modules'
 import LearningModule from './pages/LearningModule'
 import Credits from './pages/Credits'
 import Login from './pages/Login'
+import ThreeEditor from './pages/ThreeEditor'
+import MyModels from './pages/MyModels'
 import DashboardLayout from './components/layout/DashboardLayout'
 
 const theme = createTheme({
@@ -61,6 +63,8 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="modules" element={<Modules />} />
               <Route path="module/:moduleSlug" element={<LearningModule />} />
+              <Route path="three-editor" element={<ThreeEditor />} />
+              <Route path="my-models" element={<MyModels />} />
               <Route path="credits" element={<Credits />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>

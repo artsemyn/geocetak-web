@@ -23,57 +23,61 @@ import {
 const Credits: React.FC = () => {
   const teamMembers = [
     {
-      name: "Tim Pengembang",
-      role: "Full Stack Development",
+      name: "Lorem Ipsum",
+      role: "Lorem Development",
       icon: <Code />,
-      description: "Pengembangan aplikasi web dan integrasi sistem"
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
     },
     {
-      name: "Tim Desain",
-      role: "UI/UX Design",
+      name: "Lorem Ipsum",
+      role: "Lorem Design",
       icon: <Palette />,
-      description: "Perancangan antarmuka dan pengalaman pengguna"
+      description: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     },
     {
-      name: "Tim Pendidik",
-      role: "Content Creation",
+      name: "Lorem Ipsum",
+      role: "Lorem Creation",
       icon: <School />,
-      description: "Penyusunan materi pembelajaran geometri 3D"
+      description: "Ut enim ad minim veniam, quis nostrud exercitation ullamco."
     },
     {
-      name: "Tim Riset",
-      role: "Educational Research",
+      name: "Lorem Ipsum",
+      role: "Lorem Research",
       icon: <Psychology />,
-      description: "Penelitian metodologi pembelajaran interaktif"
+      description: "Duis aute irure dolor in reprehenderit in voluptate velit."
     }
   ]
 
   const technologies = [
-    "React", "TypeScript", "Three.js", "Material-UI", "Vite", "Supabase",
-    "React Router", "Zustand", "React Spring", "React Three Fiber"
+    "Lorem", "Ipsum", "Dolor", "Sit", "Amet", "Consectetur",
+    "Adipiscing", "Elit", "Tempor", "Incididunt"
   ]
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={2} sx={{ p: 4, mb: 4 }}>
         <Typography variant="h3" gutterBottom align="center" fontWeight="bold">
-          Credits
+          Lorem Ipsum
         </Typography>
         <Typography variant="h6" color="textSecondary" align="center" sx={{ mb: 4 }}>
-          GeoCetak - Platform Pembelajaran Geometri 3D Interaktif
+          Lorem Ipsum - Dolor Sit Amet Consectetur
         </Typography>
 
         <Divider sx={{ my: 4 }} />
 
         <Typography variant="h4" gutterBottom fontWeight="bold">
-          Tim Pengembang
+          Lorem Ipsum
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
-          Aplikasi ini dikembangkan dengan dedikasi tinggi oleh tim multidisiplin untuk menciptakan
-          pengalaman pembelajaran geometri 3D yang inovatif dan interaktif.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </Typography>
 
-        <Grid container spacing={3} sx={{ mb: 5 }}>
+        <Grid 
+          container 
+          spacing={3} 
+          sx={{ mb: 5 }} 
+          justifyContent="center"
+        >
           {teamMembers.map((member, index) => (
             <Grid item xs={12} md={6} key={index}>
               <Card elevation={1} sx={{ height: '100%' }}>
@@ -103,10 +107,10 @@ const Credits: React.FC = () => {
         <Divider sx={{ my: 4 }} />
 
         <Typography variant="h4" gutterBottom fontWeight="bold">
-          Teknologi yang Digunakan
+          Lorem Ipsum Dolor
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
-          Aplikasi ini dibangun menggunakan teknologi modern dan terdepan dalam pengembangan web.
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
         </Typography>
 
         <Box sx={{ mb: 4 }}>
@@ -124,29 +128,29 @@ const Credits: React.FC = () => {
         <Divider sx={{ my: 4 }} />
 
         <Typography variant="h4" gutterBottom fontWeight="bold">
-          Ucapan Terima Kasih
+          Lorem Ipsum
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
-          Terima kasih kepada:
+          Sed ut perspiciatis unde omnis:
         </Typography>
         <Box component="ul" sx={{ pl: 3 }}>
           <Typography component="li" variant="body1" sx={{ mb: 1 }}>
-            Seluruh komunitas open source yang telah menyediakan library dan framework yang luar biasa
+            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit
           </Typography>
           <Typography component="li" variant="body1" sx={{ mb: 1 }}>
-            Para pendidik dan peneliti yang telah memberikan wawasan tentang metodologi pembelajaran
+            Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet
           </Typography>
           <Typography component="li" variant="body1" sx={{ mb: 1 }}>
-            Beta testers dan pengguna awal yang memberikan feedback berharga
+            Ut enim ad minima veniam, quis nostrum exercitationem
           </Typography>
           <Typography component="li" variant="body1">
-            Keluarga dan teman-teman yang memberikan dukungan selama proses pengembangan
+            Quis autem vel eum iure reprehenderit qui in ea voluptate
           </Typography>
         </Box>
 
         <Box sx={{ mt: 4, textAlign: 'center' }}>
           <Typography variant="body2" color="textSecondary">
-            © 2025 GeoCetak. Dibuat dengan ❤️ untuk kemajuan pendidikan Indonesia.
+            © 2025 Lorem Ipsum. Dolor sit amet ❤️ consectetur adipiscing elit.
           </Typography>
         </Box>
       </Paper>

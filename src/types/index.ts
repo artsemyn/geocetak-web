@@ -126,12 +126,17 @@ export interface Assessment {
 }
 
 // Geometry Types
-export type GeometryType = 'cylinder' | 'cone' | 'sphere'
+export type GeometryType = 'cylinder' | 'cone' | 'sphere' | 'cube' | 'rectangular-prism' | 'triangular-prism' | 'pyramid'
 
 export interface GeometryParameters {
   radius: number
   height: number
   slantHeight?: number // for cone
+  width?: number // for rectangular prism
+  depth?: number // for rectangular prism
+  length?: number // for triangular prism
+  baseWidth?: number // for pyramid
+  baseLength?: number // for pyramid
   // Add more parameters as needed
 }
 

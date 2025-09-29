@@ -113,36 +113,58 @@ export function CylinderNet({ show }: { show: boolean }) {
   const circumference = 2 * Math.PI * radius
 
   return (
-    <group position={[0, 0, 0]}>
-      {/* Top Circle */}
-      <mesh position={[0, height/2 + 3, 0]} rotation={[Math.PI/2, 0, 0]}>
-        <ringGeometry args={[0, radius, 32]} />
-        <meshBasicMaterial color="#E74C3C" side={2} />
-      </mesh>
-      <mesh position={[0, height/2 + 3, 0]} rotation={[Math.PI/2, 0, 0]}>
-        <circleGeometry args={[radius, 32]} />
-        <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
-      </mesh>
-      
-      {/* Bottom Circle */}
-      <mesh position={[0, -height/2 - 3, 0]} rotation={[Math.PI/2, 0, 0]}>
-        <ringGeometry args={[0, radius, 32]} />
-        <meshBasicMaterial color="#E74C3C" side={2} />
-      </mesh>
-      <mesh position={[0, -height/2 - 3, 0]} rotation={[Math.PI/2, 0, 0]}>
-        <circleGeometry args={[radius, 32]} />
-        <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
-      </mesh>
-      
-      {/* Rectangle (unfolded side) */}
-      <mesh position={[radius + 4, 0, 0]}>
+    <group position={[0, 0, 5]} rotation={[0, 0, 0]}>
+      {/* Rectangle (unfolded side) - Main central piece, facing camera */}
+      <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
         <planeGeometry args={[circumference, height]} />
         <meshBasicMaterial color="#27AE60" side={2} />
       </mesh>
-      
-      {/* Labels */}
-      <group position={[0, height/2 + 4, 0]}>
-        {/* Top circle label would go here */}
+
+      {/* Top Circle - Now flat */}
+      <mesh position={[0, height/2 + radius + 1, 0]} rotation={[0, 0, 0]}>
+        <ringGeometry args={[0, radius, 32]} />
+        <meshBasicMaterial color="#E74C3C" side={2} />
+      </mesh>
+      <mesh position={[0, height/2 + radius + 1, 0]} rotation={[0, 0, 0]}>
+        <circleGeometry args={[radius, 32]} />
+        <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
+      </mesh>
+
+      {/* Bottom Circle - Now flat */}
+      <mesh position={[0, -height/2 - radius - 1, 0]} rotation={[0, 0, 0]}>
+        <ringGeometry args={[0, radius, 32]} />
+        <meshBasicMaterial color="#E74C3C" side={2} />
+      </mesh>
+      <mesh position={[0, -height/2 - radius - 1, 0]} rotation={[0, 0, 0]}>
+        <circleGeometry args={[radius, 32]} />
+        <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
+      </mesh>
+
+      {/* Connection lines to show how net folds */}
+      <mesh position={[0, height/2 + radius/2 + 0.5, 0]} rotation={[Math.PI/2, 0, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
+        <meshBasicMaterial color="#34495E" />
+      </mesh>
+      <mesh position={[0, -height/2 - radius/2 - 0.5, 0]} rotation={[Math.PI/2, 0, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
+        <meshBasicMaterial color="#34495E" />
+      </mesh>
+
+      {/* Dimension labels */}
+      <group position={[circumference/2 + 1, 0, 0]}>
+        {/* Height indicator */}
+        <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI/2]}>
+          <cylinderGeometry args={[0.02, 0.02, height, 8]} />
+          <meshBasicMaterial color="#F39C12" />
+        </mesh>
+      </group>
+
+      <group position={[0, -height/2 - radius - 2, 0]}>
+        {/* Radius indicator */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
+          <meshBasicMaterial color="#9B59B6" />
+        </mesh>
       </group>
     </group>
   )
@@ -157,22 +179,45 @@ export function ConeNet({ show }: { show: boolean }) {
   const sectorAngle = (2 * Math.PI * radius) / slantHeight
 
   return (
-    <group position={[0, 0, 0]}>
-      {/* Base Circle */}
-      <mesh position={[0, -height/2 - 3, 0]} rotation={[Math.PI/2, 0, 0]}>
-        <ringGeometry args={[0, radius, 32]} />
-        <meshBasicMaterial color="#E74C3C" side={2} />
-      </mesh>
-      <mesh position={[0, -height/2 - 3, 0]} rotation={[Math.PI/2, 0, 0]}>
-        <circleGeometry args={[radius, 32]} />
-        <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
-      </mesh>
-      
-      {/* Sector (approximated as a partial ring) */}
-      <mesh position={[slantHeight + 2, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+    <group position={[0, 0, 5]} rotation={[0, 0, 0]}>
+      {/* Sector (fan shape) - main piece in center, facing camera */}
+      <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
         <ringGeometry args={[0, slantHeight, 32, 0, sectorAngle]} />
         <meshBasicMaterial color="#27AE60" side={2} />
       </mesh>
+
+      {/* Base Circle - positioned to the right side, facing camera */}
+      <mesh position={[slantHeight + 2, -height/4, 0]} rotation={[0, 0, 0]}>
+        <ringGeometry args={[0, radius, 32]} />
+        <meshBasicMaterial color="#E74C3C" side={2} />
+      </mesh>
+      <mesh position={[slantHeight + 2, -height/4, 0]} rotation={[0, 0, 0]}>
+        <circleGeometry args={[radius, 32]} />
+        <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
+      </mesh>
+
+      {/* Connection line from sector to circle */}
+      <mesh position={[slantHeight/2 + 1, -height/8, 0]} rotation={[0, 0, -Math.PI/6]}>
+        <cylinderGeometry args={[0.02, 0.02, slantHeight/2, 8]} />
+        <meshBasicMaterial color="#34495E" />
+      </mesh>
+
+      {/* Dimension indicators */}
+      <group position={[slantHeight/2, slantHeight/2, 0]}>
+        {/* Slant height indicator */}
+        <mesh position={[0, 0, 0]} rotation={[0, 0, -Math.PI/4]}>
+          <cylinderGeometry args={[0.02, 0.02, slantHeight, 8]} />
+          <meshBasicMaterial color="#F39C12" />
+        </mesh>
+      </group>
+
+      <group position={[slantHeight + 2, -height/4 - radius - 0.5, 0]}>
+        {/* Radius indicator */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
+          <meshBasicMaterial color="#9B59B6" />
+        </mesh>
+      </group>
     </group>
   )
 }
@@ -182,32 +227,60 @@ export function SphereNet({ show }: { show: boolean }) {
 
   const { geometryParams } = useLearningStore()
   const { radius } = geometryParams
-  const segments = 8
+  const segments = 6
 
   return (
-    <group position={[0, 0, 0]}>
-      {/* Orange peel segments */}
+    <group position={[0, 0, 5]} rotation={[0, 0, 0]}>
+      {/* Orange peel segments - arranged in a horizontal line facing camera */}
       {Array.from({ length: segments }, (_, i) => {
-        const angle = (i / segments) * Math.PI * 2
-        const x = Math.cos(angle) * (radius + 2)
-        const z = Math.sin(angle) * (radius + 2)
-        
+        // Arrange segments horizontally in a line
+        const x = (i - (segments - 1) / 2) * (radius * 1.5)
+        const y = 0
+
         return (
-          <mesh 
-            key={i} 
-            position={[x, 0, z]} 
-            rotation={[0, angle, 0]}
+          <mesh
+            key={i}
+            position={[x, y, 0]}
+            rotation={[0, 0, 0]}
           >
-            <sphereGeometry args={[radius * 0.8, 8, 16, 0, Math.PI / 4]} />
-            <meshBasicMaterial 
-              color="#F39C12" 
-              transparent 
-              opacity={0.7} 
+            <sphereGeometry args={[radius * 0.6, 8, 16, 0, Math.PI / 3]} />
+            <meshBasicMaterial
+              color="#F39C12"
+              transparent
+              opacity={0.7}
               side={2}
             />
           </mesh>
         )
       })}
+
+      {/* Connection lines between segments */}
+      {Array.from({ length: segments - 1 }, (_, i) => {
+        const x1 = (i - (segments - 1) / 2) * (radius * 1.5)
+        const x2 = ((i + 1) - (segments - 1) / 2) * (radius * 1.5)
+        const centerX = (x1 + x2) / 2
+        const length = radius * 1.5
+
+        return (
+          <mesh
+            key={i}
+            position={[centerX, 0, 0]}
+            rotation={[0, 0, Math.PI/2]}
+          >
+            <cylinderGeometry args={[0.02, 0.02, length, 8]} />
+            <meshBasicMaterial color="#34495E" />
+          </mesh>
+        )
+      })}
+
+      {/* Dimension indicator */}
+      <group position={[0, -radius - 1, 0]}>
+        {/* Radius indicator */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
+          <meshBasicMaterial color="#9B59B6" />
+        </mesh>
+      </group>
     </group>
   )
 }
