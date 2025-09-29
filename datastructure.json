@@ -1,0 +1,482 @@
+[
+  {
+    "table_name": "ai_assessments",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "lesson_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "rubric_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "problem_text",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "student_answer",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "ai_score",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "ai_feedback",
+    "data_type": "jsonb",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "reasoning_steps",
+    "data_type": "jsonb",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "teacher_review",
+    "data_type": "boolean",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "teacher_override_score",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "teacher_comments",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "status",
+    "data_type": "character varying",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "processing_time_ms",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "ai_assessments",
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assessment_rubrics",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "assessment_rubrics",
+    "column_name": "lesson_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assessment_rubrics",
+    "column_name": "title",
+    "data_type": "character varying",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "assessment_rubrics",
+    "column_name": "criteria",
+    "data_type": "jsonb",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "assessment_rubrics",
+    "column_name": "max_score",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assessment_rubrics",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assignments",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "assignments",
+    "column_name": "classroom_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assignments",
+    "column_name": "lesson_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assignments",
+    "column_name": "title",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "assignments",
+    "column_name": "due_date",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "assignments",
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "classroom_enrollments",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "classroom_enrollments",
+    "column_name": "classroom_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "classroom_enrollments",
+    "column_name": "student_id",
+    "data_type": "uuid",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "classroom_enrollments",
+    "column_name": "enrolled_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "classrooms",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "classrooms",
+    "column_name": "teacher_id",
+    "data_type": "uuid",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "classrooms",
+    "column_name": "name",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "classrooms",
+    "column_name": "code",
+    "data_type": "character varying",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "classrooms",
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "source_model_path",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "status",
+    "data_type": "character varying",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "output_file_url",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "export_jobs",
+    "column_name": "completed_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "module_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "title",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "slug",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "content",
+    "data_type": "jsonb",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "order_index",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "lessons",
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "modules",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "modules",
+    "column_name": "name",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "modules",
+    "column_name": "slug",
+    "data_type": "text",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "modules",
+    "column_name": "description",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "modules",
+    "column_name": "order_index",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "modules",
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "student_progress",
+    "column_name": "id",
+    "data_type": "integer",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "student_progress",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "student_progress",
+    "column_name": "lesson_id",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "student_progress",
+    "column_name": "completed_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "student_progress",
+    "column_name": "score",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "student_progress",
+    "column_name": "xp_earned",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "id",
+    "data_type": "uuid",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "students",
+    "column_name": "username",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "full_name",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "avatar_url",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "updated_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "role",
+    "data_type": "character varying",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "school_name",
+    "data_type": "text",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "grade_level",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students",
+    "column_name": "teacher_id",
+    "data_type": "uuid",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "id",
+    "data_type": "uuid",
+    "is_nullable": "NO"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "total_xp",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "level",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "badges",
+    "data_type": "jsonb",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "streak_days",
+    "data_type": "integer",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "last_activity",
+    "data_type": "date",
+    "is_nullable": "YES"
+  },
+  {
+    "table_name": "students_stats",
+    "column_name": "updated_at",
+    "data_type": "timestamp without time zone",
+    "is_nullable": "YES"
+  }
+]
