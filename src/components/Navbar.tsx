@@ -1,6 +1,6 @@
-// src/components/layout/DashboardLayout.tsx
+// src/components/Navbar.tsx
 import React from 'react'
-import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -10,8 +10,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Container,
-  Paper,
   LinearProgress,
   Chip,
   Button,
@@ -23,22 +21,31 @@ import {
   Calculate,
   Person,
   Logout,
-  Home,
-  School,
   Settings,
   EmojiEvents,
-  Info,
   Dashboard as DashboardIcon,
+  School,
+  Assignment,
+  Build,
   Article,
   Menu as MenuIcon,
-  Build,
   ViewInAr,
-  Assignment
+  Info
 } from '@mui/icons-material'
-import { useAuthStore } from '../../stores/authStore'
-import { useLearningStore } from '../../stores/learningStore'
+import { useAuthStore } from '../stores/authStore'
+import { useLearningStore } from '../stores/learningStore'
 
-export default function DashboardLayout() {
+interface NavbarProps {
+  showNav?: boolean
+  showUserStats?: boolean
+  showLevelProgress?: boolean
+}
+
+export default function Navbar({
+  showNav = true,
+  showUserStats = true,
+  showLevelProgress = true
+}: NavbarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState<null | HTMLElement>(null)
   const navigate = useNavigate()
@@ -68,12 +75,12 @@ export default function DashboardLayout() {
   const handleSignOut = async () => {
     try {
       await signOut()
-      resetStore() // Clear all learning data
+      resetStore()
       console.log('User signed out successfully')
       handleCloseMenu()
     } catch (error) {
       console.error('Error signing out:', error)
-      resetStore() // Clear learning data even if signOut fails
+      resetStore()
       handleCloseMenu()
     }
   }
@@ -88,35 +95,34 @@ export default function DashboardLayout() {
   const levelProgress = (currentLevelXp / 500) * 100
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Top App Bar */}
-      <AppBar
-        position="static"
-        elevation={2}
-        sx={{
-          bgcolor: 'primary.main',
-          borderBottom: '1px solid rgba(255,255,255,0.12)',
-          '& .MuiToolbar-root': {
-            minHeight: '64px'
-          }
-        }}
-      >
-        <Toolbar>
-          {/* Logo Section */}
-          <Box display="flex" alignItems="center">
-            <Calculate sx={{ mr: 2 }} />
-            <Typography
-              variant="h6"
-              component="div"
-              fontWeight="bold"
-              onClick={() => navigate('/')}
-              sx={{ cursor: 'pointer' }}
-            >
-              GeoCetak
-            </Typography>
-          </Box>
+    <AppBar
+      position="static"
+      elevation={2}
+      sx={{
+        bgcolor: 'primary.main',
+        borderBottom: '1px solid rgba(255,255,255,0.12)',
+        '& .MuiToolbar-root': {
+          minHeight: '64px'
+        }
+      }}
+    >
+      <Toolbar>
+        {/* Logo Section */}
+        <Box display="flex" alignItems="center">
+          <Calculate sx={{ mr: 2 }} />
+          <Typography
+            variant="h6"
+            component="div"
+            fontWeight="bold"
+            onClick={() => navigate('/')}
+            sx={{ cursor: 'pointer' }}
+          >
+            GeoCetak
+          </Typography>
+        </Box>
 
-          {/* Centered Navigation Menu */}
+        {/* Centered Navigation Menu */}
+        {showNav && (
           <Box flexGrow={1} display="flex" justifyContent="center">
             {!isMobile && (
               <Stack direction="row" spacing={1}>
@@ -193,79 +199,79 @@ export default function DashboardLayout() {
               </Stack>
             )}
           </Box>
+        )}
 
-          {/* Right Section */}
-          <Box display="flex" alignItems="center">
-            {/* Mobile Navigation Menu Button */}
-            {isMobile && (
-              <IconButton
-                color="inherit"
-                onClick={handleMobileMenu}
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
+        {!showNav && <Box flexGrow={1} />}
 
-            {/* User Stats */}
-            {userStats && (
-              <Box display="flex" alignItems="center" gap={2} mr={2}>
-                <Chip
-                  icon={<EmojiEvents />}
-                  label={`Level ${userStats.level}`}
-                  color="secondary"
-                  size="small"
-                />
-                <Chip
-                  label={`${userStats.total_xp} XP`}
-                  variant="outlined"
-                  size="small"
-                  sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.5)' }}
-                />
-              </Box>
-            )}
-
-            {/* Profile Menu */}
-            <IconButton onClick={handleProfileMenu} color="inherit">
-              <Avatar
-                src={profile?.avatar_url || undefined}
-                alt={profile?.full_name || 'User'}
-                sx={{ width: 32, height: 32 }}
-              >
-                {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
-              </Avatar>
+        {/* Right Section */}
+        <Box display="flex" alignItems="center">
+          {/* Mobile Navigation Menu Button */}
+          {isMobile && showNav && (
+            <IconButton
+              color="inherit"
+              onClick={handleMobileMenu}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
             </IconButton>
-          </Box>
+          )}
 
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleCloseMenu}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          >
-            <MenuItem onClick={() => { navigate('/profile'); handleCloseMenu(); }}>
-              <Person sx={{ mr: 2 }} />
-              Profile
-            </MenuItem>
-            <MenuItem onClick={() => { navigate('/my-models'); handleCloseMenu(); }}>
-              <ViewInAr sx={{ mr: 2 }} />
-              Model Saya
-            </MenuItem>
-            <MenuItem onClick={handleCloseMenu}>
-              <Settings sx={{ mr: 2 }} />
-              Settings
-            </MenuItem>
-            <MenuItem onClick={() => { navigate('/credits'); handleCloseMenu(); }}>
-              <Info sx={{ mr: 2 }} />
-              Credits
-            </MenuItem>
-            <MenuItem onClick={handleSignOut}>
-              <Logout sx={{ mr: 2 }} />
-              Logout
-            </MenuItem>
-          </Menu>
+          {/* User Stats */}
+          {showUserStats && userStats && (
+            <Box display="flex" alignItems="center" gap={2} mr={2}>
+              <Chip
+                icon={<EmojiEvents />}
+                label={`Level ${userStats.level}`}
+                color="secondary"
+                size="small"
+              />
+              <Chip
+                label={`${userStats.total_xp} XP`}
+                variant="outlined"
+                size="small"
+                sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.5)' }}
+              />
+            </Box>
+          )}
 
-          {/* Mobile Navigation Menu */}
+          {/* Profile Menu */}
+          <IconButton onClick={handleProfileMenu} color="inherit">
+            <Avatar
+              src={profile?.avatar_url || undefined}
+              alt={profile?.full_name || 'User'}
+              sx={{ width: 32, height: 32 }}
+            >
+              {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
+            </Avatar>
+          </IconButton>
+        </Box>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <MenuItem onClick={() => { navigate('/profile'); handleCloseMenu(); }}>
+            <Person sx={{ mr: 2 }} />
+            Profile & Settings
+          </MenuItem>
+          <MenuItem onClick={() => { navigate('/my-models'); handleCloseMenu(); }}>
+            <ViewInAr sx={{ mr: 2 }} />
+            Model Saya
+          </MenuItem>
+          <MenuItem onClick={() => { navigate('/credits'); handleCloseMenu(); }}>
+            <Info sx={{ mr: 2 }} />
+            Credits
+          </MenuItem>
+          <MenuItem onClick={handleSignOut}>
+            <Logout sx={{ mr: 2 }} />
+            Logout
+          </MenuItem>
+        </Menu>
+
+        {/* Mobile Navigation Menu */}
+        {showNav && (
           <Menu
             anchorEl={mobileMenuAnchorEl}
             open={Boolean(mobileMenuAnchorEl)}
@@ -294,47 +300,22 @@ export default function DashboardLayout() {
               Credits
             </MenuItem>
           </Menu>
-        </Toolbar>
-
-        {/* Level Progress Bar */}
-        {userStats && (
-          <LinearProgress
-            variant="determinate"
-            value={levelProgress}
-            sx={{
-              height: 3,
-              '& .MuiLinearProgress-bar': {
-                bgcolor: 'secondary.main'
-              }
-            }}
-          />
         )}
-      </AppBar>
+      </Toolbar>
 
-      {/* Main Content */}
-      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
-        <Outlet />
-      </Container>
-
-      {/* Footer */}
-      <Paper
-        component="footer"
-        elevation={0}
-        sx={{
-          bgcolor: 'grey.100',
-          py: 2,
-          px: 3,
-          mt: 'auto',
-          borderTop: '1px solid',
-          borderColor: 'grey.300'
-        }}
-      >
-        <Container maxWidth="xl">
-          <Typography variant="body2" color="textSecondary" textAlign="center">
-            © 2025 GeoCetak - Platform Pembelajaran Geometri 3D Interaktif
-          </Typography>
-        </Container>
-      </Paper>
-    </Box>
+      {/* Level Progress Bar */}
+      {showLevelProgress && userStats && (
+        <LinearProgress
+          variant="determinate"
+          value={levelProgress}
+          sx={{
+            height: 3,
+            '& .MuiLinearProgress-bar': {
+              bgcolor: 'secondary.main'
+            }
+          }}
+        />
+      )}
+    </AppBar>
   )
 }

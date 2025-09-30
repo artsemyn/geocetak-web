@@ -27,6 +27,7 @@ import {
   Timeline
 } from '@mui/icons-material'
 import { useLearningStore } from '../stores/learningStore'
+import Navbar from '../components/Navbar'
 
 // Module icons mapping
 const moduleIcons = {
@@ -75,8 +76,10 @@ export default function Modules() {
   }
 
   return (
-    <Container maxWidth="xl">
-      {/* Header Section */}
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
+      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
+        {/* Header Section */}
       <Paper sx={{ p: 4, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
         <Box display="flex" alignItems="center" mb={2}>
           <Avatar sx={{ bgcolor: 'white', color: 'primary.main', mr: 3 }}>
@@ -331,6 +334,7 @@ export default function Modules() {
           </Grid>
         </Grid>
       </Box>
-    </Container>
+      </Container>
+    </Box>
   )
 }

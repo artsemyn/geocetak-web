@@ -19,6 +19,7 @@ import {
   Psychology,
   Language
 } from '@mui/icons-material'
+import Navbar from '../components/Navbar'
 
 const Credits: React.FC = () => {
   const teamMembers = [
@@ -54,8 +55,10 @@ const Credits: React.FC = () => {
   ]
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Paper elevation={2} sx={{ p: 4, mb: 4 }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
+      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
+        <Paper elevation={2} sx={{ p: 4, mb: 4 }}>
         <Typography variant="h3" gutterBottom align="center" fontWeight="bold">
           Lorem Ipsum
         </Typography>
@@ -153,8 +156,9 @@ const Credits: React.FC = () => {
             © 2025 Lorem Ipsum. Dolor sit amet ❤️ consectetur adipiscing elit.
           </Typography>
         </Box>
-      </Paper>
-    </Container>
+        </Paper>
+      </Container>
+    </Box>
   )
 }
 

@@ -11,7 +11,7 @@ interface AuthState {
   userType: 'student' | 'teacher' | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, fullName: string, userType: 'student' | 'teacher') => Promise<void>
+  signUp: (email: string, password: string, fullName: string, schoolName: string, gradeLevel: string) => Promise<void>
   signOut: () => Promise<void>
   fetchProfile: () => Promise<void>
   fetchUserData: () => Promise<void>
@@ -37,20 +37,57 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     await get().fetchUserData()
   },
 
-  signUp: async (email: string, password: string, fullName: string, userType: 'student' | 'teacher') => {
+  signUp: async (email: string, password: string, fullName: string, schoolName: string, gradeLevel: string) => {
+    // Step 1: Create auth user
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
-          user_type: userType
+          school_name: schoolName,
+          grade_level: gradeLevel
         }
       }
     })
 
     if (error) throw error
-    set({ user: data.user, userType })
+
+    // Step 2: Create profile in public.profiles
+    if (data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          email: email,
+          full_name: fullName,
+          school_name: schoolName,
+          grade_level: gradeLevel,
+          role: 'student'
+        })
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError)
+        throw new Error('Failed to create profile: ' + profileError.message)
+      }
+
+      // Step 3: Create gamification record
+      const { error: gamificationError } = await supabase
+        .from('gamification')
+        .insert({
+          user_id: data.user.id,
+          total_xp: 0,
+          level: 1,
+          current_streak_days: 0,
+          longest_streak_days: 0
+        })
+
+      if (gamificationError) {
+        console.error('Error creating gamification record:', gamificationError)
+      }
+    }
+
+    set({ user: data.user, userType: 'student' })
   },
 
   signOut: async () => {

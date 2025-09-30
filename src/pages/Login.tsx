@@ -10,7 +10,11 @@ import {
   Alert,
   Tab,
   Tabs,
-  CircularProgress
+  CircularProgress,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
 } from '@mui/material'
 import { School, Calculate } from '@mui/icons-material'
 import { useAuthStore } from '../stores/authStore'
@@ -34,9 +38,11 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
+  const [schoolName, setSchoolName] = useState('')
+  const [gradeLevel, setGradeLevel] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  
+
   const { signIn, signUp } = useAuthStore()
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -57,9 +63,9 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    
+
     try {
-      await signUp(email, password, fullName)
+      await signUp(email, password, fullName, schoolName, gradeLevel)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -178,6 +184,28 @@ export default function Login() {
                 required
                 disabled={loading}
               />
+              <TextField
+                fullWidth
+                label="Nama Sekolah"
+                value={schoolName}
+                onChange={(e) => setSchoolName(e.target.value)}
+                margin="normal"
+                required
+                disabled={loading}
+                placeholder="Contoh: SMP Negeri 1 Jakarta"
+              />
+              <FormControl fullWidth margin="normal" required disabled={loading}>
+                <InputLabel>Kelas</InputLabel>
+                <Select
+                  value={gradeLevel}
+                  onChange={(e) => setGradeLevel(e.target.value)}
+                  label="Kelas"
+                >
+                  <MenuItem value="7">Kelas 7</MenuItem>
+                  <MenuItem value="8">Kelas 8</MenuItem>
+                  <MenuItem value="9">Kelas 9</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 label="Password"

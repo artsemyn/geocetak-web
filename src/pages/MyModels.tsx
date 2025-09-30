@@ -37,6 +37,7 @@ import {
 import { useAuthStore } from '../stores/authStore'
 import ModelExportService from '../services/modelExportService'
 import { ModelExport } from '../services/supabase'
+import Navbar from '../components/Navbar'
 
 export default function MyModels() {
   const navigate = useNavigate()
@@ -150,13 +151,12 @@ export default function MyModels() {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
-      {/* Header */}
-      <Box display="flex" alignItems="center" mb={3}>
-        <IconButton onClick={() => navigate('/')} sx={{ mr: 2 }}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h4" fontWeight="bold" flexGrow={1}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
+      <Container maxWidth="lg" sx={{ flexGrow: 1, py: 3 }}>
+        {/* Header */}
+        <Box display="flex" alignItems="center" mb={3}>
+          <Typography variant="h4" fontWeight="bold" flexGrow={1}>
           <ViewInAr sx={{ mr: 1, verticalAlign: 'middle' }} />
           Model 3D Saya
         </Typography>
@@ -348,6 +348,7 @@ export default function MyModels() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+      </Container>
+    </Box>
   )
 }

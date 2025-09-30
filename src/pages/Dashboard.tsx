@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material'
 import { useAuthStore } from '../stores/authStore'
 import { useLearningStore } from '../stores/learningStore'
+import Navbar from '../components/Navbar'
 
 // Module icons mapping
 const moduleIcons = {
@@ -78,8 +79,10 @@ export default function Dashboard() {
   }
 
   return (
-    <Container maxWidth="xl">
-      {/* Welcome Section */}
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
+      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
+        {/* Welcome Section */}
       <Paper sx={{ p: 4, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={8}>
@@ -376,6 +379,7 @@ export default function Dashboard() {
           )}
         </CardContent>
       </Card>
-    </Container>
+      </Container>
+    </Box>
   )
 }

@@ -12,8 +12,9 @@ import Login from './pages/Login'
 import ThreeEditor from './pages/ThreeEditor'
 import MyModels from './pages/MyModels'
 import PracticeQuestions from './pages/PracticeQuestions'
-import DashboardLayout from './components/layout/DashboardLayout'
 import ChatBot from './components/ChatBot'
+import Profile from './pages/Profile'
+import Assessment from './pages/Assessment'
 
 const theme = createTheme({
   palette: {
@@ -61,16 +62,19 @@ function App() {
               <Route path="*" element={<Navigate to="/login" replace />} />
             </>
           ) : (
-            <Route path="/" element={<DashboardLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="modules" element={<Modules />} />
-              <Route path="module/:moduleSlug" element={<LearningModule />} />
-              <Route path="practice/:moduleId" element={<PracticeQuestions />} />
-              <Route path="three-editor" element={<ThreeEditor />} />
-              <Route path="my-models" element={<MyModels />} />
-              <Route path="credits" element={<Credits />} />
+            <>
+              {/* All pages are now standalone with their own Navbar */}
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/modules" element={<Modules />} />
+              <Route path="/module/:moduleSlug" element={<LearningModule />} />
+              <Route path="/assessment" element={<Assessment />} />
+              <Route path="/three-editor" element={<ThreeEditor />} />
+              <Route path="/my-models" element={<MyModels />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/credits" element={<Credits />} />
+              <Route path="/practice/:moduleId" element={<PracticeQuestions />} />
               <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
+            </>
           )}
         </Routes>
       </Router>

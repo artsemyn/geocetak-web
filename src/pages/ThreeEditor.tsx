@@ -36,6 +36,7 @@ import {
 import { useAuthStore } from '../stores/authStore'
 import { useLearningStore } from '../stores/learningStore'
 import ModelExportService from '../services/modelExportService'
+import Navbar from '../components/Navbar'
 
 export default function ThreeEditor() {
   const navigate = useNavigate()
@@ -135,80 +136,79 @@ export default function ThreeEditor() {
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <Box display="flex" alignItems="center" sx={{ px: 2, py: 1, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-        <IconButton onClick={() => navigate('/')} sx={{ mr: 2 }}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h6" fontWeight="bold" flexGrow={1}>
-          <Build sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Three.js Editor
-        </Typography>
+    <>
+      <Navbar />
+      <Box sx={{ height: 'calc(100vh - 67px)', display: 'flex', flexDirection: 'column' }}>
+        {/* Editor Controls Bar */}
+        <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ px: 2, py: 1, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+          <Typography variant="h6" fontWeight="bold">
+            <Build sx={{ mr: 1, verticalAlign: 'middle' }} />
+            Three.js Editor
+          </Typography>
 
-        <Stack direction="row" spacing={1}>
-          <Tooltip title="Bantuan & Tutorial">
-            <IconButton onClick={() => setHelpDialogOpen(true)} color="primary" size="small">
-              <Help />
-            </IconButton>
-          </Tooltip>
+          <Stack direction="row" spacing={1}>
+            <Tooltip title="Bantuan & Tutorial">
+              <IconButton onClick={() => setHelpDialogOpen(true)} color="primary" size="small">
+                <Help />
+              </IconButton>
+            </Tooltip>
 
-          <Tooltip title="Refresh Editor">
-            <IconButton onClick={handleRefresh} color="secondary" size="small">
-              <Refresh />
-            </IconButton>
-          </Tooltip>
+            <Tooltip title="Refresh Editor">
+              <IconButton onClick={handleRefresh} color="secondary" size="small">
+                <Refresh />
+              </IconButton>
+            </Tooltip>
 
-          <Tooltip title="Fullscreen">
-            <IconButton onClick={handleFullscreen} color="info" size="small">
-              <Fullscreen />
-            </IconButton>
-          </Tooltip>
+            <Tooltip title="Fullscreen">
+              <IconButton onClick={handleFullscreen} color="info" size="small">
+                <Fullscreen />
+              </IconButton>
+            </Tooltip>
 
-          <Button
-            variant="contained"
-            startIcon={<Save />}
-            onClick={() => setSaveDialogOpen(true)}
-            color="success"
-            disabled={!user}
-            size="small"
-          >
-            Simpan STL
-          </Button>
-        </Stack>
-      </Box>
-
-      {/* Quick Stats Bar (Compact) */}
-      {user && (
-        <Box sx={{ px: 2, py: 0.5, bgcolor: 'grey.50', borderBottom: 1, borderColor: 'divider' }}>
-          <Stack direction="row" spacing={2}>
-            <Chip
-              icon={<ViewInAr />}
-              label={`${userStats.totalModels} Model`}
-              color="primary"
-              variant="outlined"
-              size="small"
-            />
-            <Chip
-              icon={<Download />}
-              label={`${userStats.totalDownloads} Download`}
-              color="secondary"
-              variant="outlined"
-              size="small"
-            />
-            <Chip
-              icon={<Save />}
-              label={`${userStats.publicModels} Publik`}
+            <Button
+              variant="contained"
+              startIcon={<Save />}
+              onClick={() => setSaveDialogOpen(true)}
               color="success"
-              variant="outlined"
+              disabled={!user}
               size="small"
-            />
+            >
+              Simpan STL
+            </Button>
           </Stack>
         </Box>
-      )}
 
-      {/* Main Editor Container - Full height minus header */}
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        {/* Quick Stats Bar (Compact) */}
+        {user && (
+          <Box sx={{ px: 2, py: 0.5, bgcolor: 'grey.50', borderBottom: 1, borderColor: 'divider' }}>
+            <Stack direction="row" spacing={2}>
+              <Chip
+                icon={<ViewInAr />}
+                label={`${userStats.totalModels} Model`}
+                color="primary"
+                variant="outlined"
+                size="small"
+              />
+              <Chip
+                icon={<Download />}
+                label={`${userStats.totalDownloads} Download`}
+                color="secondary"
+                variant="outlined"
+                size="small"
+              />
+              <Chip
+                icon={<Save />}
+                label={`${userStats.publicModels} Publik`}
+                color="success"
+                variant="outlined"
+                size="small"
+              />
+            </Stack>
+          </Box>
+        )}
+
+        {/* Main Editor Container - Full height minus header */}
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
         {loading && (
           <Box sx={{
             position: 'absolute',
@@ -298,6 +298,7 @@ export default function ThreeEditor() {
           }}
           sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
         />
+        </Box>
       </Box>
 
       {/* Save Project Dialog */}
@@ -411,6 +412,6 @@ export default function ThreeEditor() {
           </Alert>
         </DialogContent>
       </Dialog>
-    </Box>
+    </>
   )
 }
