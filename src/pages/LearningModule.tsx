@@ -467,14 +467,13 @@ export default function LearningModule() {
 
   // Create synthetic module if still no current module after timeout
   const displayModule = currentModule || {
-    id: 1,
-    name: geometryInfo.name,
+    id: 'fallback-module',
+    title: geometryInfo.name,
     slug: moduleSlug || 'tabung',
     description: `Mempelajari bentuk geometri ${geometryInfo.name.toLowerCase()}`,
     icon_url: null,
     order_index: 1,
     is_published: true,
-    xp_reward: 100,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   }
@@ -487,8 +486,17 @@ export default function LearningModule() {
           <ArrowBack />
         </IconButton>
         <Typography variant="h4" fontWeight="bold" flexGrow={1}>
-          {geometryInfo.emoji} Modul Pembelajaran: {displayModule.name}
+          {geometryInfo.emoji} Modul Pembelajaran: {displayModule.title}
         </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<Quiz />}
+          onClick={() => navigate(`/practice/${currentModule?.id}`)}
+          sx={{ ml: 2 }}
+        >
+          Latihan Soal
+        </Button>
       </Box>
 
       <Grid container spacing={3}>
@@ -643,7 +651,7 @@ const ConceptLesson: React.FC = () => {
   const { currentLesson } = useLearningStore()
   const { moduleSlug } = useParams()
   const geometryInfo = getGeometryInfo(moduleSlug || 'tabung')
-  const conceptContent = currentLesson?.content_data?.concept
+  const conceptContent = currentLesson?.content?.concept
 
   // Helper function untuk mendapatkan konten unsur-unsur berdasarkan modul
   const getElementsContent = (moduleSlug: string) => {
@@ -793,7 +801,7 @@ const getNetComponents = (moduleSlug: string) => {
 const NetLesson: React.FC = () => {
   const { currentLesson, showNetAnimation, toggleNetAnimation } = useLearningStore()
   const { moduleSlug } = useParams()
-  const netContent = currentLesson?.content_data?.net
+  const netContent = currentLesson?.content?.net
 
   if (!netContent) {
     // Fallback content
@@ -849,7 +857,7 @@ const FormulaLesson: React.FC = () => {
   const { currentLesson, geometryParams } = useLearningStore()
   const { moduleSlug } = useParams()
   const geometryInfo = getGeometryInfo(moduleSlug || 'tabung')
-  const formulaContent = currentLesson?.content_data?.formula
+  const formulaContent = currentLesson?.content?.formula
   const volume = calculateVolumeByType(moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
   const surfaceArea = calculateSurfaceAreaByType(moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
 

@@ -35,16 +35,16 @@ interface LearningState {
 
   // Actions
   fetchModules: () => Promise<void>
-  setCurrentModule: (moduleId: number) => Promise<void>
-  fetchLessons: (moduleId: number) => Promise<void>
-  setCurrentLesson: (lessonId: number) => void
+  setCurrentModule: (moduleId: string) => Promise<void>
+  fetchLessons: (moduleId: string) => Promise<void>
+  setCurrentLesson: (lessonId: string) => void
   updateGeometryParams: (params: Partial<GeometryParams>) => void
   toggleNetAnimation: () => void
-  completeLesson: (lessonId: number, score?: number) => Promise<void>
+  completeLesson: (lessonId: string, score?: number) => Promise<void>
   fetchUserStats: () => Promise<void>
   fetchStudentProfile: () => Promise<void>
   fetchAchievements: () => Promise<void>
-  fetchProgress: (studentId: number) => Promise<void>
+  fetchProgress: (userId: string) => Promise<void>
   resetStore: () => void
 }
 
@@ -80,38 +80,35 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         // Fallback to static data if database fails
         const fallbackModules = [
           {
-            id: 1,
-            name: 'Tabung',
+            id: 'mod-1',
+            title: 'Tabung',
             slug: 'tabung',
             description: 'Mempelajari bentuk geometri tabung dan rumus-rumusnya',
             icon_url: null,
             order_index: 1,
             is_published: true,
-            xp_reward: 100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           },
           {
-            id: 2,
-            name: 'Kerucut',
+            id: 'mod-2',
+            title: 'Kerucut',
             slug: 'kerucut',
             description: 'Mempelajari bentuk geometri kerucut dan rumus-rumusnya',
             icon_url: null,
             order_index: 2,
             is_published: true,
-            xp_reward: 100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           },
           {
-            id: 3,
-            name: 'Bola',
+            id: 'mod-3',
+            title: 'Bola',
             slug: 'bola',
             description: 'Mempelajari bentuk geometri bola dan rumus-rumusnya',
             icon_url: null,
             order_index: 3,
             is_published: true,
-            xp_reward: 100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }
@@ -125,38 +122,35 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         // Fallback if no data
         const fallbackModules = [
           {
-            id: 1,
-            name: 'Tabung',
+            id: 'mod-1',
+            title: 'Tabung',
             slug: 'tabung',
             description: 'Mempelajari bentuk geometri tabung dan rumus-rumusnya',
             icon_url: null,
             order_index: 1,
             is_published: true,
-            xp_reward: 100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           },
           {
-            id: 2,
-            name: 'Kerucut',
+            id: 'mod-2',
+            title: 'Kerucut',
             slug: 'kerucut',
             description: 'Mempelajari bentuk geometri kerucut dan rumus-rumusnya',
             icon_url: null,
             order_index: 2,
             is_published: true,
-            xp_reward: 100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           },
           {
-            id: 3,
-            name: 'Bola',
+            id: 'mod-3',
+            title: 'Bola',
             slug: 'bola',
             description: 'Mempelajari bentuk geometri bola dan rumus-rumusnya',
             icon_url: null,
             order_index: 3,
             is_published: true,
-            xp_reward: 100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }
@@ -208,17 +202,17 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     }
   },
 
-  setCurrentModule: async (moduleId: number) => {
+  setCurrentModule: async (moduleId: string) => {
     const modules = get().modules
     const module = modules.find(m => m.id === moduleId)
     set({ currentModule: module || null })
-    
+
     if (module) {
       await get().fetchLessons(moduleId)
     }
   },
 
-  fetchLessons: async (moduleId: number) => {
+  fetchLessons: async (moduleId: string) => {
     try {
       const { data, error } = await supabase
         .from('lessons')
@@ -387,7 +381,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     }
   },
 
-  setCurrentLesson: (lessonId: number) => {
+  setCurrentLesson: (lessonId: string) => {
     const lessons = get().lessons
     const lesson = lessons.find(l => l.id === lessonId)
     set({ currentLesson: lesson || null })

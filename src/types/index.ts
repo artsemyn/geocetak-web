@@ -1,41 +1,60 @@
 // src/types/index.ts
 
-// Database Types (matching Supabase schema)
+// Database Types (matching new Supabase schema from datastructure.json)
 export interface Profile {
   id: string
-  username: string | null
+  email: string | null
   full_name: string | null
   avatar_url: string | null
+  role: string
+  school_name: string | null
+  grade_level: string | null
   created_at: string
   updated_at: string
 }
 
 export interface Module {
-  id: number
-  name: string
+  id: string
   slug: string
+  title: string
   description: string | null
-  order_index: number | null
+  icon_url: string | null
+  order_index: number
+  is_published: boolean
   created_at: string
+  updated_at: string
 }
 
 export interface Lesson {
-  id: number
-  module_id: number
-  title: string
+  id: string
+  module_id: string
   slug: string
-  content: LessonContent | null
-  order_index: number | null
+  title: string
+  lesson_type: string
+  order_index: number
+  content_markdown: string | null
+  video_url: string | null
+  scene_config: any | null
+  estimated_duration_minutes: number | null
+  xp_reward: number
+  is_published: boolean
   created_at: string
+  updated_at: string
+  // Computed content property for backward compatibility
+  content?: LessonContent | null
 }
 
 export interface StudentProgress {
-  id: number
+  id: string
   user_id: string
-  lesson_id: number
-  completed_at: string
-  score: number | null
-  xp_earned: number
+  lesson_id: string
+  status: string
+  completion_percentage: number
+  quiz_score: number | null
+  time_spent_seconds: number
+  completed_at: string | null
+  created_at: string
+  updated_at: string
 }
 
 export interface UserStats {
@@ -45,7 +64,8 @@ export interface UserStats {
   badges: Badge[]
   streak_days: number
   last_activity: string
-  updated_at: string
+  modules_completed?: number
+  lessons_completed?: number
 }
 
 // Content Types - Updated for tab-based lessons
@@ -99,12 +119,20 @@ export interface ActivityConfig {
 
 export interface Question {
   id: string
-  type: 'multiple-choice' | 'true-false' | 'fill-in' | 'essay'
-  question: string
-  options?: string[]
-  correct_answer: string | string[]
-  explanation: string
+  lesson_id: string
+  question_text: string
+  question_type: string
+  options: any | null
+  correct_answer: string | null
+  explanation: string | null
+  difficulty: string
   points: number
+  order_index: number
+  created_at: string
+  updated_at: string
+  // Legacy properties for backward compatibility
+  type?: 'multiple-choice' | 'true-false' | 'fill-in' | 'essay'
+  question?: string
 }
 
 export interface Problem {
@@ -156,20 +184,30 @@ export interface NetComponent {
 // Gamification Types
 export interface Badge {
   id: string
+  slug: string
   name: string
-  description: string
-  icon: string
+  description: string | null
+  icon_url: string | null
+  requirement_type: string
+  requirement_value: number | null
+  created_at: string
   earned_at?: string
-  category: 'learning' | 'achievement' | 'streak' | 'social'
+  category?: 'learning' | 'achievement' | 'streak' | 'social'
 }
 
-export interface Achievement {
+export interface Achievement extends Badge {}
+
+export interface Gamification {
   id: string
-  title: string
-  description: string
-  icon: string
-  condition: AchievementCondition
-  reward: AchievementReward
+  user_id: string
+  total_xp: number
+  level: number
+  current_streak_days: number
+  longest_streak_days: number
+  last_activity_date: string | null
+  badges_earned: any | null
+  created_at: string
+  updated_at: string
 }
 
 export interface AchievementCondition {
@@ -221,6 +259,7 @@ export interface ApiError {
 export interface AuthState {
   user: any | null // Supabase User type
   profile: Profile | null
+  student?: Student | null // For backward compatibility
   loading: boolean
 }
 
@@ -231,9 +270,22 @@ export interface LearningState {
   currentLesson: Lesson | null
   progress: StudentProgress[]
   userStats: UserStats | null
+  currentStudent?: Student | null // For backward compatibility
   geometryParams: GeometryParameters
   showNetAnimation: boolean
   calculations: GeometryCalculations | null
+}
+
+// Legacy types for backward compatibility
+export interface Student extends Profile {
+  xp_points?: number
+  total_badges?: number
+  streak_days?: number
+  last_activity_date?: string
+  status?: string
+  nis?: string
+  class_id?: string
+  teacher_id?: string
 }
 
 export interface GameState {
@@ -317,6 +369,50 @@ export interface NotificationAction {
   label: string
   action: () => void
   variant?: 'text' | 'outlined' | 'contained'
+}
+
+// New database types
+export interface Classroom {
+  id: string
+  teacher_id: string
+  name: string
+  description: string | null
+  class_code: string
+  school_name: string | null
+  grade_level: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface Assignment {
+  id: string
+  classroom_id: string
+  teacher_id: string
+  title: string
+  description: string | null
+  module_id: string | null
+  lesson_id: string | null
+  assignment_type: string
+  due_date: string | null
+  max_score: number
+  rubric: any | null
+  is_published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface QuizAttempt {
+  id: string
+  user_id: string
+  lesson_id: string
+  answers: any
+  score: number | null
+  max_score: number | null
+  time_spent_seconds: number | null
+  started_at: string
+  completed_at: string | null
+  created_at: string
 }
 
 // Constants

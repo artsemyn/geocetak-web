@@ -11,7 +11,9 @@ import Credits from './pages/Credits'
 import Login from './pages/Login'
 import ThreeEditor from './pages/ThreeEditor'
 import MyModels from './pages/MyModels'
+import PracticeQuestions from './pages/PracticeQuestions'
 import DashboardLayout from './components/layout/DashboardLayout'
+import ChatBot from './components/ChatBot'
 
 const theme = createTheme({
   palette: {
@@ -63,6 +65,7 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="modules" element={<Modules />} />
               <Route path="module/:moduleSlug" element={<LearningModule />} />
+              <Route path="practice/:moduleId" element={<PracticeQuestions />} />
               <Route path="three-editor" element={<ThreeEditor />} />
               <Route path="my-models" element={<MyModels />} />
               <Route path="credits" element={<Credits />} />
@@ -71,6 +74,7 @@ function App() {
           )}
         </Routes>
       </Router>
+      <ChatBot />
     </ThemeProvider>
   )
 }
