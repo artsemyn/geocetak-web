@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Clock, Trophy, ChevronRight, CheckCircle, XCircle, BookOpen } from 'lucide-react'
+import { AccessTime as Clock, EmojiEvents as Trophy, ChevronRight, CheckCircle, Cancel as XCircle, MenuBook as BookOpen } from '@mui/icons-material'
 import { supabase, PracticeQuestion, PracticeSession, StudentQuestionAttempt } from '../services/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useLearningStore } from '../stores/learningStore'
