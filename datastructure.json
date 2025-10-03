@@ -1,1814 +1,1070 @@
 [
   {
-    "table_name": "activity_log",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "activity_log",
-    "column_name": "user_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "activity_log",
-    "column_name": "activity_type",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "activity_log",
-    "column_name": "entity_type",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "activity_log",
-    "column_name": "entity_id",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "activity_log",
-    "column_name": "metadata",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "activity_log",
-    "column_name": "created_at",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "assignment_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "student_id",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "submission_text",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "submission_files",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "submitted_at",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "status",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": "'draft'::text",
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "score",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "ai_feedback",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "teacher_feedback",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "teacher_override_score",
-    "ordinal_position": 11,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "graded_at",
-    "ordinal_position": 12,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "graded_by",
-    "ordinal_position": 13,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignment_submissions",
-    "column_name": "updated_at",
-    "ordinal_position": 14,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "classroom_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "teacher_id",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "title",
-    "ordinal_position": 4,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "description",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "module_id",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "lesson_id",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "assignment_type",
-    "ordinal_position": 8,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "due_date",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "max_score",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": "100",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "rubric",
-    "ordinal_position": 11,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "is_published",
-    "ordinal_position": 12,
-    "is_nullable": "YES",
-    "column_default": "false",
-    "data_type": "boolean",
-    "udt_name": "bool",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "created_at",
-    "ordinal_position": 13,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "assignments",
-    "column_name": "updated_at",
-    "ordinal_position": 14,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "slug",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "name",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "description",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "icon_url",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "requirement_type",
-    "ordinal_position": 6,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "badges",
-    "column_name": "requirement_value",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "badges",
-    "column_name": "created_at",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classroom_members",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classroom_members",
-    "column_name": "classroom_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classroom_members",
-    "column_name": "student_id",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classroom_members",
-    "column_name": "joined_at",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "teacher_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "name",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "description",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "class_code",
-    "ordinal_position": 5,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "school_name",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "grade_level",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "is_active",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "true",
-    "data_type": "boolean",
-    "udt_name": "bool",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "created_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "classrooms",
-    "column_name": "updated_at",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "user_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "source_model_path",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "status",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": "'pending'::text",
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "stl_file_url",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "error_message",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "created_at",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "completed_at",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "export_jobs",
-    "column_name": "updated_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "user_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "total_xp",
-    "ordinal_position": 3,
-    "is_nullable": "YES",
-    "column_default": "0",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "level",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": "1",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "current_streak_days",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": "0",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "longest_streak_days",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": "0",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "last_activity_date",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "date",
-    "udt_name": "date",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "badges_earned",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "'[]'::jsonb",
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "created_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "gamification",
-    "column_name": "updated_at",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "module_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "slug",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "title",
-    "ordinal_position": 4,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "lesson_type",
-    "ordinal_position": 5,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "order_index",
-    "ordinal_position": 6,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "content_markdown",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "video_url",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "scene_config",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "estimated_duration_minutes",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "xp_reward",
-    "ordinal_position": 11,
-    "is_nullable": "YES",
-    "column_default": "10",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "is_published",
-    "ordinal_position": 12,
-    "is_nullable": "YES",
-    "column_default": "true",
-    "data_type": "boolean",
-    "udt_name": "bool",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "created_at",
-    "ordinal_position": 13,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "lessons",
-    "column_name": "updated_at",
-    "ordinal_position": 14,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "module_id",
-    "ordinal_position": 2,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "name",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "description",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "glb_file_path",
-    "ordinal_position": 5,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "thumbnail_url",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "file_size_bytes",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "bigint",
-    "udt_name": "int8",
-    "character_maximum_length": null,
-    "numeric_precision": 64,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "is_template",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "false",
-    "data_type": "boolean",
-    "udt_name": "bool",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "created_by",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "created_at",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "models_3d",
-    "column_name": "updated_at",
-    "ordinal_position": 11,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "slug",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "title",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "description",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "icon_url",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "order_index",
-    "ordinal_position": 6,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "modules",
-    "column_name": "is_published",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": "true",
-    "data_type": "boolean",
-    "udt_name": "bool",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "created_at",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "modules",
-    "column_name": "updated_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "email",
-    "ordinal_position": 2,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "full_name",
-    "ordinal_position": 3,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "avatar_url",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "role",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": "'student'::text",
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "school_name",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "grade_level",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "created_at",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "profiles",
-    "column_name": "updated_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "user_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "lesson_id",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "answers",
-    "ordinal_position": 4,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "score",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "max_score",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "time_spent_seconds",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "started_at",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "completed_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_attempts",
-    "column_name": "created_at",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "lesson_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "question_text",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "question_type",
-    "ordinal_position": 4,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "options",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "jsonb",
-    "udt_name": "jsonb",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "correct_answer",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "explanation",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "difficulty",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": "'medium'::text",
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "points",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "1",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "order_index",
-    "ordinal_position": 10,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "created_at",
-    "ordinal_position": 11,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "quiz_questions",
-    "column_name": "updated_at",
-    "ordinal_position": 12,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "id",
-    "ordinal_position": 1,
-    "is_nullable": "NO",
-    "column_default": "gen_random_uuid()",
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "user_id",
-    "ordinal_position": 2,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "lesson_id",
-    "ordinal_position": 3,
-    "is_nullable": "NO",
-    "column_default": null,
-    "data_type": "uuid",
-    "udt_name": "uuid",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "status",
-    "ordinal_position": 4,
-    "is_nullable": "YES",
-    "column_default": "'not_started'::text",
-    "data_type": "text",
-    "udt_name": "text",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "completion_percentage",
-    "ordinal_position": 5,
-    "is_nullable": "YES",
-    "column_default": "0",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "quiz_score",
-    "ordinal_position": 6,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "time_spent_seconds",
-    "ordinal_position": 7,
-    "is_nullable": "YES",
-    "column_default": "0",
-    "data_type": "integer",
-    "udt_name": "int4",
-    "character_maximum_length": null,
-    "numeric_precision": 32,
-    "numeric_scale": 0
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "completed_at",
-    "ordinal_position": 8,
-    "is_nullable": "YES",
-    "column_default": null,
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "created_at",
-    "ordinal_position": 9,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
-  },
-  {
-    "table_name": "student_progress",
-    "column_name": "updated_at",
-    "ordinal_position": 10,
-    "is_nullable": "YES",
-    "column_default": "now()",
-    "data_type": "timestamp with time zone",
-    "udt_name": "timestamptz",
-    "character_maximum_length": null,
-    "numeric_precision": null,
-    "numeric_scale": null
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.activity_type",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.entity_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.entity_type",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.metadata",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "activity_log.user_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.ai_feedback",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.assignment_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.graded_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.graded_by",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.status",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.student_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.submission_files",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.submission_text",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.submitted_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.teacher_feedback",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.teacher_override_score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.assignment_type",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.classroom_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.description",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.due_date",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.is_published",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.lesson_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.max_score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.module_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.rubric",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.teacher_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.title",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.description",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.icon_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.name",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.requirement_type",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.requirement_value",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "badges.slug",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classroom_members.classroom_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classroom_members.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classroom_members.joined_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classroom_members.student_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.class_code",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.description",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.grade_level",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.is_active",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.name",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.school_name",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.teacher_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "classrooms.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.completed_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.error_message",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.source_model_path",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.status",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.stl_file_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "export_jobs.user_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.badges_earned",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.current_streak_days",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.last_activity_date",
+    "details": "date | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.level",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.longest_streak_days",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.total_xp",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "gamification.user_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.content_markdown",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.estimated_duration_minutes",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.is_published",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.lesson_type",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.module_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.order_index",
+    "details": "integer | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.scene_config",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.slug",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.title",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.video_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "lessons.xp_reward",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.created_by",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.description",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.file_size_bytes",
+    "details": "bigint | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.glb_file_path",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.is_template",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.module_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.name",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.thumbnail_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "models_3d.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.description",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.icon_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.is_published",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.order_index",
+    "details": "integer | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.slug",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.title",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "modules.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.avatar_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.email",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.full_name",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.grade_level",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.role",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.school_name",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "profiles.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.answers",
+    "details": "jsonb | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.completed_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.lesson_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.max_score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.started_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.time_spent_seconds",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_attempts.user_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.correct_answer",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.difficulty",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.explanation",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.lesson_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.options",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.order_index",
+    "details": "integer | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.points",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.question_text",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.question_type",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "quiz_questions.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.completed_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.completion_percentage",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.lesson_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.quiz_score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.status",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.time_spent_seconds",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "student_progress.user_id",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "activity_log",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "assignment_submissions",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "assignments",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "badges",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "classroom_members",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "classrooms",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "export_jobs",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "gamification",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "lessons",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "models_3d",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "modules",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "profiles",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "quiz_attempts",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "quiz_questions",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "student_progress",
+    "details": null
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.allowed_mime_types",
+    "details": "ARRAY | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.avif_autodetection",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.file_size_limit",
+    "details": "bigint | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.id",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.name",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.owner",
+    "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.owner_id",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.public",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.type",
+    "details": "USER-DEFINED | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "storage",
+    "object_name": "buckets.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "storage",
+    "object_name": "buckets",
+    "details": null
   }
 ]
