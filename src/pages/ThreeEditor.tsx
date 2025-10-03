@@ -143,7 +143,7 @@ export default function ThreeEditor() {
         <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ px: 2, py: 1, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
           <Typography variant="h6" fontWeight="bold">
             <Build sx={{ mr: 1, verticalAlign: 'middle' }} />
-            Three.js Editor
+            Tinkercad Editor
           </Typography>
 
           <Stack direction="row" spacing={1}>
@@ -224,11 +224,11 @@ export default function ThreeEditor() {
           }}>
             <Box sx={{ textAlign: 'center', maxWidth: 400 }}>
               <Typography variant="h6" gutterBottom>
-                Memuat Three.js Editor...
+                Memuat Tinkercad Editor...
               </Typography>
               <LinearProgress sx={{ mb: 2 }} />
               <Typography variant="body2" color="text.secondary">
-                Harap tunggu, editor sedang dimuat dari threejs.org
+                Harap tunggu, editor sedang dimuat dari Tinkercad
               </Typography>
             </Box>
           </Box>
@@ -253,7 +253,7 @@ export default function ThreeEditor() {
                   Editor Tidak Dapat Dimuat
                 </Typography>
                 <Typography variant="body2" paragraph>
-                  Three.js Editor mungkin diblokir oleh browser atau jaringan Anda.
+                  Tinkercad Editor mungkin diblokir oleh browser atau jaringan Anda.
                 </Typography>
                 <Stack direction="row" spacing={2} justifyContent="center">
                   <Button
@@ -265,7 +265,7 @@ export default function ThreeEditor() {
                   </Button>
                   <Button
                     variant="outlined"
-                    href="https://threejs.org/editor/"
+                    href="https://www.tinkercad.com/things/3FKpBcshjxc"
                     target="_blank"
                     startIcon={<ViewInAr />}
                   >
@@ -277,17 +277,17 @@ export default function ThreeEditor() {
           </Box>
         )}
 
-        {/* Three.js Editor Iframe - Full size */}
+        {/* Tinkercad Editor Iframe - Full size */}
         <iframe
           id="threejs-editor"
-          src="https://threejs.org/editor/"
+          src="https://www.tinkercad.com/embed/3FKpBcshjxc?editbtn=1&simlab=1"
           style={{
             width: '100%',
             height: '100%',
             border: 'none',
             display: loading ? 'none' : 'block'
           }}
-          title="Three.js Editor"
+          title="Tinkercad Editor"
           onLoad={() => {
             setLoading(false)
             setBlocked(false)
@@ -351,7 +351,7 @@ export default function ThreeEditor() {
       <Dialog open={helpDialogOpen} onClose={() => setHelpDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>
           <Help sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Panduan Three.js Editor
+          Panduan Tinkercad Editor
           <IconButton
             onClick={() => setHelpDialogOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
