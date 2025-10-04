@@ -32,7 +32,7 @@ import Navbar from '../components/Navbar'
 // Module icons mapping
 const moduleIcons = {
   'tabung': '🥫',
-  'kerucut': '🎪',
+  'kerucut': '🎉',
   'bola': '⚽'
 }
 

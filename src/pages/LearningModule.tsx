@@ -43,6 +43,7 @@ import { OrbitControls, Environment, ContactShadows } from '@react-three/drei'
 import { useLearningStore } from '../stores/learningStore'
 import { AssessmentHistory } from '../components/ai/AssessmentHistory'
 import { ContentElement } from '../types'
+import { EnhancedNetVisualization } from '../components/3d/geometries/EnhancedNetVisualization'
 
 // Dynamic 3D Components for different geometries
 function InteractiveCylinder() {
@@ -191,6 +192,20 @@ function getGeometryComponent(moduleSlug: string) {
       return <InteractiveSphere />
     default:
       return <InteractiveCylinder />
+  }
+}
+
+// Helper function to map Indonesian geometry names to English
+function mapGeometryType(moduleSlug: string): 'cylinder' | 'cone' | 'sphere' {
+  switch (moduleSlug) {
+    case 'tabung':
+      return 'cylinder'
+    case 'kerucut':
+      return 'cone'
+    case 'bola':
+      return 'sphere'
+    default:
+      return 'cylinder'
   }
 }
 
@@ -500,21 +515,30 @@ export default function LearningModule() {
       </Box>
 
       <Grid container spacing={3}>
-        {/* Kolom Kiri: Viewport 3D */}
+        {/* Kolom Kiri: Viewport 3D / Net Visualization */}
         <Grid item xs={12} lg={7}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Box sx={{ height: 500, position: 'relative', background: '#f0f4f8', borderRadius: 2 }}>
-                <Suspense fallback={<CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />}>
-                  <Canvas shadows camera={{ position: [8, 6, 10], fov: 50 }}>
-                    <ambientLight intensity={0.7} />
-                    <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
-                    <Environment preset="studio" />
-                    {showNetAnimation ? getNetComponent(moduleSlug || 'tabung') : getGeometryComponent(moduleSlug || 'tabung')}
-                    <ContactShadows opacity={0.5} scale={8} blur={1} far={10} resolution={256} color="#000000" />
-                    <OrbitControls minDistance={2} maxDistance={25} />
-                  </Canvas>
-                </Suspense>
+                {showNetAnimation && moduleSlug !== 'bola' ? (
+                  // Show Enhanced Net Visualization when toggle is ON (not for sphere)
+                  <EnhancedNetVisualization
+                    geometryType={mapGeometryType(moduleSlug || 'tabung')}
+                    show={true}
+                  />
+                ) : (
+                  // Show 3D Geometry when toggle is OFF or for sphere
+                  <Suspense fallback={<CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />}>
+                    <Canvas shadows camera={{ position: [8, 6, 10], fov: 50 }}>
+                      <ambientLight intensity={0.7} />
+                      <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
+                      <Environment preset="studio" />
+                      {getGeometryComponent(moduleSlug || 'tabung')}
+                      <ContactShadows opacity={0.5} scale={8} blur={1} far={10} resolution={256} color="#000000" />
+                      <OrbitControls minDistance={2} maxDistance={25} />
+                    </Canvas>
+                  </Suspense>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -551,10 +575,12 @@ export default function LearningModule() {
               </Box>
               <Divider sx={{ my: 2 }} />
               <Stack spacing={1}>
-                <FormControlLabel
-                  control={<Switch checked={showNetAnimation} onChange={toggleNetAnimation} />}
-                  label="Tampilkan Jaring-jaring"
-                />
+                {moduleSlug !== 'bola' && (
+                  <FormControlLabel
+                    control={<Switch checked={showNetAnimation} onChange={toggleNetAnimation} />}
+                    label="Tampilkan Jaring-jaring"
+                  />
+                )}
               </Stack>
 
               <Divider sx={{ my: 2 }} />
@@ -816,15 +842,27 @@ const NetLesson: React.FC = () => {
         <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
           {getNetComponents(moduleSlug || 'tabung')}
         </Typography>
+
+        <Alert severity="info" sx={{ my: 3 }}>
+          💡 Aktifkan toggle "Tampilkan Jaring-jaring" di panel kontrol untuk melihat visualisasi jaring-jaring dengan mode 2D/3D!
+        </Alert>
+
         <Box sx={{ textAlign: 'center', mt: 3 }}>
-          <Button
-            variant="contained"
-            onClick={toggleNetAnimation}
-            size="large"
-            color={showNetAnimation ? "secondary" : "primary"}
-          >
-            {showNetAnimation ? `Kembalikan ke Bentuk ${getGeometryInfo(moduleSlug || 'tabung').name}` : 'Lihat Jaring-Jaring 3D'}
-          </Button>
+          {!showNetAnimation && (
+            <Button
+              variant="contained"
+              onClick={toggleNetAnimation}
+              size="large"
+              color="primary"
+            >
+              Tampilkan Jaring-Jaring Sekarang
+            </Button>
+          )}
+          {showNetAnimation && (
+            <Alert severity="success" sx={{ maxWidth: 600, mx: 'auto' }}>
+              ✅ Jaring-jaring sedang ditampilkan di canvas utama. Anda bisa beralih antara mode 2D dan 3D menggunakan toggle di visualisasi.
+            </Alert>
+          )}
         </Box>
       </Box>
     )
@@ -839,15 +877,27 @@ const NetLesson: React.FC = () => {
       {netContent.elements?.map((element, index) => (
         <DynamicContentElement key={index} element={element} />
       ))}
+
+      <Alert severity="info" sx={{ my: 3 }}>
+        💡 Aktifkan toggle "Tampilkan Jaring-jaring" di panel kontrol untuk melihat visualisasi jaring-jaring dengan mode 2D/3D!
+      </Alert>
+
       <Box sx={{ textAlign: 'center', mt: 3 }}>
-        <Button
-          variant="contained"
-          onClick={toggleNetAnimation}
-          size="large"
-          color={showNetAnimation ? "secondary" : "primary"}
-        >
-          {showNetAnimation ? `Kembalikan ke Bentuk ${getGeometryInfo(moduleSlug || 'tabung').name}` : 'Lihat Jaring-Jaring 3D'}
-        </Button>
+        {!showNetAnimation && (
+          <Button
+            variant="contained"
+            onClick={toggleNetAnimation}
+            size="large"
+            color="primary"
+          >
+            Tampilkan Jaring-Jaring Sekarang
+          </Button>
+        )}
+        {showNetAnimation && (
+          <Alert severity="success" sx={{ maxWidth: 600, mx: 'auto' }}>
+            ✅ Jaring-jaring sedang ditampilkan di canvas utama. Anda bisa beralih antara mode 2D dan 3D menggunakan toggle di visualisasi.
+          </Alert>
+        )}
       </Box>
     </Box>
   )
