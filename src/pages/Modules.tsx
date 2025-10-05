@@ -80,20 +80,20 @@ export default function Modules() {
       <Navbar />
       <Container maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
         {/* Header Section */}
-      <Paper sx={{ p: 4, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
+      <Paper sx={{ p: 6, mb: 6 , bgcolor: 'primary.main', color: 'white' }}>
         <Box display="flex" alignItems="center" mb={2}>
-          <Avatar sx={{ bgcolor: 'white', color: 'primary.main', mr: 3 }}>
+          <Avatar sx={{ bgcolor: 'white', color: 'primary.main', mr: 5 }}>
             <School />
           </Avatar>
           <Box>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
-              Modul Pembelajaran 📚
+              Modul Pembelajaran Geometri 3D Berbasis STEAM 📚
             </Typography>
-            <Typography variant="h6" sx={{ opacity: 0.9 }}>
-              Jelajahi semua modul geometri 3D yang tersedia
+            <Typography variant="h5" sx={{ opacity: 0.9 }}>
+              Dirancang interaktif dengan dukungan 3D Printing untuk memudahkan pemahaman konsep bangun ruang.
             </Typography>
             <Typography variant="body1" sx={{ opacity: 0.8, mt: 1 }}>
-              Setiap modul dirancang dengan pendekatan interaktif untuk memudahkan pemahaman konsep bangun ruang
+              Setiap modul dirancang dengan pendekatan interaktif berbasis STEAM untuk mendukung eksplorasi visual, kemampuan berpikir geometri, serta penerapan konsep geometri dalam kehidupan nyata.
             </Typography>
           </Box>
         </Box>
@@ -312,10 +312,22 @@ export default function Modules() {
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                   🎯 Tujuan Pembelajaran
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Setiap modul dirancang untuk membantu siswa memahami konsep geometri 3D
-                  melalui visualisasi interaktif dan eksperimen virtual.
-                </Typography>
+                <ul style={{ listStyleType: 'disc', paddingLeft: '1em' }}>
+                  <li>
+                    Menjelaskan cara untuk
+                    menentukan luas permukaan dan
+                    volume bangun ruang (tabung, kerucut, bola).
+                    dan menyelesaikan masalah yang
+                    terkait.
+                  </li>
+                  <li>
+                    Membuat jaring-jaring bangun
+                    ruang (tabung, kerucut, bola) dan membuat bangun
+                    ruang tersebut dari jaring-
+                    Jaringnya.
+
+                  </li>
+                </ul>
               </CardContent>
             </Card>
           </Grid>
@@ -323,11 +335,10 @@ export default function Modules() {
             <Card>
               <CardContent>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  📊 Fitur Pembelajaran
+                  ✅ Capaian Pembelajaran
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  Model 3D interaktif, animasi jaring-jaring, kalkulator volume dan luas permukaan,
-                  serta export model untuk printing 3D.
+                 Di akhir fase D peserta didik dapat membuat jaring-jaring bangun ruang (tabung, kerucut, bola) dan membuat bangun ruang tersebut dari jaring-jaringnya. 
                 </Typography>
               </CardContent>
             </Card>

@@ -22,7 +22,10 @@ import {
   Stack,
   CircularProgress,
   Avatar,
-  Paper
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material'
 import {
   ArrowBack,
@@ -36,7 +39,14 @@ import {
   MenuBookRounded,
   Settings,
   Quiz,
-  TuneRounded
+  TuneRounded,
+  ExpandMore,
+  Science,
+  Computer,
+  Engineering,
+  Palette,
+  Functions,
+  RocketLaunch
 } from '@mui/icons-material'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei'
@@ -44,6 +54,8 @@ import { useLearningStore } from '../stores/learningStore'
 import { AssessmentHistory } from '../components/ai/AssessmentHistory'
 import { ContentElement } from '../types'
 import { EnhancedNetVisualization } from '../components/3d/geometries/EnhancedNetVisualization'
+import { QuizSection } from '../components/quiz/QuizSection'
+import { AssignmentSection } from '../components/assignment/AssignmentSection'
 
 // Dynamic 3D Components for different geometries
 function InteractiveCylinder() {
@@ -394,6 +406,146 @@ const getGeometryInfo = (moduleSlug: string) => {
   }
 }
 
+// Helper function untuk mendapatkan data proyek STEAM berdasarkan modul
+const getSTEAMProject = (moduleSlug: string) => {
+  switch (moduleSlug) {
+    case 'tabung':
+      return {
+        title: 'Proyek STEAM Mini – Desain Tempat Pensil 3D',
+        subtitle: 'Eksplorasi Kreatif Berbasis Sains dan Teknologi',
+        icon: '🎨',
+        color: '#667eea',
+        stages: [
+          {
+            icon: <Science />,
+            emoji: '🔬',
+            title: 'Science (Sains): Eksplorasi Bentuk Silinder',
+            description: 'Tahap awal melibatkan observasi dan analisis. Peserta akan mempelajari dan mengidentifikasi benda-benda tabung (silinder) di sekitar mereka, seperti kaleng, botol, dan gelas. Fokusnya adalah memahami sifat-sifat geometris, stabilitas, dan fungsi praktis dari bentuk tabung dalam kehidupan sehari-hari sebagai wadah.'
+          },
+          {
+            icon: <Computer />,
+            emoji: '💻',
+            title: 'Technology (Teknologi): Pemodelan Digital 3D',
+            description: 'Selanjutnya, peserta akan memanfaatkan teknologi Computer-Aided Design (CAD). Mereka akan membuat desain digital model tabung tempat pensil menggunakan software pemodelan 3D seperti Tinkercad atau GeoCetak. Tahap ini melatih keterampilan navigasi perangkat lunak dan visualisasi spasial.'
+          },
+          {
+            icon: <Engineering />,
+            emoji: '📐',
+            title: 'Engineering (Teknik): Penentuan Dimensi Fungsional',
+            description: 'Pada tahap teknik, peserta menerapkan prinsip desain fungsional. Mereka harus menentukan ukuran yang presisi (tinggi dan jari-jari) dari tabung agar desain tersebut mampu menampung minimal 10 pensil standar secara efektif. Ini melibatkan pertimbangan toleransi, ketebalan dinding, dan optimasi ruang.'
+          },
+          {
+            icon: <Palette />,
+            emoji: '🎨',
+            title: 'Art (Seni): Estetika dan Dekorasi',
+            description: 'Aspek seni terintegrasi dalam personalisasi desain. Peserta didorong untuk menghias permukaan luar tabung dengan motif, tekstur, dan ornamen yang unik dan menarik. Pilihan warna dan pola akan ditentukan untuk menghasilkan tempat pensil yang tidak hanya fungsional tetapi juga memiliki nilai estetika pribadi.'
+          },
+          {
+            icon: <Functions />,
+            emoji: '🧮',
+            title: 'Math (Matematika): Perhitungan Kuantitatif',
+            description: 'Aplikasi matematika sangat krusial. Sebelum dicetak, peserta diwajibkan menghitung volume tempat pensil (untuk menentukan daya tampung internal) dan luas permukaannya (untuk estimasi material yang dibutuhkan). Perhitungan ini memvalidasi desain teknis dan memahami hubungan antara dimensi dan kuantitas material.'
+          }
+        ],
+        output: {
+          icon: <RocketLaunch />,
+          title: 'Output dan Implementasi',
+          description: 'Setelah semua tahapan selesai dan desain telah divalidasi, output finalnya adalah pencetakan model digital 3D menggunakan mesin 3D printer. Hasil akhirnya adalah tempat pensil fisik yang merupakan perwujudan nyata dari konsep, perhitungan, dan kreativitas yang telah dipelajari.'
+        }
+      }
+    case 'kerucut':
+      return {
+        title: 'Proyek STEAM Mini – Desain Corong Pintar Modular 3D',
+        subtitle: 'Integrasi Sains, Teknologi, dan Optimasi Aliran',
+        icon: '🔬',
+        color: '#f39c12',
+        stages: [
+          {
+            icon: <Science />,
+            emoji: '🔬',
+            title: 'Science (Sains): Mempelajari Fluida dan Sudut Tiris',
+            description: 'Fokus sains adalah pada ilmu material dan aliran. Peserta akan mempelajari sifat-sifat fluida (cairan dan butiran halus) dan hubungannya dengan sudut kemiringan (sudut tiris/angle of repose). Mereka akan menganalisis bagaimana sudut kerucut mempengaruhi laju dan kelancaran aliran material (misalnya, pasir, biji-bijian, atau air) melalui corong.'
+          },
+          {
+            icon: <Computer />,
+            emoji: '💻',
+            title: 'Technology (Teknologi): Pemodelan Kerucut Fungsional di CAD',
+            description: 'Peserta akan menerapkan pemodelan 3D untuk membuat desain. Mereka akan membuat model dasar kerucut corong menggunakan software CAD seperti Tinkercad atau GeoCetak. Bagian teknologi kunci adalah mendesain mekanisme modular di bagian bawah (sambungan ulir atau snap-fit) agar corong dapat dipasangkan dengan berbagai ukuran botol atau selang.'
+          },
+          {
+            icon: <Engineering />,
+            emoji: '📐',
+            title: 'Engineering (Teknik): Optimalisasi Ukuran dan Efisiensi Aliran',
+            description: 'Aspek teknik memerlukan pengambilan keputusan berdasarkan fungsi. Peserta harus menentukan dimensi kritis seperti tinggi, jari-jari alas, dan diameter lubang keluar dari kerucut. Tujuan engineering adalah mengoptimalkan sudut kemiringan corong untuk memastikan laju aliran maksimum tanpa sumbatan saat memindahkan 500 mL cairan dalam waktu tercepat.'
+          },
+          {
+            icon: <Palette />,
+            emoji: '🎨',
+            title: 'Art (Seni): Estetika dan Identifikasi Cepat',
+            description: 'Elemen seni terwujud dalam visualisasi fungsional. Peserta akan mengintegrasikan kode warna, penanda timbul (relief), atau motif tekstur pada permukaan luar corong. Hal ini bertujuan untuk membuat identifikasi corong berdasarkan fungsinya menjadi cepat dan intuitif (misalnya, corong untuk minyak diberi motif gelombang).'
+          },
+          {
+            icon: <Functions />,
+            emoji: '🧮',
+            title: 'Math (Matematika): Perhitungan Volume dan Luas Selimut',
+            description: 'Matematika adalah validasi desain. Peserta wajib menghitung volume kerucut (untuk menentukan kapasitas tampung maksimum) dan luas permukaan selimut kerucut (untuk estimasi kebutuhan material). Selain itu, mereka harus menghitung perbandingan antara volume dan ketinggian corong untuk memprediksi waktu pengisian.'
+          }
+        ],
+        output: {
+          icon: <RocketLaunch />,
+          title: 'Output dan Implementasi',
+          description: 'Setelah desain lengkap, divalidasi oleh perhitungan matematika, dan diverifikasi secara teknis, langkah terakhir adalah mencetak corong pintar menggunakan 3D printer. Hasilnya adalah corong modular fisik yang dapat diuji efektivitas alirannya sesuai dengan target engineering yang telah ditentukan.'
+        }
+      }
+    case 'bola':
+      return {
+        title: 'Proyek STEAM Mini – Desain Wadah Dispenser Bola 3D',
+        subtitle: 'Mekanika Gravitasi dan Desain Ruang Presisi',
+        icon: '⚽',
+        color: '#e74c3c',
+        stages: [
+          {
+            icon: <Science />,
+            emoji: '🔬',
+            title: 'Science (Sains): Stabilitas, Gravitasi, dan Gesekan',
+            description: 'Fokus sains adalah pada mekanika dasar. Peserta akan mempelajari pusat massa dan bagaimana menstabilkan bentuk bola agar tidak bergulir (melalui desain alas). Mereka akan menganalisis peran gravitasi dalam menarik isi ke lubang pengeluaran dan bagaimana gesekan antara objek yang dikeluarkan dan permukaan bola mempengaruhi kelancaran dispensing.'
+          },
+          {
+            icon: <Computer />,
+            emoji: '💻',
+            title: 'Technology (Teknologi): Pemodelan Bola Berongga dan Mekanisme Tuas',
+            description: 'Aspek teknologi melibatkan pemodelan 3D yang kompleks. Peserta akan membuat model digital bola berongga menggunakan software CAD (Tinkercad/GeoCetak). Tantangan utamanya adalah mendesain mekanisme tuas atau sliding door sederhana di bagian bawah bola yang memungkinkan satu item dikeluarkan pada satu waktu, tanpa objek lain ikut keluar.'
+          },
+          {
+            icon: <Engineering />,
+            emoji: '📐',
+            title: 'Engineering (Teknik): Optimasi Kapasitas dan Mekanisme Pengeluaran',
+            description: 'Pada tahap teknik, peserta harus menentukan desain yang optimal. Mereka perlu menentukan jari-jari bola agar memiliki kapasitas minimal 20 unit dari objek yang ditentukan (misalnya, permen diameter 2 cm). Mereka juga harus merancang dan menguji prototipe mekanisme pengeluaran agar memiliki fail-safe (keamanan) dan daya tahan (durabilitas) yang baik saat digunakan berulang kali.'
+          },
+          {
+            icon: <Palette />,
+            emoji: '🎨',
+            title: 'Art (Seni): Estetika, Tekstur, dan Aksesibilitas',
+            description: 'Elemen seni memfokuskan pada daya tarik visual dan ergonomi. Peserta didorong untuk menghias permukaan luar bola dengan tekstur yang menarik atau motif geometris untuk meningkatkan daya cengkeram (grip) saat dipegang. Penggunaan warna cerah atau desain karakter juga dapat diterapkan untuk membuat dispenser lebih menarik, terutama untuk anak-anak.'
+          },
+          {
+            icon: <Functions />,
+            emoji: '🧮',
+            title: 'Math (Matematika): Perhitungan Volume dan Rasio Ruang',
+            description: 'Matematika sangat penting untuk validasi. Peserta wajib menghitung volume bola (untuk menentukan total ruang internal) dan luas permukaannya. Lebih lanjut, mereka harus menghitung rasio kepadatan (packing ratio) untuk memperkirakan secara akurat berapa banyak item yang dapat dimuat dalam volume internal tersebut, dengan memperhitungkan ruang kosong di antaranya.'
+          }
+        ],
+        output: {
+          icon: <RocketLaunch />,
+          title: 'Output dan Implementasi',
+          description: 'Setelah semua perhitungan dan desain diverifikasi, output finalnya adalah mencetak dispenser bola menggunakan 3D printer. Hasil akhirnya adalah dispenser fisik yang mengintegrasikan mekanika gravitasi dengan desain ruang yang presisi, siap untuk diuji seberapa konsisten dan efisien mekanisme pengeluarannya.'
+        }
+      }
+    default:
+      return null
+  }
+}
+
 export default function LearningModule() {
   const { moduleSlug } = useParams()
   const navigate = useNavigate()
@@ -621,16 +773,168 @@ export default function LearningModule() {
                 <Tab icon={<Settings />} label="Jaring-jaring" />
                 <Tab icon={<Calculate />} label="Rumus" />
                 <Tab icon={<Quiz />} label="Quiz" />
+                <Tab icon={<Assignment />} label="Latihan" />
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}><ConceptLesson /></TabPanel>
             <TabPanel value={tabValue} index={1}><NetLesson /></TabPanel>
             <TabPanel value={tabValue} index={2}><FormulaLesson /></TabPanel>
             <TabPanel value={tabValue} index={3}><QuizLesson /></TabPanel>
+            <TabPanel value={tabValue} index={4}><AssignmentLesson /></TabPanel>
           </Card>
+        </Grid>
+
+        {/* STEAM Project Card */}
+        <Grid item xs={12}>
+          <STEAMProjectCard moduleSlug={moduleSlug || 'tabung'} />
         </Grid>
       </Grid>
     </Container>
+  )
+}
+
+// --- STEAM Project Card Component ---
+
+const STEAMProjectCard: React.FC<{ moduleSlug: string }> = ({ moduleSlug }) => {
+  const projectData = getSTEAMProject(moduleSlug)
+  const [expandedStage, setExpandedStage] = useState<string | false>(false)
+
+  if (!projectData) return null
+
+  const handleAccordionChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpandedStage(isExpanded ? panel : false)
+  }
+
+  return (
+    <Card
+      sx={{
+        background: `linear-gradient(135deg, ${projectData.color}15 0%, ${projectData.color}05 100%)`,
+        border: `2px solid ${projectData.color}40`,
+        borderRadius: 3,
+        overflow: 'hidden'
+      }}
+    >
+      <CardContent sx={{ p: 4 }}>
+        {/* Header */}
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" sx={{ fontSize: '3rem', mb: 1 }}>
+            {projectData.icon}
+          </Typography>
+          <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ color: projectData.color }}>
+            {projectData.title}
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+            {projectData.subtitle}
+          </Typography>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Tahapan STEAM */}
+        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
+          📋 Tahapan Proyek
+        </Typography>
+
+        <Stack spacing={2}>
+          {projectData.stages.map((stage, index) => (
+            <Accordion
+              key={index}
+              expanded={expandedStage === `stage${index}`}
+              onChange={handleAccordionChange(`stage${index}`)}
+              sx={{
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: '8px !important',
+                '&:before': { display: 'none' },
+                boxShadow: expandedStage === `stage${index}` ? 3 : 1,
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                sx={{
+                  bgcolor: expandedStage === `stage${index}` ? `${projectData.color}10` : 'transparent',
+                  '&:hover': { bgcolor: `${projectData.color}08` }
+                }}
+              >
+                <Stack direction="row" spacing={2} alignItems="center" sx={{ width: '100%' }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: projectData.color,
+                      width: 48,
+                      height: 48,
+                      fontSize: '1.5rem'
+                    }}
+                  >
+                    {stage.emoji}
+                  </Avatar>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" fontWeight="bold">
+                      {stage.title}
+                    </Typography>
+                  </Box>
+                  <Chip
+                    label={`Tahap ${index + 1}`}
+                    size="small"
+                    sx={{
+                      bgcolor: projectData.color,
+                      color: 'white',
+                      fontWeight: 'bold'
+                    }}
+                  />
+                </Stack>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 2, pb: 3, px: 3 }}>
+                <Typography variant="body1" sx={{ lineHeight: 1.8, color: 'text.secondary' }}>
+                  {stage.description}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Stack>
+
+        <Divider sx={{ my: 4 }} />
+
+        {/* Output Section */}
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            background: `linear-gradient(135deg, ${projectData.color}20 0%, ${projectData.color}10 100%)`,
+            border: `2px solid ${projectData.color}`,
+            borderRadius: 2
+          }}
+        >
+          <Stack direction="row" spacing={2} alignItems="flex-start">
+            <Avatar
+              sx={{
+                bgcolor: projectData.color,
+                width: 56,
+                height: 56,
+                fontSize: '2rem'
+              }}
+            >
+              🚀
+            </Avatar>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: projectData.color }}>
+                {projectData.output.title}
+              </Typography>
+              <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+                {projectData.output.description}
+              </Typography>
+            </Box>
+          </Stack>
+        </Paper>
+
+        {/* Call to Action */}
+        <Box sx={{ textAlign: 'center', mt: 4 }}>
+          <Alert severity="info" sx={{ maxWidth: 800, mx: 'auto' }}>
+            💡 <strong>Tips:</strong> Gunakan kontrol interaktif di atas untuk bereksperimen dengan parameter geometri dan melihat bagaimana perubahan dimensi mempengaruhi volume dan luas permukaan!
+          </Alert>
+        </Box>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -936,9 +1240,127 @@ const FormulaLesson: React.FC = () => {
     }
   }
 
+  // Helper function untuk membuat penjelasan langkah demi langkah
+  const getStepByStepCalculation = (type: 'volume' | 'surfaceArea', moduleSlug: string, r: number, t: number) => {
+    const pi = Math.PI
+
+    if (type === 'volume') {
+      switch (moduleSlug) {
+        case 'tabung':
+          return {
+            diketahui: [
+              { label: 'r (jari-jari)', value: `${r.toFixed(1)} cm` },
+              { label: 't (tinggi)', value: `${t.toFixed(1)} cm` }
+            ],
+            ditanyakan: 'V (Volume) = ?',
+            rumus: 'V = π × r² × t',
+            penyelesaian: [
+              `V = π × r² × t`,
+              `V = π × ${r.toFixed(1)}² × ${t.toFixed(1)}`,
+              `V = π × ${(r * r).toFixed(2)} × ${t.toFixed(1)}`,
+              `V = ${(pi * r * r * t).toFixed(2)} cm³`
+            ],
+            hasil: `${volume.toFixed(2)} cm³`
+          }
+        case 'kerucut':
+          return {
+            diketahui: [
+              { label: 'r (jari-jari)', value: `${r.toFixed(1)} cm` },
+              { label: 't (tinggi)', value: `${t.toFixed(1)} cm` }
+            ],
+            ditanyakan: 'V (Volume) = ?',
+            rumus: 'V = ⅓ × π × r² × t',
+            penyelesaian: [
+              `V = ⅓ × π × r² × t`,
+              `V = ⅓ × π × ${r.toFixed(1)}² × ${t.toFixed(1)}`,
+              `V = ⅓ × π × ${(r * r).toFixed(2)} × ${t.toFixed(1)}`,
+              `V = ⅓ × ${(pi * r * r * t).toFixed(2)}`,
+              `V = ${volume.toFixed(2)} cm³`
+            ],
+            hasil: `${volume.toFixed(2)} cm³`
+          }
+        case 'bola':
+          return {
+            diketahui: [
+              { label: 'r (jari-jari)', value: `${r.toFixed(1)} cm` }
+            ],
+            ditanyakan: 'V (Volume) = ?',
+            rumus: 'V = ⁴⁄₃ × π × r³',
+            penyelesaian: [
+              `V = ⁴⁄₃ × π × r³`,
+              `V = ⁴⁄₃ × π × ${r.toFixed(1)}³`,
+              `V = ⁴⁄₃ × π × ${(r * r * r).toFixed(2)}`,
+              `V = ⁴⁄₃ × ${(pi * r * r * r).toFixed(2)}`,
+              `V = ${volume.toFixed(2)} cm³`
+            ],
+            hasil: `${volume.toFixed(2)} cm³`
+          }
+        default:
+          return null
+      }
+    } else {
+      // Surface Area
+      switch (moduleSlug) {
+        case 'tabung':
+          return {
+            diketahui: [
+              { label: 'r (jari-jari)', value: `${r.toFixed(1)} cm` },
+              { label: 't (tinggi)', value: `${t.toFixed(1)} cm` }
+            ],
+            ditanyakan: 'L (Luas Permukaan) = ?',
+            rumus: 'L = 2 × π × r × (r + t)',
+            penyelesaian: [
+              `L = 2 × π × r × (r + t)`,
+              `L = 2 × π × ${r.toFixed(1)} × (${r.toFixed(1)} + ${t.toFixed(1)})`,
+              `L = 2 × π × ${r.toFixed(1)} × ${(r + t).toFixed(1)}`,
+              `L = ${(2 * pi * r * (r + t)).toFixed(2)} cm²`
+            ],
+            hasil: `${surfaceArea.toFixed(2)} cm²`
+          }
+        case 'kerucut':
+          const s = Math.sqrt(r * r + t * t)
+          return {
+            diketahui: [
+              { label: 'r (jari-jari)', value: `${r.toFixed(1)} cm` },
+              { label: 't (tinggi)', value: `${t.toFixed(1)} cm` },
+              { label: 's (garis pelukis)', value: `√(r² + t²) = ${s.toFixed(2)} cm` }
+            ],
+            ditanyakan: 'L (Luas Permukaan) = ?',
+            rumus: 'L = π × r × (r + s)',
+            penyelesaian: [
+              `L = π × r × (r + s)`,
+              `L = π × ${r.toFixed(1)} × (${r.toFixed(1)} + ${s.toFixed(2)})`,
+              `L = π × ${r.toFixed(1)} × ${(r + s).toFixed(2)}`,
+              `L = ${surfaceArea.toFixed(2)} cm²`
+            ],
+            hasil: `${surfaceArea.toFixed(2)} cm²`
+          }
+        case 'bola':
+          return {
+            diketahui: [
+              { label: 'r (jari-jari)', value: `${r.toFixed(1)} cm` }
+            ],
+            ditanyakan: 'L (Luas Permukaan) = ?',
+            rumus: 'L = 4 × π × r²',
+            penyelesaian: [
+              `L = 4 × π × r²`,
+              `L = 4 × π × ${r.toFixed(1)}²`,
+              `L = 4 × π × ${(r * r).toFixed(2)}`,
+              `L = ${surfaceArea.toFixed(2)} cm²`
+            ],
+            hasil: `${surfaceArea.toFixed(2)} cm²`
+          }
+        default:
+          return null
+      }
+    }
+  }
+
   if (!formulaContent) {
     // Dynamic fallback content based on module
     const explanation = getFormulaExplanation(moduleSlug || 'tabung')
+    const volumeSteps = getStepByStepCalculation('volume', moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
+    const surfaceSteps = getStepByStepCalculation('surfaceArea', moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
 
     return (
       <Box>
@@ -948,37 +1370,230 @@ const FormulaLesson: React.FC = () => {
         <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
           Dengan memahami jaring-jaring {geometryInfo.name.toLowerCase()}, kita bisa dengan mudah menurunkan rumus untuk menghitung luas permukaan dan volumenya.
         </Typography>
+
+        <Alert severity="info" sx={{ my: 3 }}>
+          📊 Contoh perhitungan di bawah ini menggunakan nilai parameter yang sedang aktif. Ubah nilai jari-jari (r) dan tinggi (t) menggunakan slider untuk melihat perhitungan berubah secara otomatis!
+        </Alert>
+
         <Grid container spacing={3} sx={{ mt: 2 }}>
+          {/* Luas Permukaan */}
           <Grid item xs={12} md={6}>
-            <Paper variant="outlined" sx={{ p: 3, borderColor: 'primary.main', height: '100%' }}>
-              <Typography variant="h5" color="primary.dark" fontWeight="bold" gutterBottom>Volume {geometryInfo.name}</Typography>
-              <Typography paragraph>{explanation.volumeExplanation}</Typography>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                borderLeft: '6px solid',
+                borderColor: 'warning.main',
+                bgcolor: 'warning.50',
+                height: '100%'
+              }}
+            >
+              <Typography variant="h5" color="warning.dark" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                📐 Contoh Soal Luas Permukaan {geometryInfo.name}
+              </Typography>
+
               <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" align="center" sx={{ p: 2, bgcolor: 'primary.light', borderRadius: 2 }}>
-                {geometryInfo.volumeFormula}
-              </Typography>
-              <Typography align="center" sx={{ mt: 2 }}>
-                Hasil: <strong>{volume.toFixed(2)} unit³</strong>
-              </Typography>
+
+              {surfaceSteps && (
+                <>
+                  {/* Diketahui */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                      Diketahui:
+                    </Typography>
+                    <Box sx={{ pl: 2 }}>
+                      {surfaceSteps.diketahui.map((item, idx) => (
+                        <Typography key={idx} variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem' }}>
+                          {item.label} = {item.value}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  {/* Ditanyakan */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                      Ditanyakan:
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem', pl: 2 }}>
+                      {surfaceSteps.ditanyakan}
+                    </Typography>
+                  </Box>
+
+                  {/* Penyelesaian */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                      Penyelesaian:
+                    </Typography>
+                    <Box sx={{ pl: 2, bgcolor: 'white', p: 2, borderRadius: 1, border: '1px solid', borderColor: 'grey.300' }}>
+                      {surfaceSteps.penyelesaian.map((step, idx) => (
+                        <Typography
+                          key={idx}
+                          variant="body1"
+                          sx={{
+                            fontFamily: 'monospace',
+                            fontSize: '0.95rem',
+                            mb: idx < surfaceSteps.penyelesaian.length - 1 ? 1 : 0,
+                            fontWeight: idx === surfaceSteps.penyelesaian.length - 1 ? 'bold' : 'normal'
+                          }}
+                        >
+                          {step}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  {/* Hasil */}
+                  <Box
+                    sx={{
+                      p: 2,
+                      bgcolor: 'warning.main',
+                      color: 'white',
+                      borderRadius: 2,
+                      textAlign: 'center'
+                    }}
+                  >
+                    <Typography variant="h6" fontWeight="bold">
+                      L = {surfaceSteps.hasil}
+                    </Typography>
+                  </Box>
+                </>
+              )}
             </Paper>
           </Grid>
+
+          {/* Volume */}
           <Grid item xs={12} md={6}>
-            <Paper variant="outlined" sx={{ p: 3, borderColor: 'secondary.main', height: '100%' }}>
-              <Typography variant="h5" color="secondary.dark" fontWeight="bold" gutterBottom>Luas Permukaan {geometryInfo.name}</Typography>
-              <Typography paragraph>{explanation.surfaceExplanation}</Typography>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                borderLeft: '6px solid',
+                borderColor: 'info.main',
+                bgcolor: 'info.50',
+                height: '100%'
+              }}
+            >
+              <Typography variant="h5" color="info.dark" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                📦 Contoh Soal Volume {geometryInfo.name}
+              </Typography>
+
               <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" align="center" sx={{ p: 2, bgcolor: 'secondary.light', borderRadius: 2 }}>
-                {geometryInfo.surfaceFormula}
-              </Typography>
-              <Typography align="center" sx={{ mt: 2 }}>
-                Hasil: <strong>{surfaceArea.toFixed(2)} unit²</strong>
-              </Typography>
+
+              {volumeSteps && (
+                <>
+                  {/* Diketahui */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                      Diketahui:
+                    </Typography>
+                    <Box sx={{ pl: 2 }}>
+                      {volumeSteps.diketahui.map((item, idx) => (
+                        <Typography key={idx} variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem' }}>
+                          {item.label} = {item.value}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  {/* Ditanyakan */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                      Ditanyakan:
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem', pl: 2 }}>
+                      {volumeSteps.ditanyakan}
+                    </Typography>
+                  </Box>
+
+                  {/* Penyelesaian */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                      Penyelesaian:
+                    </Typography>
+                    <Box sx={{ pl: 2, bgcolor: 'white', p: 2, borderRadius: 1, border: '1px solid', borderColor: 'grey.300' }}>
+                      {volumeSteps.penyelesaian.map((step, idx) => (
+                        <Typography
+                          key={idx}
+                          variant="body1"
+                          sx={{
+                            fontFamily: 'monospace',
+                            fontSize: '0.95rem',
+                            mb: idx < volumeSteps.penyelesaian.length - 1 ? 1 : 0,
+                            fontWeight: idx === volumeSteps.penyelesaian.length - 1 ? 'bold' : 'normal'
+                          }}
+                        >
+                          {step}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  {/* Hasil */}
+                  <Box
+                    sx={{
+                      p: 2,
+                      bgcolor: 'info.main',
+                      color: 'white',
+                      borderRadius: 2,
+                      textAlign: 'center'
+                    }}
+                  >
+                    <Typography variant="h6" fontWeight="bold">
+                      V = {volumeSteps.hasil}
+                    </Typography>
+                  </Box>
+                </>
+              )}
             </Paper>
           </Grid>
         </Grid>
+
+        {/* Penjelasan Konsep */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" gutterBottom fontWeight="bold" color="primary">
+            💡 Penjelasan Konsep Rumus
+          </Typography>
+          <Grid container spacing={3} sx={{ mt: 1 }}>
+            <Grid item xs={12} md={6}>
+              <Paper variant="outlined" sx={{ p: 3, height: '100%' }}>
+                <Typography variant="h6" color="info.dark" fontWeight="bold" gutterBottom>
+                  Volume {geometryInfo.name}
+                </Typography>
+                <Typography paragraph sx={{ fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  {explanation.volumeExplanation}
+                </Typography>
+                <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1, textAlign: 'center' }}>
+                  <Typography variant="h6" sx={{ fontFamily: 'monospace' }}>
+                    {geometryInfo.volumeFormula}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Paper variant="outlined" sx={{ p: 3, height: '100%' }}>
+                <Typography variant="h6" color="warning.dark" fontWeight="bold" gutterBottom>
+                  Luas Permukaan {geometryInfo.name}
+                </Typography>
+                <Typography paragraph sx={{ fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  {explanation.surfaceExplanation}
+                </Typography>
+                <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1, textAlign: 'center' }}>
+                  <Typography variant="h6" sx={{ fontFamily: 'monospace' }}>
+                    {geometryInfo.surfaceFormula}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Box>
       </Box>
     )
   }
+
+  // If formulaContent exists from database, also show step-by-step calculations
+  const volumeSteps = getStepByStepCalculation('volume', moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
+  const surfaceSteps = getStepByStepCalculation('surfaceArea', moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
 
   return (
     <Box>
@@ -990,22 +1605,181 @@ const FormulaLesson: React.FC = () => {
         <DynamicContentElement key={index} element={element} />
       ))}
 
-      {/* Always show live formula calculations */}
+      <Alert severity="info" sx={{ my: 3 }}>
+        📊 Contoh perhitungan di bawah ini menggunakan nilai parameter yang sedang aktif. Ubah nilai jari-jari (r) dan tinggi (t) menggunakan slider untuk melihat perhitungan berubah secara otomatis!
+      </Alert>
+
+      {/* Always show live formula calculations with step-by-step */}
       <Grid container spacing={3} sx={{ mt: 2 }}>
+        {/* Luas Permukaan */}
         <Grid item xs={12} md={6}>
-          <Paper variant="outlined" sx={{ p: 3, borderColor: 'primary.main', height: '100%' }}>
-            <Typography variant="h5" color="primary.dark" fontWeight="bold" gutterBottom>Volume Real-time</Typography>
-            <Typography variant="h6" align="center" sx={{ p: 2, bgcolor: 'primary.light', borderRadius: 2 }}>
-              {geometryInfo.volumeFormula} = {volume.toFixed(2)} unit³
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              borderLeft: '6px solid',
+              borderColor: 'warning.main',
+              bgcolor: 'warning.50',
+              height: '100%'
+            }}
+          >
+            <Typography variant="h5" color="warning.dark" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              📐 Contoh Soal Luas Permukaan {geometryInfo.name}
             </Typography>
+
+            <Divider sx={{ my: 2 }} />
+
+            {surfaceSteps && (
+              <>
+                {/* Diketahui */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                    Diketahui:
+                  </Typography>
+                  <Box sx={{ pl: 2 }}>
+                    {surfaceSteps.diketahui.map((item, idx) => (
+                      <Typography key={idx} variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem' }}>
+                        {item.label} = {item.value}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Ditanyakan */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                    Ditanyakan:
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem', pl: 2 }}>
+                    {surfaceSteps.ditanyakan}
+                  </Typography>
+                </Box>
+
+                {/* Penyelesaian */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                    Penyelesaian:
+                  </Typography>
+                  <Box sx={{ pl: 2, bgcolor: 'white', p: 2, borderRadius: 1, border: '1px solid', borderColor: 'grey.300' }}>
+                    {surfaceSteps.penyelesaian.map((step, idx) => (
+                      <Typography
+                        key={idx}
+                        variant="body1"
+                        sx={{
+                          fontFamily: 'monospace',
+                          fontSize: '0.95rem',
+                          mb: idx < surfaceSteps.penyelesaian.length - 1 ? 1 : 0,
+                          fontWeight: idx === surfaceSteps.penyelesaian.length - 1 ? 'bold' : 'normal'
+                        }}
+                      >
+                        {step}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Hasil */}
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: 'warning.main',
+                    color: 'white',
+                    borderRadius: 2,
+                    textAlign: 'center'
+                  }}
+                >
+                  <Typography variant="h6" fontWeight="bold">
+                    L = {surfaceSteps.hasil}
+                  </Typography>
+                </Box>
+              </>
+            )}
           </Paper>
         </Grid>
+
+        {/* Volume */}
         <Grid item xs={12} md={6}>
-          <Paper variant="outlined" sx={{ p: 3, borderColor: 'secondary.main', height: '100%' }}>
-            <Typography variant="h5" color="secondary.dark" fontWeight="bold" gutterBottom>Luas Permukaan Real-time</Typography>
-            <Typography variant="h6" align="center" sx={{ p: 2, bgcolor: 'secondary.light', borderRadius: 2 }}>
-              {geometryInfo.surfaceFormula} = {surfaceArea.toFixed(2)} unit²
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              borderLeft: '6px solid',
+              borderColor: 'info.main',
+              bgcolor: 'info.50',
+              height: '100%'
+            }}
+          >
+            <Typography variant="h5" color="info.dark" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              📦 Contoh Soal Volume {geometryInfo.name}
             </Typography>
+
+            <Divider sx={{ my: 2 }} />
+
+            {volumeSteps && (
+              <>
+                {/* Diketahui */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                    Diketahui:
+                  </Typography>
+                  <Box sx={{ pl: 2 }}>
+                    {volumeSteps.diketahui.map((item, idx) => (
+                      <Typography key={idx} variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem' }}>
+                        {item.label} = {item.value}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Ditanyakan */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                    Ditanyakan:
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontFamily: 'monospace', fontSize: '1rem', pl: 2 }}>
+                    {volumeSteps.ditanyakan}
+                  </Typography>
+                </Box>
+
+                {/* Penyelesaian */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary" gutterBottom>
+                    Penyelesaian:
+                  </Typography>
+                  <Box sx={{ pl: 2, bgcolor: 'white', p: 2, borderRadius: 1, border: '1px solid', borderColor: 'grey.300' }}>
+                    {volumeSteps.penyelesaian.map((step, idx) => (
+                      <Typography
+                        key={idx}
+                        variant="body1"
+                        sx={{
+                          fontFamily: 'monospace',
+                          fontSize: '0.95rem',
+                          mb: idx < volumeSteps.penyelesaian.length - 1 ? 1 : 0,
+                          fontWeight: idx === volumeSteps.penyelesaian.length - 1 ? 'bold' : 'normal'
+                        }}
+                      >
+                        {step}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Hasil */}
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: 'info.main',
+                    color: 'white',
+                    borderRadius: 2,
+                    textAlign: 'center'
+                  }}
+                >
+                  <Typography variant="h6" fontWeight="bold">
+                    V = {volumeSteps.hasil}
+                  </Typography>
+                </Box>
+              </>
+            )}
           </Paper>
         </Grid>
       </Grid>
@@ -1015,49 +1789,32 @@ const FormulaLesson: React.FC = () => {
 
 const QuizLesson: React.FC = () => {
   const { currentLesson } = useLearningStore()
-  const quizContent = currentLesson?.content?.quiz
 
-  if (!quizContent) {
-    // Fallback content
+  if (!currentLesson) {
     return (
       <Box>
-        <Typography variant="h4" gutterBottom fontWeight="bold" color="warning.dark">
-          📝 Quiz dan Latihan
-        </Typography>
-        <Alert severity="info" sx={{ mb: 3 }}>
-          Fitur quiz interaktif sedang dalam pengembangan. Untuk sekarang, gunakan kontrol 3D untuk bereksperimen dengan parameter tabung.
+        <Alert severity="info">
+          Pilih lesson terlebih dahulu untuk melihat quiz
         </Alert>
-        <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-          Contoh soal latihan:
-        </Typography>
-        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-          <Typography variant="h6" gutterBottom>Soal 1:</Typography>
-          <Typography paragraph>
-            Sebuah tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Hitunglah:
-          </Typography>
-          <Typography component="div">
-            <ul>
-              <li>a) Luas permukaan tabung</li>
-              <li>b) Volume tabung</li>
-            </ul>
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            💡 Gunakan kontrol di atas untuk mengatur parameter r=7 dan t=10, lalu lihat hasilnya!
-          </Typography>
-        </Paper>
       </Box>
     )
   }
 
-  return (
-    <Box>
-      <Typography variant="h4" gutterBottom fontWeight="bold" color="warning.dark">
-        {quizContent.title}
-      </Typography>
-      <div dangerouslySetInnerHTML={{ __html: quizContent.content }} />
-      {quizContent.elements?.map((element, index) => (
-        <DynamicContentElement key={index} element={element} />
-      ))}
-    </Box>
-  )
+  return <QuizSection lessonId={currentLesson.id} />
+}
+
+const AssignmentLesson: React.FC = () => {
+  const { currentLesson, currentModule } = useLearningStore()
+
+  if (!currentLesson) {
+    return (
+      <Box>
+        <Alert severity="info">
+          Pilih lesson terlebih dahulu untuk melihat latihan
+        </Alert>
+      </Box>
+    )
+  }
+
+  return <AssignmentSection lessonId={currentLesson.id} moduleId={currentModule?.id} />
 }
