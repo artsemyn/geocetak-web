@@ -9,9 +9,48 @@ export interface ExportModelData {
   description?: string
   tags?: string[]
   isPublic?: boolean
+  stlFile?: File  // Add support for real file upload
 }
 
 export class ModelExportService {
+  /**
+   * Upload STL file to Supabase Storage
+   */
+  static async uploadSTLFile(file: File, userId: string): Promise<{ url: string; path: string } | null> {
+    try {
+      // Generate unique file path
+      const timestamp = Date.now()
+      const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+      const filePath = `${userId}/${timestamp}-${sanitizedFileName}`
+
+      // Upload file to Supabase Storage bucket 'user-models'
+      const { data, error } = await supabase.storage
+        .from('user-models')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (error) {
+        console.error('Error uploading STL file:', error)
+        return null
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('user-models')
+        .getPublicUrl(filePath)
+
+      return {
+        url: urlData.publicUrl,
+        path: filePath
+      }
+    } catch (error) {
+      console.error('Error in uploadSTLFile:', error)
+      return null
+    }
+  }
+
   /**
    * Save a 3D model export to the database
    */
@@ -22,44 +61,40 @@ export class ModelExportService {
         throw new Error('User not authenticated')
       }
 
-      // Get student profile if exists
-      const { data: studentData } = await supabase
-        .from('students')
-        .select('id')
-        .eq('user_id', user.id)
-        .single()
+      let stlFileUrl = ''
+      let stlFilePath = ''
+      let fileSize = 0
 
-      // Generate mock STL content (in real implementation, this would come from Three.js editor)
-      const stlContent = this.generateMockSTL(data.projectName, data.geometryParams)
+      // If user provided an STL file, upload it to storage
+      if (data.stlFile) {
+        const uploadResult = await this.uploadSTLFile(data.stlFile, user.id)
 
-      // In a real implementation, you would:
-      // 1. Get the actual 3D model data from Three.js editor iframe
-      // 2. Convert it to STL format
-      // 3. Upload the STL file to Supabase Storage
-      // 4. Get the public URL
+        if (!uploadResult) {
+          throw new Error('Failed to upload STL file')
+        }
 
-      // For now, we'll simulate this process
-      const mockSTLUrl = `https://storage.supabase.com/models/${user.id}/${data.projectName}.stl`
+        stlFileUrl = uploadResult.url
+        stlFilePath = uploadResult.path
+        fileSize = data.stlFile.size
+      } else {
+        // Fallback: generate mock STL if no file provided (backward compatibility)
+        const stlContent = this.generateMockSTL(data.projectName, data.geometryParams)
+        stlFileUrl = `https://storage.supabase.com/models/${user.id}/${data.projectName}.stl`
+        stlFilePath = `${user.id}/${data.projectName}.stl`
+        fileSize = stlContent.length
+      }
 
+      // Save to export_jobs table
       const exportData = {
         user_id: user.id,
-        student_id: studentData?.id || null,
-        project_name: data.projectName,
-        model_type: data.modelType || 'custom',
-        model_data: data.modelData || {},
-        stl_file_url: mockSTLUrl,
-        stl_file_size: stlContent.length,
-        thumbnail_url: null,
-        description: data.description || null,
-        geometry_params: data.geometryParams || {},
-        export_status: 'completed',
-        download_count: 0,
-        is_public: data.isPublic || false,
-        tags: data.tags || []
+        source_model_path: stlFilePath,
+        stl_file_url: stlFileUrl,
+        status: 'completed',
+        error_message: null
       }
 
       const { data: result, error } = await supabase
-        .from('model_exports')
+        .from('export_jobs')
         .insert(exportData)
         .select()
         .single()
@@ -69,7 +104,13 @@ export class ModelExportService {
         return null
       }
 
-      // Update student XP for creating a model
+      // Award XP for creating a model
+      const { data: studentData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single()
+
       if (studentData?.id) {
         await this.awardModelCreationXP(studentData.id)
       }
@@ -87,7 +128,7 @@ export class ModelExportService {
   static async getUserModels(userId: string): Promise<ModelExport[]> {
     try {
       const { data, error } = await supabase
-        .from('model_exports')
+        .from('export_jobs')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
@@ -105,15 +146,15 @@ export class ModelExportService {
   }
 
   /**
-   * Get public models
+   * Get public models (all models with status completed)
    */
   static async getPublicModels(): Promise<ModelExport[]> {
     try {
       const { data, error } = await supabase
-        .from('model_exports')
+        .from('export_jobs')
         .select('*')
-        .eq('is_public', true)
-        .order('download_count', { ascending: false })
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
         .limit(20)
 
       if (error) {
@@ -129,26 +170,14 @@ export class ModelExportService {
   }
 
   /**
-   * Download a model (increment download count)
+   * Download a model
    */
-  static async downloadModel(modelId: number): Promise<string | null> {
+  static async downloadModel(modelId: string): Promise<string | null> {
     try {
-      // Increment download count
-      const { error: updateError } = await supabase
-        .from('model_exports')
-        .update({
-          download_count: supabase.rpc('increment_download_count', { model_id: modelId })
-        })
-        .eq('id', modelId)
-
-      if (updateError) {
-        console.error('Error updating download count:', updateError)
-      }
-
       // Get the STL file URL
       const { data, error } = await supabase
-        .from('model_exports')
-        .select('stl_file_url, project_name')
+        .from('export_jobs')
+        .select('stl_file_url, source_model_path')
         .eq('id', modelId)
         .single()
 
@@ -167,10 +196,26 @@ export class ModelExportService {
   /**
    * Delete a user's model
    */
-  static async deleteModel(modelId: number, userId: string): Promise<boolean> {
+  static async deleteModel(modelId: string, userId: string): Promise<boolean> {
     try {
+      // First get the file path to delete from storage
+      const { data: modelData } = await supabase
+        .from('export_jobs')
+        .select('source_model_path')
+        .eq('id', modelId)
+        .eq('user_id', userId)
+        .single()
+
+      // Delete from storage if file exists
+      if (modelData?.source_model_path) {
+        await supabase.storage
+          .from('user-models')
+          .remove([modelData.source_model_path])
+      }
+
+      // Delete from database
       const { error } = await supabase
-        .from('model_exports')
+        .from('export_jobs')
         .delete()
         .eq('id', modelId)
         .eq('user_id', userId)
@@ -190,18 +235,38 @@ export class ModelExportService {
   /**
    * Award XP for creating a model
    */
-  private static async awardModelCreationXP(studentId: number): Promise<void> {
+  private static async awardModelCreationXP(userId: string): Promise<void> {
     try {
       const xpReward = 75 // XP for creating a model
 
-      // Update student XP
-      await supabase
-        .from('students')
-        .update({
-          xp_points: supabase.raw('xp_points + ?', [xpReward]),
-          last_activity_date: new Date().toISOString().split('T')[0]
-        })
-        .eq('id', studentId)
+      // Update gamification table
+      const { data: gamData } = await supabase
+        .from('gamification')
+        .select('id, total_xp')
+        .eq('user_id', userId)
+        .single()
+
+      if (gamData) {
+        await supabase
+          .from('gamification')
+          .update({
+            total_xp: gamData.total_xp + xpReward,
+            last_activity_date: new Date().toISOString()
+          })
+          .eq('user_id', userId)
+      } else {
+        // Create gamification record if not exists
+        await supabase
+          .from('gamification')
+          .insert({
+            user_id: userId,
+            total_xp: xpReward,
+            level: 1,
+            current_streak_days: 1,
+            longest_streak_days: 1,
+            last_activity_date: new Date().toISOString()
+          })
+      }
 
       console.log(`Awarded ${xpReward} XP for model creation`)
     } catch (error) {
@@ -242,8 +307,8 @@ export class ModelExportService {
   }> {
     try {
       const { data, error } = await supabase
-        .from('model_exports')
-        .select('download_count, is_public')
+        .from('export_jobs')
+        .select('status')
         .eq('user_id', userId)
 
       if (error) {
@@ -252,10 +317,13 @@ export class ModelExportService {
       }
 
       const totalModels = data.length
-      const totalDownloads = data.reduce((sum, model) => sum + (model.download_count || 0), 0)
-      const publicModels = data.filter(model => model.is_public).length
+      const completedModels = data.filter(model => model.status === 'completed').length
 
-      return { totalModels, totalDownloads, publicModels }
+      return {
+        totalModels,
+        totalDownloads: 0, // Not tracked in export_jobs
+        publicModels: completedModels
+      }
     } catch (error) {
       console.error('Error in getUserModelStats:', error)
       return { totalModels: 0, totalDownloads: 0, publicModels: 0 }

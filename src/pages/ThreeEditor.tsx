@@ -31,7 +31,12 @@ import {
   Help,
   Refresh,
   Fullscreen,
-  Close
+  Close,
+  OpenInNew,
+  HelpOutline,
+  Link as LinkIcon,
+  CloudUpload,
+  AttachFile
 } from '@mui/icons-material'
 import { useAuthStore } from '../stores/authStore'
 import { useLearningStore } from '../stores/learningStore'
@@ -48,6 +53,8 @@ export default function ThreeEditor() {
   const [exportName, setExportName] = useState('')
   const [exporting, setExporting] = useState(false)
   const [userStats, setUserStats] = useState({ totalModels: 0, totalDownloads: 0, publicModels: 0 })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState<string>('')
 
   // Load user model statistics
   useEffect(() => {
@@ -78,24 +85,59 @@ export default function ThreeEditor() {
     return () => clearTimeout(timer)
   }, [])
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    setFileError('')
+
+    if (!file) {
+      setSelectedFile(null)
+      return
+    }
+
+    // Validate file extension
+    if (!file.name.toLowerCase().endsWith('.stl')) {
+      setFileError('File harus berformat .stl')
+      setSelectedFile(null)
+      return
+    }
+
+    // Validate file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024 // 50MB in bytes
+    if (file.size > maxSize) {
+      setFileError('Ukuran file maksimal 50MB')
+      setSelectedFile(null)
+      return
+    }
+
+    setSelectedFile(file)
+  }
+
   const handleSaveProject = async () => {
     if (!exportName.trim()) {
       return
     }
 
+    if (!selectedFile) {
+      setFileError('Silakan pilih file STL terlebih dahulu')
+      return
+    }
+
     setExporting(true)
     try {
-      // Save model to database
+      // Save model to database with file upload
       const result = await ModelExportService.saveModelExport({
         projectName: exportName,
-        modelType: 'threejs-custom',
-        description: `3D model created with Three.js Editor: ${exportName}`,
+        modelType: 'tinkercad',
+        description: `3D model created with Tinkercad: ${exportName}`,
         geometryParams: {
-          createdWith: 'threejs-editor',
-          timestamp: new Date().toISOString()
+          createdWith: 'tinkercad',
+          timestamp: new Date().toISOString(),
+          fileName: selectedFile.name,
+          fileSize: selectedFile.size
         },
-        tags: ['threejs', 'custom', 'geometry'],
-        isPublic: false
+        tags: ['tinkercad', 'custom', 'geometry'],
+        isPublic: false,
+        stlFile: selectedFile  // Pass the actual file
       })
 
       if (result) {
@@ -108,9 +150,11 @@ export default function ThreeEditor() {
         // Show success and close dialog
         setSaveDialogOpen(false)
         setExportName('')
+        setSelectedFile(null)
+        setFileError('')
 
-        // Could show a success toast here
-        alert('🎉 Model berhasil disimpan! File STL tersedia untuk diunduh.')
+        // Show success message
+        alert('🎉 Model berhasil disimpan! File STL telah diupload dan tersedia untuk diunduh.')
       } else {
         alert('❌ Gagal menyimpan model. Silakan coba lagi.')
       }
@@ -298,18 +342,117 @@ export default function ThreeEditor() {
           }}
           sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
         />
+
+        {/* Info Cards Below Editor */}
+        <Container maxWidth="lg" sx={{ py: 3 }}>
+          <Grid container spacing={3}>
+            {/* Card 1: Link to Tinkercad */}
+            <Grid item xs={12} md={6}>
+              <Card
+                sx={{
+                  height: '100%',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 4
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <LinkIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
+                    <Typography variant="h6" fontWeight="bold" color="primary">
+                      Buka di Tinkercad
+                    </Typography>
+                  </Box>
+
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    Buat model sesuka anda di Tinkercad dan upload hasilnya di tombol "Simpan Projek"
+                  </Typography>
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<OpenInNew />}
+                    href="https://www.tinkercad.com/dashboard"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fullWidth
+                  >
+                    Buka Editor Tinkercad
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Card 2: Usage Guide */}
+            <Grid item xs={12} md={6}>
+              <Card
+                sx={{
+                  height: '100%',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 4
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <HelpOutline color="secondary" sx={{ fontSize: 40, mr: 2 }} />
+                    <Typography variant="h6" fontWeight="bold" color="secondary">
+                      Petunjuk Penggunaan
+                    </Typography>
+                  </Box>
+
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    <strong>Langkah-langkah dasar:</strong>
+                  </Typography>
+
+                  <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                    <Typography component="li" variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      Drag objek dari panel kanan ke workspace
+                    </Typography>
+                    <Typography component="li" variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      Klik objek untuk memilih, drag untuk memindahkan
+                    </Typography>
+                    <Typography component="li" variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      Gunakan handle untuk resize atau rotate
+                    </Typography>
+                    <Typography component="li" variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      Tekan Shift + drag untuk menggabungkan objek
+                    </Typography>
+                    <Typography component="li" variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      Klik "Export" untuk download model 3D
+                    </Typography>
+                  </Box>
+
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    startIcon={<Help />}
+                    onClick={() => setHelpDialogOpen(true)}
+                    fullWidth
+                  >
+                    Lihat Tutorial Lengkap
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
         </Box>
       </Box>
 
       {/* Save Project Dialog */}
       <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
-          <Save sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Simpan & Export Project ke STL
+          <CloudUpload sx={{ mr: 1, verticalAlign: 'middle' }} />
+          Upload & Simpan File STL
         </DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" paragraph>
-            Beri nama untuk project Anda. File akan disimpan dalam format STL yang bisa digunakan untuk 3D printing.
+            Upload file STL hasil kerja Anda dari Tinkercad untuk disimpan ke akun Anda.
           </Typography>
 
           <TextField
@@ -320,29 +463,75 @@ export default function ThreeEditor() {
             variant="outlined"
             value={exportName}
             onChange={(e) => setExportName(e.target.value)}
-            placeholder="Contoh: Tabung Kustom Saya"
+            placeholder="Contoh: Model Rumah Saya"
             disabled={exporting}
-            helperText="Nama akan digunakan untuk file STL: nama-project.stl"
+            helperText="Beri nama untuk project Anda"
+            sx={{ mb: 2 }}
           />
+
+          {/* File Upload Section */}
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Button
+              component="label"
+              variant="outlined"
+              startIcon={<AttachFile />}
+              fullWidth
+              disabled={exporting}
+            >
+              {selectedFile ? selectedFile.name : 'Pilih File STL'}
+              <input
+                type="file"
+                hidden
+                accept=".stl"
+                onChange={handleFileSelect}
+              />
+            </Button>
+
+            {selectedFile && (
+              <Box sx={{ mt: 1, p: 1, bgcolor: 'success.50', borderRadius: 1, border: 1, borderColor: 'success.200' }}>
+                <Typography variant="body2" color="success.main">
+                  <strong>File dipilih:</strong> {selectedFile.name}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Ukuran: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                </Typography>
+              </Box>
+            )}
+
+            {fileError && (
+              <Alert severity="error" sx={{ mt: 1 }}>
+                {fileError}
+              </Alert>
+            )}
+          </Box>
 
           <Alert severity="info" sx={{ mt: 2 }}>
             <Typography variant="body2">
-              <strong>Catatan:</strong> Pastikan Anda sudah membuat model 3D di editor sebelum menyimpan.
-              File STL akan tersimpan di akun Anda dan bisa diunduh kapan saja.
+              <strong>Cara export dari Tinkercad:</strong>
+            </Typography>
+            <Typography variant="body2" component="ol" sx={{ pl: 2, mt: 1, mb: 0 }}>
+              <li>Klik tombol "Export" di Tinkercad editor</li>
+              <li>Pilih format ".STL"</li>
+              <li>Download file STL ke komputer Anda</li>
+              <li>Upload file tersebut di sini</li>
             </Typography>
           </Alert>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSaveDialogOpen(false)} disabled={exporting}>
+          <Button onClick={() => {
+            setSaveDialogOpen(false)
+            setSelectedFile(null)
+            setFileError('')
+          }} disabled={exporting}>
             Batal
           </Button>
           <Button
             onClick={handleSaveProject}
             variant="contained"
-            disabled={!exportName.trim() || exporting}
-            startIcon={exporting ? null : <Download />}
+            disabled={!exportName.trim() || !selectedFile || exporting}
+            startIcon={exporting ? null : <CloudUpload />}
           >
-            {exporting ? 'Menyimpan...' : 'Simpan STL'}
+            {exporting ? 'Mengupload...' : 'Upload & Simpan'}
           </Button>
         </DialogActions>
       </Dialog>

@@ -15,7 +15,6 @@ import PracticeQuestions from './pages/PracticeQuestions'
 import ChatBotPage from './pages/ChatBotPage'
 import Profile from './pages/Profile'
 import Assessment from './pages/Assessment'
-import DebugQuiz from './pages/DebugQuiz'
 
 const theme = createTheme({
   palette: {
@@ -75,7 +74,6 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/credits" element={<Credits />} />
               {/* <Route path="/practice/:moduleId" element={<PracticeQuestions />} /> */}
-              <Route path="/debug-quiz" element={<DebugQuiz />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}
