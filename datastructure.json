@@ -906,6 +906,60 @@
     "details": "uuid | Nullable: YES"
   },
   {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.avatar_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.created_at",
+    "details": "timestamp with time zone | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.email",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.full_name",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.is_active",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.password",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.remember_token",
+    "details": "character varying(100) | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "teacher.updated_at",
+    "details": "timestamp without time zone | Nullable: YES"
+  },
+  {
     "object_type": "TABLE",
     "table_schema": "public",
     "object_name": "activity_log",
@@ -993,6 +1047,12 @@
     "object_type": "TABLE",
     "table_schema": "public",
     "object_name": "student_progress",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "teacher",
     "details": null
   },
   {

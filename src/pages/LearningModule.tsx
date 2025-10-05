@@ -91,7 +91,7 @@ function InteractiveCone() {
       {/* Main cone body */}
       <mesh position={[0, 0, 0]} castShadow receiveShadow>
         <coneGeometry
-          args={[radius, height, 32]}
+          args={[radius, height, 64]}
         />
         <meshStandardMaterial
           color="#f39c12"
@@ -99,30 +99,8 @@ function InteractiveCone() {
           roughness={0.3}
           transparent={true}
           opacity={0.9}
+          flatShading={false}
         />
-      </mesh>
-
-      {/* Base circle outline */}
-      <mesh position={[0, -height / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[radius - 0.05, radius + 0.05, 32]} />
-        <meshStandardMaterial color="#e67e22" />
-      </mesh>
-
-      {/* Wireframe for educational visualization */}
-      <mesh position={[0, 0, 0]}>
-        <coneGeometry args={[radius, height, 32]} />
-        <meshBasicMaterial
-          color="#d35400"
-          wireframe={true}
-          transparent={true}
-          opacity={0.3}
-        />
-      </mesh>
-
-      {/* Slant height line visualization */}
-      <mesh position={[radius / 2, 0, 0]} rotation={[0, 0, Math.atan2(height, radius)]}>
-        <cylinderGeometry args={[0.02, 0.02, slantHeight, 8]} />
-        <meshStandardMaterial color="#c0392b" />
       </mesh>
     </group>
   )
@@ -138,7 +116,7 @@ function InteractiveSphere() {
       {/* Main sphere body */}
       <mesh position={[0, 0, 0]} castShadow receiveShadow>
         <sphereGeometry
-          args={[radius, 32, 32]}
+          args={[radius, 64, 64]}
         />
         <meshStandardMaterial
           color="#e74c3c"
@@ -146,48 +124,8 @@ function InteractiveSphere() {
           roughness={0.3}
           transparent={true}
           opacity={0.85}
+          flatShading={false}
         />
-      </mesh>
-
-      {/* Equatorial circle for reference */}
-      <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[radius - 0.05, radius + 0.05, 64]} />
-        <meshStandardMaterial color="#c0392b" />
-      </mesh>
-
-      {/* Meridian circle */}
-      <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
-        <ringGeometry args={[radius - 0.05, radius + 0.05, 64]} />
-        <meshStandardMaterial color="#8e44ad" />
-      </mesh>
-
-      {/* Another meridian circle perpendicular */}
-      <mesh position={[0, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <ringGeometry args={[radius - 0.05, radius + 0.05, 64]} />
-        <meshStandardMaterial color="#8e44ad" />
-      </mesh>
-
-      {/* Wireframe for educational visualization */}
-      <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[radius, 16, 16]} />
-        <meshBasicMaterial
-          color="#a93226"
-          wireframe={true}
-          transparent={true}
-          opacity={0.2}
-        />
-      </mesh>
-
-      {/* Center point */}
-      <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[0.1, 8, 8]} />
-        <meshStandardMaterial color="#2c3e50" />
-      </mesh>
-
-      {/* Radius line */}
-      <mesh position={[radius / 2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
-        <meshStandardMaterial color="#f1c40f" />
       </mesh>
     </group>
   )

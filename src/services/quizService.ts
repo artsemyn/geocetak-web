@@ -101,15 +101,14 @@ export async function getBestQuizAttempt(
     .eq('lesson_id', lessonId)
     .order('score', { ascending: false })
     .limit(1)
-    .single()
 
-  if (error && error.code !== 'PGRST116') {
-    // PGRST116 = no rows returned
+  if (error) {
     console.error('Error fetching best quiz attempt:', error)
-    throw error
+    return null
   }
 
-  return data || null
+  // Return first item or null if array is empty
+  return data && data.length > 0 ? data[0] : null
 }
 
 /**

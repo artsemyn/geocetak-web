@@ -30,7 +30,8 @@ import {
   Article,
   Menu as MenuIcon,
   ViewInAr,
-  Info
+  Info,
+  Chat
 } from '@mui/icons-material'
 import { useAuthStore } from '../stores/authStore'
 import { useLearningStore } from '../stores/learningStore'
@@ -184,6 +185,20 @@ export default function Navbar({
                 </Button>
                 <Button
                   color="inherit"
+                  startIcon={<Chat />}
+                  onClick={() => navigate('/chatbot')}
+                  sx={{
+                    color: 'white',
+                    backgroundColor: location.pathname === '/chatbot' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.1)'
+                    }
+                  }}
+                >
+                  AI Chat
+                </Button>
+                <Button
+                  color="inherit"
                   startIcon={<Article />}
                   onClick={() => navigate('/credits')}
                   sx={{
@@ -294,6 +309,10 @@ export default function Navbar({
             <MenuItem onClick={() => handleNavigate('/three-editor')}>
               <Build sx={{ mr: 2 }} />
               3D Editor
+            </MenuItem>
+            <MenuItem onClick={() => handleNavigate('/chatbot')}>
+              <Chat sx={{ mr: 2 }} />
+              AI Chat
             </MenuItem>
             <MenuItem onClick={() => handleNavigate('/credits')}>
               <Article sx={{ mr: 2 }} />

@@ -12,9 +12,10 @@ import Login from './pages/Login'
 import ThreeEditor from './pages/ThreeEditor'
 import MyModels from './pages/MyModels'
 import PracticeQuestions from './pages/PracticeQuestions'
-import ChatBot from './components/ChatBot'
+import ChatBotPage from './pages/ChatBotPage'
 import Profile from './pages/Profile'
 import Assessment from './pages/Assessment'
+import DebugQuiz from './pages/DebugQuiz'
 
 const theme = createTheme({
   palette: {
@@ -70,15 +71,16 @@ function App() {
               <Route path="/assessment" element={<Assessment />} />
               <Route path="/three-editor" element={<ThreeEditor />} />
               <Route path="/my-models" element={<MyModels />} />
+              <Route path="/chatbot" element={<ChatBotPage />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/credits" element={<Credits />} />
-              <Route path="/practice/:moduleId" element={<PracticeQuestions />} />
+              {/* <Route path="/practice/:moduleId" element={<PracticeQuestions />} /> */}
+              <Route path="/debug-quiz" element={<DebugQuiz />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}
         </Routes>
       </Router>
-      <ChatBot />
     </ThemeProvider>
   )
 }
