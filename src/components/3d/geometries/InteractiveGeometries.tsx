@@ -37,39 +37,21 @@ export function InteractiveCylinder() {
 export function InteractiveCone() {
   const meshRef = useRef<Mesh>(null)
   const { geometryParams } = useLearningStore()
-  
-  // Calculate slant height using Pythagorean theorem
-  const slantHeight = Math.sqrt(
-    Math.pow(geometryParams.radius, 2) + Math.pow(geometryParams.height, 2)
-  )
-  
+
   return (
-    <group>
-      <mesh ref={meshRef} position={[0, 0, 0]}>
-        <coneGeometry 
-          args={[geometryParams.radius, geometryParams.height, 32]} 
-        />
-        <meshStandardMaterial 
-          color="#E74C3C" 
-          transparent 
-          opacity={0.8}
-          roughness={0.3}
-          metalness={0.1}
-        />
-        <meshBasicMaterial 
-          color="#A93226" 
-          wireframe 
-          transparent 
-          opacity={0.2} 
-        />
-      </mesh>
-      
-      {/* Slant height indicator line */}
-      <mesh position={[0, geometryParams.height/4, 0]} rotation={[0, 0, -Math.atan(geometryParams.height/geometryParams.radius)]}>
-        <cylinderGeometry args={[0.05, 0.05, slantHeight, 8]} />
-        <meshBasicMaterial color="#F39C12" />
-      </mesh>
-    </group>
+    <mesh ref={meshRef} position={[0, 0, 0]}>
+      <coneGeometry
+        args={[geometryParams.radius, geometryParams.height, 64]}
+      />
+      <meshStandardMaterial
+        color="#E74C3C"
+        transparent
+        opacity={0.8}
+        roughness={0.3}
+        metalness={0.1}
+        flatShading={false}
+      />
+    </mesh>
   )
 }
 
@@ -77,28 +59,23 @@ export function InteractiveCone() {
 export function InteractiveSphere() {
   const meshRef = useRef<Mesh>(null)
   const { geometryParams } = useLearningStore()
-  
+
   useFrame((state, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.2 // Slow rotation
     }
   })
-  
+
   return (
     <mesh ref={meshRef} position={[0, 0, 0]}>
-      <sphereGeometry args={[geometryParams.radius, 32, 32]} />
-      <meshStandardMaterial 
-        color="#27AE60" 
-        transparent 
+      <sphereGeometry args={[geometryParams.radius, 64, 64]} />
+      <meshStandardMaterial
+        color="#27AE60"
+        transparent
         opacity={0.8}
         roughness={0.3}
         metalness={0.1}
-      />
-      <meshBasicMaterial 
-        color="#1E8449" 
-        wireframe 
-        transparent 
-        opacity={0.2} 
+        flatShading={false}
       />
     </mesh>
   )
@@ -195,29 +172,6 @@ export function ConeNet({ show }: { show: boolean }) {
         <circleGeometry args={[radius, 32]} />
         <meshBasicMaterial color="#E74C3C" transparent opacity={0.3} side={2} />
       </mesh>
-
-      {/* Connection line from sector to circle */}
-      <mesh position={[slantHeight/2 + 1, -height/8, 0]} rotation={[0, 0, -Math.PI/6]}>
-        <cylinderGeometry args={[0.02, 0.02, slantHeight/2, 8]} />
-        <meshBasicMaterial color="#34495E" />
-      </mesh>
-
-      {/* Dimension indicators */}
-      <group position={[slantHeight/2, slantHeight/2, 0]}>
-        {/* Slant height indicator */}
-        <mesh position={[0, 0, 0]} rotation={[0, 0, -Math.PI/4]}>
-          <cylinderGeometry args={[0.02, 0.02, slantHeight, 8]} />
-          <meshBasicMaterial color="#F39C12" />
-        </mesh>
-      </group>
-
-      <group position={[slantHeight + 2, -height/4 - radius - 0.5, 0]}>
-        {/* Radius indicator */}
-        <mesh position={[0, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, radius, 8]} />
-          <meshBasicMaterial color="#9B59B6" />
-        </mesh>
-      </group>
     </group>
   )
 }
