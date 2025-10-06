@@ -770,6 +770,7 @@ export default function LearningModule() {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={tabValue} onChange={handleTabChange} variant="fullWidth">
                 <Tab icon={<MenuBookRounded />} label="Konsep" />
+                <Tab icon={<ViewInAr />} label="Implementasi" />
                 <Tab icon={<Settings />} label="Jaring-jaring" />
                 <Tab icon={<Calculate />} label="Rumus" />
                 <Tab icon={<Quiz />} label="Quiz" />
@@ -777,10 +778,11 @@ export default function LearningModule() {
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}><ConceptLesson /></TabPanel>
-            <TabPanel value={tabValue} index={1}><NetLesson /></TabPanel>
-            <TabPanel value={tabValue} index={2}><FormulaLesson /></TabPanel>
-            <TabPanel value={tabValue} index={3}><QuizLesson /></TabPanel>
-            <TabPanel value={tabValue} index={4}><AssignmentLesson /></TabPanel>
+            <TabPanel value={tabValue} index={1}><ImplementationLesson /></TabPanel>
+            <TabPanel value={tabValue} index={2}><NetLesson /></TabPanel>
+            <TabPanel value={tabValue} index={3}><FormulaLesson /></TabPanel>
+            <TabPanel value={tabValue} index={4}><QuizLesson /></TabPanel>
+            <TabPanel value={tabValue} index={5}><AssignmentLesson /></TabPanel>
           </Card>
         </Grid>
 
@@ -1041,6 +1043,7 @@ const ConceptLesson: React.FC = () => {
         <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
           {getDescription(moduleSlug || 'tabung')}
         </Typography>
+
         <Divider sx={{ my: 3 }} />
         <Typography variant="h5" gutterBottom fontWeight="bold">
           🔍 Unsur-unsur Utama {geometryInfo.name}:
@@ -1126,6 +1129,561 @@ const getNetComponents = (moduleSlug: string) => {
     default:
       return null
   }
+}
+
+// Function to render realistic 3D models based on real-world examples
+function renderRealWorldModel(moduleSlug: string, exampleIndex: number, color: string) {
+  // TABUNG Examples
+  if (moduleSlug === 'tabung') {
+    switch (exampleIndex) {
+      case 0: // Kaleng Minuman
+        return (
+          <group>
+            {/* Body kaleng */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[0.8, 0.8, 3, 32]} />
+              <meshStandardMaterial color={color} metalness={0.7} roughness={0.2} />
+            </mesh>
+            {/* Tutup atas */}
+            <mesh position={[0, 1.5, 0]} castShadow>
+              <cylinderGeometry args={[0.82, 0.82, 0.1, 32]} />
+              <meshStandardMaterial color="#333333" metalness={0.9} roughness={0.1} />
+            </mesh>
+            {/* Ring pull tab */}
+            <mesh position={[0, 1.6, 0.3]} castShadow>
+              <torusGeometry args={[0.15, 0.05, 16, 32]} />
+              <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.1} />
+            </mesh>
+          </group>
+        )
+      case 1: // Gelas / Mug
+        return (
+          <group>
+            {/* Body gelas */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[0.9, 0.8, 2.5, 32]} />
+              <meshStandardMaterial color={color} metalness={0.1} roughness={0.6} />
+            </mesh>
+            {/* Handle/pegangan */}
+            <mesh position={[1.1, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+              <torusGeometry args={[0.5, 0.15, 16, 32, Math.PI]} />
+              <meshStandardMaterial color={color} metalness={0.1} roughness={0.6} />
+            </mesh>
+          </group>
+        )
+      case 2: // Drum / Tangki
+        return (
+          <group>
+            {/* Body drum */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[1.2, 1.2, 3.5, 32]} />
+              <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
+            </mesh>
+            {/* Ring penguat (3 buah) */}
+            {[-1, 0, 1].map((y, i) => (
+              <mesh key={i} position={[0, y * 1.2, 0]}>
+                <torusGeometry args={[1.22, 0.08, 16, 32]} />
+                <meshStandardMaterial color="#222222" metalness={0.8} roughness={0.2} />
+              </mesh>
+            ))}
+          </group>
+        )
+      case 3: // Pipa / Tube
+        return (
+          <group rotation={[0, 0, Math.PI / 2]}>
+            {/* Pipa horizontal panjang */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[0.5, 0.5, 5, 32]} />
+              <meshStandardMaterial color={color} metalness={0.6} roughness={0.3} />
+            </mesh>
+            {/* Joint/sambungan kiri */}
+            <mesh position={[2.5, 0, 0]} castShadow>
+              <cylinderGeometry args={[0.6, 0.6, 0.3, 32]} />
+              <meshStandardMaterial color="#555555" metalness={0.8} roughness={0.2} />
+            </mesh>
+            {/* Joint/sambungan kanan */}
+            <mesh position={[-2.5, 0, 0]} castShadow>
+              <cylinderGeometry args={[0.6, 0.6, 0.3, 32]} />
+              <meshStandardMaterial color="#555555" metalness={0.8} roughness={0.2} />
+            </mesh>
+          </group>
+        )
+    }
+  }
+
+  // KERUCUT Examples
+  if (moduleSlug === 'kerucut') {
+    switch (exampleIndex) {
+      case 0: // Es Krim Cone
+        return (
+          <group>
+            {/* Cone (kerucut terbalik) */}
+            <mesh position={[0, -0.5, 0]} rotation={[Math.PI, 0, 0]} castShadow receiveShadow>
+              <coneGeometry args={[0.8, 2.5, 32]} />
+              <meshStandardMaterial color={color} roughness={0.7} />
+            </mesh>
+            {/* Es krim (bola) */}
+            <mesh position={[0, 1.3, 0]} castShadow>
+              <sphereGeometry args={[0.9, 32, 32]} />
+              <meshStandardMaterial color="#FFF5E1" roughness={0.8} />
+            </mesh>
+            {/* Tekstur waffle pada cone */}
+            <mesh position={[0, -0.5, 0]} rotation={[Math.PI, 0, 0]}>
+              <coneGeometry args={[0.81, 2.51, 32]} />
+              <meshStandardMaterial color="#8B4513" wireframe={true} opacity={0.3} transparent />
+            </mesh>
+          </group>
+        )
+      case 1: // Traffic Cone
+        return (
+          <group>
+            {/* Base (alas persegi) */}
+            <mesh position={[0, -1.8, 0]} castShadow receiveShadow>
+              <boxGeometry args={[2, 0.2, 2]} />
+              <meshStandardMaterial color="#222222" roughness={0.7} />
+            </mesh>
+            {/* Cone body */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <coneGeometry args={[1, 3, 32]} />
+              <meshStandardMaterial color={color} roughness={0.6} />
+            </mesh>
+            {/* Reflective strips (putih) */}
+            {[0.5, -0.5].map((y, i) => (
+              <mesh key={i} position={[0, y, 0]}>
+                <cylinderGeometry args={[0.7 - y * 0.2, 0.8 - y * 0.2, 0.3, 32]} />
+                <meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.3} />
+              </mesh>
+            ))}
+          </group>
+        )
+      case 2: // Corong / Funnel
+        return (
+          <group>
+            {/* Bagian atas (wide opening) */}
+            <mesh position={[0, 0.8, 0]} castShadow receiveShadow>
+              <coneGeometry args={[1.5, 1.5, 32]} />
+              <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} side={2} />
+            </mesh>
+            {/* Tube bawah (spout) */}
+            <mesh position={[0, -1, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[0.2, 0.2, 2, 32]} />
+              <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+            </mesh>
+          </group>
+        )
+      case 3: // Topi Ulang Tahun
+        return (
+          <group>
+            {/* Cone topi */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <coneGeometry args={[1.2, 3, 32]} />
+              <meshStandardMaterial color={color} roughness={0.5} />
+            </mesh>
+            {/* Pom-pom di puncak */}
+            <mesh position={[0, 1.5, 0]} castShadow>
+              <sphereGeometry args={[0.3, 16, 16]} />
+              <meshStandardMaterial color="#FFD700" roughness={0.7} />
+            </mesh>
+            {/* Spiral stripes */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <mesh key={i} position={[0, 1 - i * 0.5, 0]} rotation={[0, i * Math.PI / 3, 0]}>
+                <torusGeometry args={[1.1 - i * 0.2, 0.05, 8, 32]} />
+                <meshStandardMaterial color="#FFFFFF" />
+              </mesh>
+            ))}
+          </group>
+        )
+    }
+  }
+
+  // BOLA Examples
+  if (moduleSlug === 'bola') {
+    switch (exampleIndex) {
+      case 0: // Bola Sepak / Basket
+        return (
+          <group>
+            {/* Bola utama */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <sphereGeometry args={[1.5, 32, 32]} />
+              <meshStandardMaterial color={color} roughness={0.7} />
+            </mesh>
+            {/* Garis-garis bola (pentagon pattern untuk sepak bola) */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <mesh key={i} position={[0, 0, 0]} rotation={[0, (i * Math.PI * 2) / 5, 0]}>
+                <torusGeometry args={[1.51, 0.03, 8, 32, Math.PI / 2.5]} />
+                <meshStandardMaterial color="#000000" />
+              </mesh>
+            ))}
+          </group>
+        )
+      case 1: // Bola Lampu / Bulb
+        return (
+          <group>
+            {/* Glass bulb */}
+            <mesh position={[0, 0.5, 0]} castShadow receiveShadow>
+              <sphereGeometry args={[1, 32, 32]} />
+              <meshStandardMaterial
+                color={color}
+                transparent
+                opacity={0.7}
+                metalness={0.1}
+                roughness={0.1}
+                emissive={color}
+                emissiveIntensity={0.5}
+              />
+            </mesh>
+            {/* Filament (pusat) */}
+            <mesh position={[0, 0.5, 0]}>
+              <sphereGeometry args={[0.2, 16, 16]} />
+              <meshStandardMaterial color="#FFFF00" emissive="#FFFF00" emissiveIntensity={2} />
+            </mesh>
+            {/* Base/socket */}
+            <mesh position={[0, -0.8, 0]} castShadow>
+              <cylinderGeometry args={[0.4, 0.5, 0.8, 32]} />
+              <meshStandardMaterial color="#888888" metalness={0.7} roughness={0.3} />
+            </mesh>
+          </group>
+        )
+      case 2: // Globe / Bola Dunia
+        return (
+          <group>
+            {/* Bola dunia */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <sphereGeometry args={[1.5, 32, 32]} />
+              <meshStandardMaterial color={color} roughness={0.6} />
+            </mesh>
+            {/* Garis equator */}
+            <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[1.51, 0.03, 8, 64]} />
+              <meshStandardMaterial color="#000000" />
+            </mesh>
+            {/* Garis meridian */}
+            {[0, 1, 2, 3].map((i) => (
+              <mesh key={i} position={[0, 0, 0]} rotation={[0, (i * Math.PI) / 4, 0]}>
+                <torusGeometry args={[1.51, 0.03, 8, 64]} />
+                <meshStandardMaterial color="#000000" />
+              </mesh>
+            ))}
+            {/* Stand */}
+            <mesh position={[0, -2, 0]} castShadow>
+              <cylinderGeometry args={[0.5, 0.6, 0.3, 32]} />
+              <meshStandardMaterial color="#8B4513" roughness={0.8} />
+            </mesh>
+            {/* Arc stand */}
+            <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
+              <torusGeometry args={[1.6, 0.08, 16, 32, Math.PI]} />
+              <meshStandardMaterial color="#8B4513" roughness={0.8} />
+            </mesh>
+          </group>
+        )
+      case 3: // Tangki Bola Gas
+        return (
+          <group>
+            {/* Main sphere tank */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+              <sphereGeometry args={[1.5, 32, 32]} />
+              <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
+            </mesh>
+            {/* Support legs (4 buah) */}
+            {[0, 1, 2, 3].map((i) => {
+              const angle = (i * Math.PI * 2) / 4
+              return (
+                <mesh
+                  key={i}
+                  position={[Math.cos(angle) * 1.2, -1.2, Math.sin(angle) * 1.2]}
+                  rotation={[Math.PI / 6, 0, 0]}
+                  castShadow
+                >
+                  <cylinderGeometry args={[0.1, 0.1, 1, 16]} />
+                  <meshStandardMaterial color="#333333" metalness={0.7} roughness={0.3} />
+                </mesh>
+              )
+            })}
+            {/* Pressure gauge */}
+            <mesh position={[0, 1.5, 0]} castShadow>
+              <cylinderGeometry args={[0.2, 0.2, 0.1, 32]} />
+              <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+            </mesh>
+            {/* Valve on top */}
+            <mesh position={[0, 1.7, 0]} castShadow>
+              <cylinderGeometry args={[0.1, 0.1, 0.4, 16]} />
+              <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.1} />
+            </mesh>
+          </group>
+        )
+    }
+  }
+
+  // Default fallback
+  return (
+    <mesh castShadow receiveShadow>
+      <sphereGeometry args={[1.5, 32, 32]} />
+      <meshStandardMaterial color={color} />
+    </mesh>
+  )
+}
+
+// Implementation Lesson Component
+const ImplementationLesson: React.FC = () => {
+  const { moduleSlug } = useParams()
+  const [selectedExample, setSelectedExample] = useState(0)
+
+  // Data implementasi untuk setiap modul
+  const getImplementationData = (moduleSlug: string) => {
+    switch (moduleSlug) {
+      case 'tabung':
+        return {
+          title: 'Implementasi Tabung di Kehidupan Sehari-hari',
+          description: 'Bentuk tabung sangat umum ditemukan dalam kehidupan sehari-hari. Berikut adalah beberapa contoh penerapan tabung yang sering kita jumpai:',
+          examples: [
+            {
+              name: 'Kaleng Minuman',
+              image: '/images/real-world/kaleng.jpg',
+              description: 'Kaleng minuman soft drink atau jus menggunakan bentuk tabung karena efisien dalam penyimpanan, mudah digenggam, dan optimal untuk distribusi tekanan internal dari cairan berkarbonasi.',
+              specs: { radius: '3.2 cm', height: '12.3 cm', volume: '≈ 396 ml' },
+              color: '#FF6B6B'
+            },
+            {
+              name: 'Gelas / Mug',
+              image: '/images/real-world/gelas.jpg',
+              description: 'Gelas dan mug berbentuk tabung memudahkan untuk digenggam dan minum. Bentuk ini juga memaksimalkan volume isi dengan material yang minimal.',
+              specs: { radius: '3.5 cm', height: '10 cm', volume: '≈ 385 ml' },
+              color: '#4ECDC4'
+            },
+            {
+              name: 'Drum / Tangki',
+              image: '/images/real-world/drum.jpg',
+              description: 'Drum atau tangki penyimpanan menggunakan bentuk tabung karena dapat menahan tekanan dengan baik dan memiliki struktur yang kuat dengan material minimal.',
+              specs: { radius: '28 cm', height: '85 cm', volume: '≈ 209 L' },
+              color: '#95E1D3'
+            },
+            {
+              name: 'Pipa / Tube',
+              image: '/images/real-world/pipa.jpg',
+              description: 'Pipa air, pipa gas, dan sistem perpipaan menggunakan bentuk tabung untuk mengalirkan fluida dengan efisien dan tahan tekanan.',
+              specs: { radius: '2.5 cm', height: '100 cm', volume: '≈ 1.96 L' },
+              color: '#F38181'
+            }
+          ]
+        }
+      case 'kerucut':
+        return {
+          title: 'Implementasi Kerucut di Kehidupan Sehari-hari',
+          description: 'Bentuk kerucut memiliki keunikan dengan titik puncaknya yang membuatnya ideal untuk berbagai fungsi praktis:',
+          examples: [
+            {
+              name: 'Es Krim Cone',
+              image: '/images/real-world/cone-icecream.jpg',
+              description: 'Cone es krim berbentuk kerucut terbalik memudahkan untuk dipegang dan dimakan. Desain ini juga mencegah tumpahan es krim dan memberikan pengalaman makan yang praktis.',
+              specs: { radius: '3 cm', height: '12 cm', volume: '≈ 113 ml' },
+              color: '#FFB6B9'
+            },
+            {
+              name: 'Traffic Cone',
+              image: '/images/real-world/traffic-cone.jpg',
+              description: 'Kerucut lalu lintas menggunakan bentuk ini karena mudah terlihat, stabil saat ditempatkan, dan dapat ditumpuk untuk penyimpanan yang efisien.',
+              specs: { radius: '20 cm', height: '70 cm', volume: '≈ 29.3 L' },
+              color: '#FFA07A'
+            },
+            {
+              name: 'Corong / Funnel',
+              image: '/images/real-world/funnel.jpg',
+              description: 'Corong memanfaatkan bentuk kerucut untuk mengarahkan cairan atau material dari area luas ke lubang kecil dengan efisien tanpa tumpah.',
+              specs: { radius: '8 cm', height: '15 cm', volume: '≈ 1 L' },
+              color: '#87CEEB'
+            },
+            {
+              name: 'Topi Ulang Tahun',
+              image: '/images/real-world/party-hat.jpg',
+              description: 'Topi pesta berbentuk kerucut memberikan tampilan festive dan mudah dipasang di kepala dengan elastic band.',
+              specs: { radius: '7 cm', height: '20 cm', volume: '≈ 1.03 L' },
+              color: '#DDA0DD'
+            }
+          ]
+        }
+      case 'bola':
+        return {
+          title: 'Implementasi Bola di Kehidupan Sehari-hari',
+          description: 'Bentuk bola atau sferis adalah bentuk paling simetris dan efisien dalam geometri, banyak digunakan karena sifat uniknya:',
+          examples: [
+            {
+              name: 'Bola Sepak / Basket',
+              image: '/images/real-world/ball-sports.jpg',
+              description: 'Bola olahraga berbentuk sferis sempurna agar dapat menggelinding dan memantul dengan prediktabel ke segala arah. Bentuk ini juga optimal untuk aerodinamika.',
+              specs: { radius: '11 cm', volume: '≈ 5.6 L' },
+              color: '#FF8C42'
+            },
+            {
+              name: 'Bola Lampu / Bulb',
+              image: '/images/real-world/lightbulb.jpg',
+              description: 'Bagian kaca bola lampu berbentuk sferis untuk mendistribusikan cahaya secara merata ke segala arah.',
+              specs: { radius: '3 cm', volume: '≈ 113 ml' },
+              color: '#FFD93D'
+            },
+            {
+              name: 'Globe / Bola Dunia',
+              image: '/images/real-world/globe.jpg',
+              description: 'Globe merepresentasikan bumi dalam bentuk miniatur sferis karena planet bumi sendiri berbentuk sferis (geoid) akibat gravitasi.',
+              specs: { radius: '15 cm', volume: '≈ 14.1 L' },
+              color: '#6BCB77'
+            },
+            {
+              name: 'Tangki Bola Gas',
+              image: '/images/real-world/sphere-tank.jpg',
+              description: 'Tangki penyimpanan gas berbentuk bola karena dapat menahan tekanan tinggi dengan distribusi stress yang merata pada seluruh permukaan.',
+              specs: { radius: '50 cm', volume: '≈ 523.6 L' },
+              color: '#4D96FF'
+            }
+          ]
+        }
+      default:
+        return null
+    }
+  }
+
+  const implementationData = getImplementationData(moduleSlug || 'tabung')
+
+  if (!implementationData) return null
+
+  const currentExample = implementationData.examples[selectedExample]
+
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom fontWeight="bold" color="secondary.main">
+        🌍 {implementationData.title}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
+        {implementationData.description}
+      </Typography>
+
+      <Divider sx={{ my: 3 }} />
+
+      <Grid container spacing={3}>
+        {/* Daftar Contoh */}
+        <Grid item xs={12} md={4}>
+          <Typography variant="h6" gutterBottom fontWeight="bold">
+            Pilih Contoh:
+          </Typography>
+          <Stack spacing={2}>
+            {implementationData.examples.map((example, index) => (
+              <Card
+                key={index}
+                sx={{
+                  cursor: 'pointer',
+                  border: selectedExample === index ? '3px solid' : '1px solid',
+                  borderColor: selectedExample === index ? 'primary.main' : 'divider',
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: 3
+                  },
+                  bgcolor: selectedExample === index ? 'primary.50' : 'white'
+                }}
+                onClick={() => setSelectedExample(index)}
+              >
+                <CardContent>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Avatar sx={{ bgcolor: example.color, width: 48, height: 48 }}>
+                      {index + 1}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h6" fontWeight="bold">
+                        {example.name}
+                      </Typography>
+                      {selectedExample === index && (
+                        <Chip label="Terpilih" size="small" color="primary" sx={{ mt: 0.5 }} />
+                      )}
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        </Grid>
+
+        {/* Detail Contoh & Model 3D */}
+        <Grid item xs={12} md={8}>
+          <Card elevation={3}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h5" gutterBottom fontWeight="bold" color="primary">
+                {currentExample.name}
+              </Typography>
+
+              {/* Model 3D Interactive */}
+              <Box
+                sx={{
+                  height: 400,
+                  bgcolor: 'grey.100',
+                  borderRadius: 2,
+                  mb: 3,
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <Suspense fallback={<CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />}>
+                  <Canvas shadows camera={{ position: [8, 6, 10], fov: 50 }}>
+                    <ambientLight intensity={0.7} />
+                    <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
+                    <Environment preset="sunset" />
+
+                    {/* Render geometry sesuai contoh yang dipilih */}
+                    {renderRealWorldModel(moduleSlug || 'tabung', selectedExample, currentExample.color)}
+
+                    <ContactShadows opacity={0.5} scale={8} blur={1} far={10} resolution={256} color="#000000" />
+                    <OrbitControls enableZoom={true} minDistance={3} maxDistance={15} />
+                  </Canvas>
+                </Suspense>
+
+                <Alert
+                  severity="info"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 10,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: 'auto',
+                    maxWidth: '90%'
+                  }}
+                >
+                  🖱️ Klik dan drag untuk memutar model 3D
+                </Alert>
+              </Box>
+
+              {/* Deskripsi */}
+              <Typography variant="body1" paragraph sx={{ lineHeight: 1.8 }}>
+                {currentExample.description}
+              </Typography>
+
+              {/* Spesifikasi */}
+              <Paper variant="outlined" sx={{ p: 2, bgcolor: 'grey.50' }}>
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="text.secondary">
+                  📊 Spesifikasi Tipikal:
+                </Typography>
+                <Grid container spacing={2}>
+                  {Object.entries(currentExample.specs).map(([key, value]) => (
+                    <Grid item xs={12} sm={4} key={key}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" textTransform="capitalize">
+                          {key === 'radius' ? 'Jari-jari' : key === 'height' ? 'Tinggi' : 'Volume'}
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold" color="primary">
+                          {value}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Paper>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Alert severity="success" sx={{ mt: 3 }}>
+        💡 <strong>Tahukah kamu?</strong> Bentuk geometri yang kamu pelajari ini dipilih karena sifat-sifat matematisnya yang optimal untuk fungsi tertentu dalam kehidupan nyata!
+      </Alert>
+    </Box>
+  )
 }
 
 const NetLesson: React.FC = () => {
