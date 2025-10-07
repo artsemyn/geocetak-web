@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material'
 import { useAuthStore } from './stores/authStore'
 import { useLearningStore } from './stores/learningStore'
+import { Analytics } from '@vercel/analytics/react';
 import Dashboard from './pages/Dashboard'
 import Modules from './pages/Modules'
 import LearningModule from './pages/LearningModule'
@@ -31,6 +32,8 @@ const theme = createTheme({
 })
 
 function App() {
+  // Add Vercel Analytics component 
+  <Analytics />
   const { user, student, loading } = useAuthStore()
   const { fetchModules, fetchStudentProfile, fetchUserStats } = useLearningStore()
 
