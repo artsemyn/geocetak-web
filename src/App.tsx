@@ -1,9 +1,11 @@
 // src/App.tsx
-import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { ThemeProvider, createTheme, CssBaseline, CircularProgress } from '@mui/material'
 import { useAuthStore } from './stores/authStore'
 import { useLearningStore } from './stores/learningStore'
+import { supabase } from './services/supabase'
+import type { Assignment } from './types'
 import Dashboard from './pages/Dashboard'
 import Modules from './pages/Modules'
 import LearningModule from './pages/LearningModule'
@@ -14,7 +16,7 @@ import MyModels from './pages/MyModels'
 import PracticeQuestions from './pages/PracticeQuestions'
 import ChatBotPage from './pages/ChatBotPage'
 import Profile from './pages/Profile'
-import Assessment from './pages/Assessment'
+import { LKPDWorkspace } from './components/lkpd/LKPDWorkspace'
 
 const theme = createTheme({
   palette: {
@@ -29,6 +31,67 @@ const theme = createTheme({
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif'
   }
 })
+
+// AssignmentRouter component - routes based on assignment type
+const AssignmentRouter: React.FC = () => {
+  const { assignmentId } = useParams<{ assignmentId: string }>()
+  const [assignment, setAssignment] = useState<Assignment | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      if (!assignmentId) {
+        setError('Assignment ID not found')
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        const { data, error: fetchError } = await supabase
+          .from('assignments')
+          .select('*')
+          .eq('id', assignmentId)
+          .single()
+
+        if (fetchError) throw fetchError
+        if (!data) throw new Error('Assignment not found')
+
+        setAssignment(data as Assignment)
+      } catch (err: any) {
+        console.error('Error fetching assignment:', err)
+        setError(err.message || 'Failed to load assignment')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAssignment()
+  }, [assignmentId])
+
+  // Loading state
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <CircularProgress />
+      </div>
+    )
+  }
+
+  // Error state
+  if (error || !assignment) {
+    return <Navigate to="/assessment" replace />
+  }
+
+  // Route based on assignment type
+  if (assignment.assignment_type === 'lkpd') {
+    return <LKPDWorkspace />
+  }
+
+  // Default fallback (now also uses LKPDWorkspace since Assessment is replaced)
+  return <LKPDWorkspace />
+}
 
 function App() {
   const { user, student, loading } = useAuthStore()
@@ -67,7 +130,8 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/modules" element={<Modules />} />
               <Route path="/module/:moduleSlug" element={<LearningModule />} />
-              <Route path="/assessment" element={<Assessment />} />
+              <Route path="/assessment" element={<LKPDWorkspace />} />
+              <Route path="/assignment/:assignmentId" element={<AssignmentRouter />} />
               <Route path="/three-editor" element={<ThreeEditor />} />
               <Route path="/my-models" element={<MyModels />} />
               <Route path="/chatbot" element={<ChatBotPage />} />

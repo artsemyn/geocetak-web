@@ -44,14 +44,194 @@
   {
     "object_type": "COLUMN",
     "table_schema": "public",
+    "object_name": "assignment_grades.ai_feedback",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.feedback",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.is_correct",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.points_earned",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.points_possible",
+    "details": "integer | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.question_id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.student_answer",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_grades.submission_id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.assignment_id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.correct_answer",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.difficulty",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.explanation",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.id",
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.image_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.max_words",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.options",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.order_index",
+    "details": "integer | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.points",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.question_text",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.question_type",
+    "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.rubric",
+    "details": "jsonb | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.updated_at",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_questions.video_url",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
     "object_name": "assignment_submissions.ai_feedback",
     "details": "jsonb | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
     "table_schema": "public",
+    "object_name": "assignment_submissions.ai_graded",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.answers",
+    "details": "jsonb | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
     "object_name": "assignment_submissions.assignment_id",
-    "details": "uuid | Nullable: YES"
+    "details": "uuid | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.attempt_number",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.created_at",
+    "details": "timestamp with time zone | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
@@ -74,8 +254,32 @@
   {
     "object_type": "COLUMN",
     "table_schema": "public",
+    "object_name": "assignment_submissions.max_score",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.passed",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.percentage",
+    "details": "numeric | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
     "object_name": "assignment_submissions.score",
     "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.started_at",
+    "details": "timestamp with time zone | Nullable: NO"
   },
   {
     "object_type": "COLUMN",
@@ -87,19 +291,7 @@
     "object_type": "COLUMN",
     "table_schema": "public",
     "object_name": "assignment_submissions.student_id",
-    "details": "uuid | Nullable: YES"
-  },
-  {
-    "object_type": "COLUMN",
-    "table_schema": "public",
-    "object_name": "assignment_submissions.submission_files",
-    "details": "jsonb | Nullable: YES"
-  },
-  {
-    "object_type": "COLUMN",
-    "table_schema": "public",
-    "object_name": "assignment_submissions.submission_text",
-    "details": "text | Nullable: YES"
+    "details": "uuid | Nullable: NO"
   },
   {
     "object_type": "COLUMN",
@@ -116,7 +308,13 @@
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignment_submissions.teacher_override_score",
+    "object_name": "assignment_submissions.teacher_score_override",
+    "details": "integer | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignment_submissions.time_spent_seconds",
     "details": "integer | Nullable: YES"
   },
   {
@@ -128,14 +326,20 @@
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignments.assignment_type",
-    "details": "text | Nullable: NO"
+    "object_name": "assignments.assigned_by",
+    "details": "uuid | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignments.classroom_id",
+    "object_name": "assignments.assigned_to_classroom",
     "details": "uuid | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.assignment_type",
+    "details": "text | Nullable: NO"
   },
   {
     "object_type": "COLUMN",
@@ -164,19 +368,13 @@
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignments.is_published",
-    "details": "boolean | Nullable: YES"
-  },
-  {
-    "object_type": "COLUMN",
-    "table_schema": "public",
     "object_name": "assignments.lesson_id",
     "details": "uuid | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignments.max_score",
+    "object_name": "assignments.max_attempts",
     "details": "integer | Nullable: YES"
   },
   {
@@ -188,20 +386,50 @@
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignments.rubric",
-    "details": "jsonb | Nullable: YES"
+    "object_name": "assignments.passing_score",
+    "details": "integer | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
     "table_schema": "public",
-    "object_name": "assignments.teacher_id",
-    "details": "uuid | Nullable: YES"
+    "object_name": "assignments.show_correct_answers",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.shuffle_questions",
+    "details": "boolean | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.start_date",
+    "details": "timestamp with time zone | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.status",
+    "details": "text | Nullable: YES"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.time_limit_minutes",
+    "details": "integer | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
     "table_schema": "public",
     "object_name": "assignments.title",
     "details": "text | Nullable: NO"
+  },
+  {
+    "object_type": "COLUMN",
+    "table_schema": "public",
+    "object_name": "assignments.total_points",
+    "details": "integer | Nullable: YES"
   },
   {
     "object_type": "COLUMN",
@@ -963,6 +1191,18 @@
     "object_type": "TABLE",
     "table_schema": "public",
     "object_name": "activity_log",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "assignment_grades",
+    "details": null
+  },
+  {
+    "object_type": "TABLE",
+    "table_schema": "public",
+    "object_name": "assignment_questions",
     "details": null
   },
   {

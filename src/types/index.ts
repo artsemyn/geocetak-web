@@ -393,7 +393,7 @@ export interface Assignment {
   description: string | null
   module_id: string | null
   lesson_id: string | null
-  assignment_type: string
+  assignment_type: 'quiz' | 'lkpd' | 'project'
   due_date: string | null
   max_score: number
   rubric: any | null
@@ -438,3 +438,49 @@ export const XP_VALUES = {
   STREAK_BONUS: 10,
   BADGE_EARNED: 200
 } as const
+
+// ========================================
+// LKPD Types (re-exported from lkpd.ts)
+// ========================================
+export type {
+  // Section Types
+  BaseSection,
+  IntroSection,
+  ActivitySection,
+  ObservationSection,
+  AnalysisSection,
+  AnalysisQuestion,
+  ConclusionSection,
+  LKPDSection,
+
+  // Worksheet Types
+  MaterialsNeeded,
+  LKPDRubric,
+  LKPDWorksheet,
+
+  // Submission Response Types
+  ActivityResponse,
+  ObservationResponse,
+  AnalysisResponse,
+  ConclusionResponse,
+  SectionResponse,
+  SectionResponses,
+
+  // Submission Types
+  LKPDStatus,
+  AIFeedback,
+  LKPDSubmission,
+
+  // Helper Types
+  LKPDProgress,
+  CapturedParameters
+} from './lkpd'
+
+export {
+  // Type Guards
+  isActivitySection,
+  isObservationSection,
+  isAnalysisSection,
+  isConclusionSection,
+  isLKPDAssignment
+} from './lkpd'
