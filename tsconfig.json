@@ -58,6 +58,7 @@
     "node_modules",
     "dist",
     "build",
-    "vite.config.ts"
+    "vite.config.ts",
+    "supabase"
   ]
 }
