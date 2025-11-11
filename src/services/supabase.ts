@@ -34,42 +34,6 @@ export interface AssignmentSubmission {
   teacher_override_score: number | null
   graded_at: string | null
   graded_by: string | null
-  updated_at: string// src/services/supabase.ts
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Database Types based on new schema from datastructure.json
-
-// Activity Log table
-export interface ActivityLog {
-  id: string
-  user_id: string
-  activity_type: string
-  entity_type: string | null
-  entity_id: string | null
-  metadata: any | null
-  created_at: string
-}
-
-// Assignment Submissions table
-export interface AssignmentSubmission {
-  id: string
-  assignment_id: string
-  student_id: string
-  submission_text: string | null
-  submission_files: any | null
-  submitted_at: string
-  status: string
-  score: number | null
-  ai_feedback: any | null
-  teacher_feedback: string | null
-  teacher_override_score: number | null
-  graded_at: string | null
-  graded_by: string | null
   updated_at: string
 }
 
@@ -295,7 +259,6 @@ export interface Teacher extends Profile {}
 export interface Class extends Classroom {}
 export interface ClassStudent extends ClassroomMember {}
 export interface ProblemAttempt extends QuizAttempt {}
-}
 
 // Assignments table
 export interface Assignment {

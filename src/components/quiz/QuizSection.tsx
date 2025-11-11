@@ -42,6 +42,7 @@ import {
   calculateQuizScore
 } from '../../services/quizService'
 import { supabase } from '../../services/supabase'
+import { QuizStorageService, QuizPhotoUploadResult } from '../../services/quizStroageService'
 
 interface QuizSectionProps {
   lessonId: string
@@ -51,6 +52,7 @@ interface QuizSectionProps {
 interface EssayAnswer {
   text: string
   files: File[]
+  uploadedFiles: { url: string; fileName: string; filePath: string }[]
 }
 
 export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }) => {
@@ -90,7 +92,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
         const essayMap = new Map<string, EssayAnswer>()
         data.forEach(q => {
           if (q.question_type === 'essay') {
-            essayMap.set(q.id, { text: '', files: [] })
+            essayMap.set(q.id, { text: '', files: [], uploadedFiles: [] })
           }
         })
         setEssayAnswers(essayMap)
@@ -127,31 +129,68 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
   }
 
   const handleEssayTextChange = (questionId: string, text: string) => {
-    const current = essayAnswers.get(questionId) || { text: '', files: [] }
-    setEssayAnswers(new Map(essayAnswers.set(questionId, { ...current, text })))
+    const current = essayAnswers.get(questionId) || { text: '', files: [], uploadedFiles: [] }
+    setEssayAnswers(new Map(essayAnswers.set(questionId, { ...current, text, uploadedFiles: current.uploadedFiles })))
   }
 
   const handleFileSelect = async (questionId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    if (!files || files.length === 0) return
+    if (!files || files.length === 0 || !userId) return
 
-    const current = essayAnswers.get(questionId) || { text: '', files: [] }
+    const current = essayAnswers.get(questionId) || { text: '', files: [], uploadedFiles: [] }
     const newFiles = Array.from(files)
     
-    // Validate file size (max 5MB per file)
-    const maxSize = 5 * 1024 * 1024
-    const validFiles = newFiles.filter(file => {
-      if (file.size > maxSize) {
-        alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`)
-        return false
+    // Validate files using QuizStorageService
+    const validFiles: File[] = []
+    for (const file of newFiles) {
+      const validation = QuizStorageService.validateFile(file)
+      if (validation.valid) {
+        validFiles.push(file)
+      } else {
+        alert(validation.error)
       }
-      return true
-    })
+    }
 
-    setEssayAnswers(new Map(essayAnswers.set(questionId, {
-      ...current,
-      files: [...current.files, ...validFiles]
-    })))
+    if (validFiles.length === 0) return
+
+    // Set uploading state
+    setUploadingFiles(prev => new Set([...prev, questionId]))
+
+    try {
+      // Upload files immediately
+      const uploadResults = await Promise.all(
+        validFiles.map(file => QuizStorageService.uploadQuizPhoto(file, userId, questionId))
+      )
+
+      const successfulUploads = uploadResults.filter(result => result.success)
+      const failedUploads = uploadResults.filter(result => !result.success)
+
+      if (failedUploads.length > 0) {
+        alert(`Gagal mengupload ${failedUploads.length} file: ${failedUploads.map(f => f.error).join(', ')}`)
+      }
+
+      // Update state with uploaded files
+      setEssayAnswers(new Map(essayAnswers.set(questionId, {
+        ...current,
+        uploadedFiles: [
+          ...current.uploadedFiles,
+          ...successfulUploads.map(result => ({
+            url: result.url!,
+            fileName: result.fileName!,
+            filePath: result.filePath!
+          }))
+        ]
+      })))
+    } catch (error) {
+      console.error('Error uploading files:', error)
+      alert('Terjadi kesalahan saat mengupload file')
+    } finally {
+      setUploadingFiles(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(questionId)
+        return newSet
+      })
+    }
   }
 
   const handleRemoveFile = (questionId: string, fileIndex: number) => {
@@ -165,35 +204,6 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     })))
   }
 
-  const uploadFiles = async (questionId: string, files: File[]): Promise<string[]> => {
-    const uploadedUrls: string[] = []
-    
-    for (const file of files) {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${userId}/${questionId}/${Date.now()}.${fileExt}`
-      const filePath = `quiz-submissions/${fileName}`
-
-      const { data, error } = await supabase.storage
-        .from('uploads')
-        .upload(filePath, file)
-
-      if (error) {
-        console.error('Error uploading file:', error)
-        continue
-      }
-
-      const { data: urlData } = supabase.storage
-        .from('uploads')
-        .getPublicUrl(filePath)
-
-      if (urlData) {
-        uploadedUrls.push(urlData.publicUrl)
-      }
-    }
-
-    return uploadedUrls
-  }
-
   const handleSubmit = async () => {
     if (!userId) {
       alert('Anda harus login untuk menyimpan hasil quiz')
@@ -203,17 +213,17 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     setLoading(true)
 
     try {
-      // Upload all essay files first
+      // Prepare essay answers with already uploaded files
       const essayAnswersWithUrls = new Map<string, any>()
       
       for (const [questionId, essayAnswer] of essayAnswers.entries()) {
-        const fileUrls = essayAnswer.files.length > 0 
-          ? await uploadFiles(questionId, essayAnswer.files)
-          : []
+        // Use already uploaded files URLs
+        const fileUrls = essayAnswer.uploadedFiles?.map(file => file.url) || []
         
         essayAnswersWithUrls.set(questionId, {
           text: essayAnswer.text,
-          fileUrls
+          fileUrls,
+          uploadedFiles: essayAnswer.uploadedFiles || []
         })
       }
 
@@ -294,7 +304,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     
     const mcAnswered = answers.size >= mcCount
     const essayAnswered = Array.from(essayAnswers.values()).filter(
-      ans => ans.text.trim().length > 0
+      ans => ans.text.trim().length > 0 || (ans.uploadedFiles && ans.uploadedFiles.length > 0)
     ).length >= essayCount
 
     return mcAnswered && essayAnswered
