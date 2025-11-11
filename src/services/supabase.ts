@@ -194,7 +194,7 @@ export interface QuizQuestion {
   id: string
   lesson_id: string
   question_text: string
-  question_type: string
+  question_type?: string
   options: any | null
   correct_answer: string | null
   explanation: string | null
