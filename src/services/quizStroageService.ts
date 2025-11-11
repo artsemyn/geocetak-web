@@ -13,7 +13,13 @@ export class QuizStorageService {
   private static readonly BUCKET_NAME = 'assignment-files'
   private static readonly MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
   private static readonly ALLOWED_TYPES = [
-    'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'
+    // Photos
+    'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif',
+    // PDF
+    'application/pdf',
+    // Word documents
+    'application/msword', // .doc
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // .docx
   ]
 
   static validateFile(file: File): { valid: boolean; error?: string } {

@@ -231,9 +231,9 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       const mcQuestions = questions.filter(q => q.question_type === 'multiple_choice' || !q.question_type)
       const result = calculateQuizScore(mcQuestions, answers)
       
-      // Add essay answers to the result
-      const allAnswers = {
-        ...result.quizAnswers,
+      // Prepare complete answers object for storage
+      const completeAnswers = {
+        multipleChoice: result.quizAnswers,
         essays: Object.fromEntries(essayAnswersWithUrls)
       }
 
@@ -241,9 +241,17 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       setMaxScore(result.maxScore)
       setSubmitted(true)
 
-      await saveQuizAttempt(userId, {
+      console.log('Saving quiz attempt with data:', {
+        userId,
         lessonId,
-        answers: allAnswers,
+        answers: completeAnswers,
+        score: result.score,
+        maxScore: result.maxScore
+      })
+
+      const savedAttempt = await saveQuizAttempt(userId, {
+        lessonId,
+        answers: completeAnswers,
         score: result.score,
         maxScore: result.maxScore,
         timeSpentSeconds: timeElapsed,
@@ -251,13 +259,21 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
         completedAt: new Date().toISOString()
       })
 
+      console.log('Quiz attempt saved successfully:', savedAttempt)
+
       // Callback untuk update progress
       if (onComplete) {
         onComplete(result.score, result.maxScore)
       }
     } catch (error) {
       console.error('Error saving quiz attempt:', error)
-      alert('Terjadi kesalahan saat menyimpan jawaban. Silakan coba lagi.')
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        userId,
+        lessonId
+      })
+      alert(`Terjadi kesalahan saat menyimpan jawaban: ${error.message || 'Unknown error'}. Silakan coba lagi.`)
     } finally {
       setLoading(false)
     }
@@ -503,7 +519,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                       {!submitted && (
                         <Box sx={{ mt: 2 }}>
                           <input
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx"
                             style={{ display: 'none' }}
                             id={`file-upload-${question.id}`}
                             type="file"
