@@ -21,31 +21,15 @@ export interface QuizSubmission {
  * Fetch quiz questions for a specific lesson
  */
 export async function getQuizQuestions(lessonId: string): Promise<QuizQuestion[]> {
-  console.log('🔍 getQuizQuestions called with lessonId:', lessonId)
-  
   const { data, error } = await supabase
     .from('quiz_questions')
     .select('*')
     .eq('lesson_id', lessonId)
     .order('order_index', { ascending: true })
 
-  console.log('📊 Quiz query result:', { data, error, count: data?.length })
-
   if (error) {
-    console.error('❌ Error fetching quiz questions:', error)
+    console.error('Error fetching quiz questions:', error)
     throw error
-  }
-
-  if (!data || data.length === 0) {
-    console.warn('⚠️ No quiz questions found for lessonId:', lessonId)
-    
-    // Debug: Check if there are any quiz questions at all
-    const { data: allQuestions } = await supabase
-      .from('quiz_questions')
-      .select('lesson_id')
-      .limit(5)
-    
-    console.log('🔍 Sample lesson_ids in quiz_questions:', allQuestions?.map(q => q.lesson_id))
   }
 
   return data || []

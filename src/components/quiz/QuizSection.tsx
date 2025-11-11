@@ -16,14 +16,23 @@ import {
   Divider,
   Card,
   CardContent,
-  Grid
+  TextField,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction
 } from '@mui/material'
 import {
   CheckCircle,
   Cancel,
   Timer,
   EmojiEvents,
-  Replay
+  Replay,
+  AttachFile,
+  Delete,
+  CloudUpload,
+  Description
 } from '@mui/icons-material'
 import { QuizQuestion } from '../../services/supabase'
 import {
@@ -39,10 +48,16 @@ interface QuizSectionProps {
   onComplete?: (score: number, maxScore: number) => void
 }
 
+interface EssayAnswer {
+  text: string
+  files: File[]
+}
+
 export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }) => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [loading, setLoading] = useState(true)
   const [answers, setAnswers] = useState<Map<string, string>>(new Map())
+  const [essayAnswers, setEssayAnswers] = useState<Map<string, EssayAnswer>>(new Map())
   const [submitted, setSubmitted] = useState(false)
   const [score, setScore] = useState(0)
   const [maxScore, setMaxScore] = useState(0)
@@ -50,6 +65,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
   const [timeElapsed, setTimeElapsed] = useState(0)
   const [bestAttempt, setBestAttempt] = useState<any>(null)
   const [userId, setUserId] = useState<string | null>(null)
+  const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set())
 
   // Get current user
   useEffect(() => {
@@ -69,6 +85,15 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
         setLoading(true)
         const data = await getQuizQuestions(lessonId)
         setQuestions(data)
+
+        // Initialize essay answers map
+        const essayMap = new Map<string, EssayAnswer>()
+        data.forEach(q => {
+          if (q.question_type === 'essay') {
+            essayMap.set(q.id, { text: '', files: [] })
+          }
+        })
+        setEssayAnswers(essayMap)
 
         // Fetch best attempt if user is logged in
         if (userId) {
@@ -101,21 +126,114 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     setAnswers(new Map(answers.set(questionId, value)))
   }
 
+  const handleEssayTextChange = (questionId: string, text: string) => {
+    const current = essayAnswers.get(questionId) || { text: '', files: [] }
+    setEssayAnswers(new Map(essayAnswers.set(questionId, { ...current, text })))
+  }
+
+  const handleFileSelect = async (questionId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    const current = essayAnswers.get(questionId) || { text: '', files: [] }
+    const newFiles = Array.from(files)
+    
+    // Validate file size (max 5MB per file)
+    const maxSize = 5 * 1024 * 1024
+    const validFiles = newFiles.filter(file => {
+      if (file.size > maxSize) {
+        alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`)
+        return false
+      }
+      return true
+    })
+
+    setEssayAnswers(new Map(essayAnswers.set(questionId, {
+      ...current,
+      files: [...current.files, ...validFiles]
+    })))
+  }
+
+  const handleRemoveFile = (questionId: string, fileIndex: number) => {
+    const current = essayAnswers.get(questionId)
+    if (!current) return
+
+    const newFiles = current.files.filter((_, index) => index !== fileIndex)
+    setEssayAnswers(new Map(essayAnswers.set(questionId, {
+      ...current,
+      files: newFiles
+    })))
+  }
+
+  const uploadFiles = async (questionId: string, files: File[]): Promise<string[]> => {
+    const uploadedUrls: string[] = []
+    
+    for (const file of files) {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${userId}/${questionId}/${Date.now()}.${fileExt}`
+      const filePath = `quiz-submissions/${fileName}`
+
+      const { data, error } = await supabase.storage
+        .from('uploads')
+        .upload(filePath, file)
+
+      if (error) {
+        console.error('Error uploading file:', error)
+        continue
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('uploads')
+        .getPublicUrl(filePath)
+
+      if (urlData) {
+        uploadedUrls.push(urlData.publicUrl)
+      }
+    }
+
+    return uploadedUrls
+  }
+
   const handleSubmit = async () => {
     if (!userId) {
       alert('Anda harus login untuk menyimpan hasil quiz')
       return
     }
 
-    const result = calculateQuizScore(questions, answers)
-    setScore(result.score)
-    setMaxScore(result.maxScore)
-    setSubmitted(true)
+    setLoading(true)
 
     try {
+      // Upload all essay files first
+      const essayAnswersWithUrls = new Map<string, any>()
+      
+      for (const [questionId, essayAnswer] of essayAnswers.entries()) {
+        const fileUrls = essayAnswer.files.length > 0 
+          ? await uploadFiles(questionId, essayAnswer.files)
+          : []
+        
+        essayAnswersWithUrls.set(questionId, {
+          text: essayAnswer.text,
+          fileUrls
+        })
+      }
+
+      // Calculate score for multiple choice
+      const mcQuestions = questions.filter(q => q.question_type === 'multiple_choice' || !q.question_type)
+      const result = calculateQuizScore(mcQuestions, answers)
+      
+      // Add essay answers to the result
+      const allAnswers = {
+        ...result.quizAnswers,
+        essays: Object.fromEntries(essayAnswersWithUrls)
+      }
+
+      setScore(result.score)
+      setMaxScore(result.maxScore)
+      setSubmitted(true)
+
       await saveQuizAttempt(userId, {
         lessonId,
-        answers: result.quizAnswers,
+        answers: allAnswers,
         score: result.score,
         maxScore: result.maxScore,
         timeSpentSeconds: timeElapsed,
@@ -129,11 +247,21 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       }
     } catch (error) {
       console.error('Error saving quiz attempt:', error)
+      alert('Terjadi kesalahan saat menyimpan jawaban. Silakan coba lagi.')
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleRetry = () => {
     setAnswers(new Map())
+    const essayMap = new Map<string, EssayAnswer>()
+    questions.forEach(q => {
+      if (q.question_type === 'essay') {
+        essayMap.set(q.id, { text: '', files: [] })
+      }
+    })
+    setEssayAnswers(essayMap)
     setSubmitted(false)
     setScore(0)
     setTimeElapsed(0)
@@ -160,7 +288,19 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     return undefined
   }
 
-  if (loading) {
+  const isAllQuestionsAnswered = () => {
+    const mcCount = questions.filter(q => q.question_type === 'multiple_choice' || !q.question_type).length
+    const essayCount = questions.filter(q => q.question_type === 'essay').length
+    
+    const mcAnswered = answers.size >= mcCount
+    const essayAnswered = Array.from(essayAnswers.values()).filter(
+      ans => ans.text.trim().length > 0
+    ).length >= essayCount
+
+    return mcAnswered && essayAnswered
+  }
+
+  if (loading && questions.length === 0) {
     return (
       <Box sx={{ p: 3 }}>
         <LinearProgress />
@@ -220,6 +360,11 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                 <Typography variant="body2" color="text.secondary">
                   Waktu pengerjaan: {formatTime(timeElapsed)}
                 </Typography>
+                <Alert severity="info" sx={{ mt: 2 }}>
+                  <Typography variant="body2">
+                    ℹ️ Jawaban essay Anda telah tersimpan dan akan dinilai oleh guru.
+                  </Typography>
+                </Alert>
               </Box>
               <Button
                 variant="contained"
@@ -238,7 +383,15 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       <Stack spacing={3}>
         {questions.map((question, index) => {
           const selectedAnswer = answers.get(question.id)
-          const isCorrect = submitted && selectedAnswer === question.correct_answer
+          const essayAnswer = essayAnswers.get(question.id)
+          const isCorrect = submitted && (
+            question.question_type === 'essay'
+              ? question.acceptable_answers?.some(acceptable =>
+                  acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
+                  (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
+                )
+              : selectedAnswer === question.correct_answer
+          )
 
           return (
             <Paper key={question.id} elevation={2} sx={{ p: 3 }}>
@@ -268,48 +421,146 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                     />
                   )}
 
-                  <FormControl component="fieldset" fullWidth disabled={submitted}>
-                    <RadioGroup
-                      value={selectedAnswer || ''}
-                      onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                    >
-                      {question.options &&
-                        typeof question.options === 'object' &&
-                        Object.entries(question.options).map(([key, value]) => (
-                          <Paper
-                            key={key}
-                            variant="outlined"
-                            sx={{
-                              p: 1,
-                              mb: 1,
-                              bgcolor: getAnswerColor(question.id, key),
-                              border: selectedAnswer === key ? 2 : 1,
-                              borderColor:
-                                selectedAnswer === key ? 'primary.main' : 'divider'
-                            }}
-                          >
-                            <FormControlLabel
-                              value={key}
-                              control={<Radio />}
-                              label={
-                                <Stack direction="row" spacing={1} alignItems="center">
-                                  <Typography>{String(value)}</Typography>
-                                  {submitted && key === question.correct_answer && (
-                                    <CheckCircle color="success" fontSize="small" />
-                                  )}
-                                  {submitted &&
-                                    key === selectedAnswer &&
-                                    key !== question.correct_answer && (
-                                      <Cancel color="error" fontSize="small" />
+                  {/* Multiple Choice Questions */}
+                  {question.question_type === 'multiple_choice' || !question.question_type ? (
+                    <FormControl component="fieldset" fullWidth disabled={submitted}>
+                      <RadioGroup
+                        value={selectedAnswer || ''}
+                        onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                      >
+                        {question.options &&
+                          typeof question.options === 'object' &&
+                          Object.entries(question.options).map(([key, value]) => (
+                            <Paper
+                              key={key}
+                              variant="outlined"
+                              sx={{
+                                p: 1,
+                                mb: 1,
+                                bgcolor: getAnswerColor(question.id, key),
+                                border: selectedAnswer === key ? 2 : 1,
+                                borderColor:
+                                  selectedAnswer === key ? 'primary.main' : 'divider'
+                              }}
+                            >
+                              <FormControlLabel
+                                value={key}
+                                control={<Radio />}
+                                label={
+                                  <Stack direction="row" spacing={1} alignItems="center">
+                                    <Typography>{String(value)}</Typography>
+                                    {submitted && key === question.correct_answer && (
+                                      <CheckCircle color="success" fontSize="small" />
                                     )}
-                                </Stack>
-                              }
-                              sx={{ width: '100%', m: 0 }}
-                            />
-                          </Paper>
-                        ))}
-                    </RadioGroup>
-                  </FormControl>
+                                    {submitted &&
+                                      key === selectedAnswer &&
+                                      key !== question.correct_answer && (
+                                        <Cancel color="error" fontSize="small" />
+                                      )}
+                                  </Stack>
+                                }
+                                sx={{ width: '100%', m: 0 }}
+                              />
+                            </Paper>
+                          ))}
+                      </RadioGroup>
+                    </FormControl>
+                  ) : (
+                    /* Essay Questions */
+                    <Box sx={{ mt: 2 }}>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        placeholder="Tuliskan jawaban Anda di sini..."
+                        value={essayAnswer?.text || ''}
+                        onChange={(e) => handleEssayTextChange(question.id, e.target.value)}
+                        disabled={submitted}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            bgcolor: submitted
+                              ? (question.acceptable_answers?.some(acceptable =>
+                                  acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
+                                  (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
+                                ) ? 'success.light' : 'error.light')
+                              : 'background.paper'
+                          }
+                        }}
+                      />
+                      
+                      {/* File Upload */}
+                      {!submitted && (
+                        <Box sx={{ mt: 2 }}>
+                          <input
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            style={{ display: 'none' }}
+                            id={`file-upload-${question.id}`}
+                            type="file"
+                            multiple
+                            onChange={(e) => handleFileSelect(question.id, e)}
+                          />
+                          <label htmlFor={`file-upload-${question.id}`}>
+                            <Button
+                              variant="outlined"
+                              component="span"
+                              startIcon={<AttachFile />}
+                              size="small"
+                            >
+                              Lampirkan File
+                            </Button>
+                          </label>
+                        </Box>
+                      )}
+
+                      {/* File List */}
+                      {essayAnswer && essayAnswer.files.length > 0 && (
+                        <List dense sx={{ mt: 1 }}>
+                          {essayAnswer.files.map((file, index) => (
+                            <ListItem key={index}>
+                              <Description sx={{ mr: 1 }} />
+                              <ListItemText primary={file.name} secondary={`${(file.size / 1024).toFixed(1)} KB`} />
+                              {!submitted && (
+                                <ListItemSecondaryAction>
+                                  <IconButton
+                                    edge="end"
+                                    onClick={() => handleRemoveFile(question.id, index)}
+                                    size="small"
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                </ListItemSecondaryAction>
+                              )}
+                            </ListItem>
+                          ))}
+                        </List>
+                      )}
+
+                      {/* Essay Result */}
+                      {submitted && (
+                        <Box sx={{ mt: 1 }}>
+                          {question.acceptable_answers?.some(acceptable =>
+                            acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
+                            (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
+                          ) ? (
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <CheckCircle color="success" fontSize="small" />
+                              <Typography variant="body2" color="success.main">
+                                Jawaban Benar!
+                              </Typography>
+                            </Stack>
+                          ) : (
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Cancel color="error" fontSize="small" />
+                              <Typography variant="body2" color="error.main">
+                                Jawaban akan dinilai oleh guru
+                              </Typography>
+                            </Stack>
+                          )}
+                        </Box>
+                      )}
+                    </Box>
+                  )}
 
                   {/* Explanation */}
                   {submitted && question.explanation && (
@@ -338,12 +589,12 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
             variant="contained"
             size="large"
             onClick={handleSubmit}
-            disabled={answers.size !== questions.length}
+            disabled={!isAllQuestionsAnswered() || loading}
             sx={{ minWidth: 200 }}
           >
-            {answers.size === questions.length
+            {loading ? 'Menyimpan...' : isAllQuestionsAnswered()
               ? 'Submit Quiz'
-              : `Jawab semua soal (${answers.size}/${questions.length})`}
+              : `Jawab semua soal (${answers.size + Array.from(essayAnswers.values()).filter(ans => ans.text.trim().length > 0).length}/${questions.length})`}
           </Button>
         </Box>
       )}
@@ -352,11 +603,11 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       {!submitted && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2" color="text.secondary" textAlign="center">
-            {answers.size} dari {questions.length} soal terjawab
+            {answers.size + Array.from(essayAnswers.values()).filter(ans => ans.text.trim().length > 0).length} dari {questions.length} soal terjawab
           </Typography>
           <LinearProgress
             variant="determinate"
-            value={(answers.size / questions.length) * 100}
+            value={((answers.size + Array.from(essayAnswers.values()).filter(ans => ans.text.trim().length > 0).length) / questions.length) * 100}
             sx={{ mt: 1 }}
           />
         </Box>
