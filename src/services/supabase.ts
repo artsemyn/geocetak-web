@@ -259,7 +259,7 @@ export interface Teacher extends Profile {}
 export interface Class extends Classroom {}
 export interface ClassStudent extends ClassroomMember {}
 export interface ProblemAttempt extends QuizAttempt {}
-}
+
 
 // Assignments table
 export interface Assignment {
