@@ -395,6 +395,257 @@ const lessonsData = [
   }
 ]
 
+import { supabase } from '../services/supabase'
+
+interface QuizQuestionData {
+  module_slug: string
+  lesson_order?: number
+  question_text: string
+  options: Record<string, string>
+  correct_answer: string
+  explanation: string
+  difficulty: 'easy' | 'medium' | 'hard'
+  points: number
+  order_index: number
+}
+
+interface PracticeQuestionData {
+  module_slug: string
+  question_text: string
+  question_type: 'essay'
+  correct_answer: string
+  explanation: string
+  difficulty_level: 'easy' | 'medium' | 'hard'
+  points: number
+}
+
+// ================== DATA TABUNG ==================
+const tabungQuizData: QuizQuestionData[] = [
+  {
+    module_slug: 'tabung',
+    question_text: 'Sebuah gelas minum besar berbentuk tabung memiliki tinggi 30 cm dan diameter 20 cm. Tentukan kapasitas gelas tersebut (volume) dan luas permukaan bagian dalam gelas yang terkena air! (π = 3,14)',
+    options: {
+      a: 'Volume = 9.420 cm³, Luas permukaan = 2.828 cm²',
+      b: 'Volume = 12.000 cm³, Luas permukaan = 3.142 cm²',
+      c: 'Volume = 9.420 cm³, Luas permukaan = 2.828 cm²',
+      d: 'Volume = 18.840 cm³, Luas permukaan = 6.283 cm²'
+    },
+    correct_answer: 'a',
+    explanation: 'Volume = πr²t = 3,14 × (10)² × 30 = 9.420 cm³. Luas permukaan = 2πrt + πr² = 2(3,14)(10)(30) + 3,14(100) = 2.828 cm²',
+    difficulty: 'medium',
+    points: 10,
+    order_index: 1
+  },
+  {
+    module_slug: 'tabung',
+    question_text: 'Sebuah kaleng cat berbentuk tabung memiliki tinggi 10 cm dan dapat menampung 6.400 cm³ cat. Tentukanlah luas permukaan kaleng cat tersebut yang harus dilapisi label! (π = 3,14)',
+    options: {
+      a: '804,25 cm²',
+      b: '928 cm²',
+      c: '1.280 cm²',
+      d: '1.608 cm²'
+    },
+    correct_answer: 'd',
+    explanation: 'V = πr²t → 6400 = 3,14 × r² × 10 → r² ≈ 203,8 → r ≈ 14,3 cm. L = 2πr(r+t) = 2(3,14)(14,3)(14,3+10) ≈ 1.608 cm²',
+    difficulty: 'hard',
+    points: 15,
+    order_index: 2
+  },
+  // ... tambahkan soal lain
+]
+
+const tabungPracticeData: PracticeQuestionData[] = [
+  {
+    module_slug: 'tabung',
+    question_text: 'Sebuah kamar mandi kecil berbentuk ¼ tabung tanpa tutup memiliki jari-jari alas 1,4 m dan tinggi 2 m. Hitunglah luas permukaan kamar mandi yang perlu dipasang keramik. Gunakan π = 3,14.',
+    question_type: 'essay',
+    correct_answer: 'Luas ≈ 9,89 m²',
+    explanation: 'L = ¼(2πrt + πr²) + 2rt = ¼(2×3,14×1,4×2 + 3,14×1,96) + 2(1,4)(2) ≈ 9,89 m²',
+    difficulty_level: 'hard',
+    points: 20
+  },
+  // ... tambahkan soal lain
+]
+
+// ================== DATA KERUCUT ==================
+const kerucutQuizData: QuizQuestionData[] = [
+  {
+    module_slug: 'kerucut',
+    question_text: 'Sebuah Andi ingin membuat topi santa berbentuk kerucut untuk pesta natal. Topi tersebut memiliki tinggi 30 cm dan jari-jari alas 10 cm. Hitunglah volume topi kerucut Andi.',
+    options: {
+      a: '314 cm³',
+      b: '1000 cm³',
+      c: '3140 cm³',
+      d: '300 cm³'
+    },
+    correct_answer: 'c',
+    explanation: 'V = (1/3)πr²t = (1/3) × 3,14 × 10² × 30 = 3.140 cm³',
+    difficulty: 'easy',
+    points: 10,
+    order_index: 1
+  },
+  // ... tambahkan soal lain
+]
+
+const kerucutPracticeData: PracticeQuestionData[] = [
+  {
+    module_slug: 'kerucut',
+    question_text: 'Sebuah payung taman memiliki bentuk kerucut. Payung tersebut memiliki tinggi 1,5 meter, panjang garis pelukis 4 meter dan jari-jari alas 3 meter. Hitunglah luas permukaan payung tersebut.',
+    question_type: 'essay',
+    correct_answer: 'L = 65,94 m²',
+    explanation: 'L = πr(r + s) = 3,14 × 3 × (3 + 4) = 65,94 m²',
+    difficulty_level: 'medium',
+    points: 20
+  },
+  // ... tambahkan soal lain
+]
+
+// ================== DATA BOLA ==================
+const bolaQuizData: QuizQuestionData[] = [
+  {
+    module_slug: 'bola',
+    question_text: 'Sebuah kelapa telah dibelah menjadi setengah bola memiliki jari-jari 10 cm. Berapakah luas permukaan belahan kelapa tersebut?',
+    options: {
+      a: '100π cm²',
+      b: '150π cm²',
+      c: '200π cm²',
+      d: '400π cm²'
+    },
+    correct_answer: 'c',
+    explanation: 'L ½ bola lengkap = 2πr² (lengkung) + πr² (datar) = 3πr² = 300π cm²',
+    difficulty: 'medium',
+    points: 10,
+    order_index: 1
+  },
+  // ... tambahkan soal lain
+]
+
+const bolaPracticeData: PracticeQuestionData[] = [
+  {
+    module_slug: 'bola',
+    question_text: 'Tentukan volume sebuah bola voli jika diameternya 14 cm. Gunakan π = 22/7.',
+    question_type: 'essay',
+    correct_answer: 'V = 1.437,33 cm³',
+    explanation: 'r = 7 cm. V = (4/3)πr³ = (4/3) × (22/7) × 343 = 1.437,33 cm³',
+    difficulty_level: 'easy',
+    points: 15
+  },
+  // ... tambahkan soal lain
+]
+
+// ================== SEED FUNCTIONS ==================
+
+async function seedQuizQuestions() {
+  console.log('🌱 Seeding quiz questions...')
+  
+  const allQuizData = [
+    ...tabungQuizData,
+    ...kerucutQuizData,
+    ...bolaQuizData
+  ]
+
+  for (const quizData of allQuizData) {
+    // Get module
+    const { data: module } = await supabase
+      .from('modules')
+      .select('id')
+      .eq('slug', quizData.module_slug)
+      .single()
+
+    if (!module) {
+      console.error(`Module not found: ${quizData.module_slug}`)
+      continue
+    }
+
+    // Get first lesson of module
+    const { data: lesson } = await supabase
+      .from('lessons')
+      .select('id')
+      .eq('module_id', module.id)
+      .order('order_index')
+      .limit(1)
+      .single()
+
+    if (!lesson) {
+      console.error(`No lessons found for module: ${quizData.module_slug}`)
+      continue
+    }
+
+    // Insert quiz question
+    const { error } = await supabase
+      .from('quiz_questions')
+      .insert({
+        lesson_id: lesson.id,
+        question_text: quizData.question_text,
+        options: quizData.options,
+        correct_answer: quizData.correct_answer,
+        explanation: quizData.explanation,
+        difficulty: quizData.difficulty,
+        points: quizData.points,
+        order_index: quizData.order_index
+      })
+
+    if (error) {
+      console.error(`Error inserting quiz question:`, error)
+    } else {
+      console.log(`✅ Quiz question added for ${quizData.module_slug}`)
+    }
+  }
+}
+
+async function seedPracticeQuestions() {
+  console.log('🌱 Seeding practice questions...')
+  
+  const allPracticeData = [
+    ...tabungPracticeData,
+    ...kerucutPracticeData,
+    ...bolaPracticeData
+  ]
+
+  for (const practiceData of allPracticeData) {
+    // Get module
+    const { data: module } = await supabase
+      .from('modules')
+      .select('id')
+      .eq('slug', practiceData.module_slug)
+      .single()
+
+    if (!module) {
+      console.error(`Module not found: ${practiceData.module_slug}`)
+      continue
+    }
+
+    // Insert practice question
+    const { error } = await supabase
+      .from('practice_questions')
+      .insert({
+        module_id: module.id,
+        question_text: practiceData.question_text,
+        question_type: practiceData.question_type,
+        options: null,
+        correct_answer: practiceData.correct_answer,
+        explanation: practiceData.explanation,
+        difficulty_level: practiceData.difficulty_level,
+        points: practiceData.points,
+        is_active: true
+      })
+
+    if (error) {
+      console.error(`Error inserting practice question:`, error)
+    } else {
+      console.log(`✅ Practice question added for ${practiceData.module_slug}`)
+    }
+  }
+}
+
+async function seedAll() {
+  await seedQuizQuestions()
+  await seedPracticeQuestions()
+  console.log('✨ Seeding complete!')
+}
+
+seedAll()
+
 async function seedDatabase() {
   try {
     console.log('🌱 Starting database seeding...')

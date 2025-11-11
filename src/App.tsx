@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'rea
 import { ThemeProvider, createTheme, CssBaseline, CircularProgress } from '@mui/material'
 import { useAuthStore } from './stores/authStore'
 import { useLearningStore } from './stores/learningStore'
-import { supabase } from './services/supabase'
-import type { Assignment } from './types'
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Dashboard from './pages/Dashboard'
 import Modules from './pages/Modules'
 import LearningModule from './pages/LearningModule'
@@ -94,6 +94,10 @@ const AssignmentRouter: React.FC = () => {
 }
 
 function App() {
+  // Add Vercel Analytics component 
+  <>
+    // Add Vercel Analytics component 
+    <Analytics /><SpeedInsights /></>
   const { user, student, loading } = useAuthStore()
   const { fetchModules, fetchStudentProfile, fetchUserStats } = useLearningStore()
 
