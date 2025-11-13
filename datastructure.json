@@ -3,852 +3,1136 @@
     "table_name": "assignment_submissions",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "assignment_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "student_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "submission_text",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "submission_files",
     "data_type": "json",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "submitted_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "status",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "'draft'::character varying",
+    "character_maximum_length": 255
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "score",
     "data_type": "numeric",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "ai_feedback",
     "data_type": "json",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "teacher_feedback",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "teacher_override_score",
     "data_type": "numeric",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "graded_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "graded_by",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignment_submissions",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "classroom_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "teacher_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "title",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "assignments",
     "column_name": "description",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "module_id",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "lesson_id",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "assignment_type",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "'essay'::character varying",
+    "character_maximum_length": 255
   },
   {
     "table_name": "assignments",
     "column_name": "due_date",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "max_score",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "100",
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "rubric",
     "data_type": "json",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "is_published",
     "data_type": "boolean",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "false",
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "assignments",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classroom_members",
     "column_name": "classroom_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classroom_members",
     "column_name": "student_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classroom_members",
     "column_name": "joined_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classroom_members",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classroom_members",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classrooms",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classrooms",
     "column_name": "teacher_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classrooms",
     "column_name": "name",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "classrooms",
     "column_name": "description",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classrooms",
     "column_name": "class_code",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "classrooms",
     "column_name": "school_name",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "classrooms",
     "column_name": "grade_level",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "classrooms",
     "column_name": "is_active",
     "data_type": "boolean",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "true",
+    "character_maximum_length": null
   },
   {
     "table_name": "classrooms",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "classrooms",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()",
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "module_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "slug",
     "data_type": "text",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "title",
     "data_type": "text",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "lesson_type",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "order_index",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "content_markdown",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "video_url",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "scene_config",
     "data_type": "jsonb",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "estimated_duration_minutes",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "xp_reward",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "50",
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "is_published",
     "data_type": "boolean",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "true",
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "created_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "lessons",
     "column_name": "updated_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "migrations",
     "column_name": "id",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "nextval('migrations_id_seq'::regclass)",
+    "character_maximum_length": null
   },
   {
     "table_name": "migrations",
     "column_name": "migration",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "migrations",
     "column_name": "batch",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()",
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "slug",
     "data_type": "text",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "title",
     "data_type": "text",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "description",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "icon_url",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "order_index",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "is_published",
     "data_type": "boolean",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "true",
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "created_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "modules",
     "column_name": "updated_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "password_reset_tokens",
     "column_name": "email",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "password_reset_tokens",
     "column_name": "token",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "password_reset_tokens",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "profiles",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "profiles",
     "column_name": "email",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "profiles",
     "column_name": "full_name",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "profiles",
     "column_name": "avatar_url",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "profiles",
     "column_name": "role",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "'student'::character varying",
+    "character_maximum_length": 255
   },
   {
     "table_name": "profiles",
     "column_name": "school_name",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "profiles",
     "column_name": "grade_level",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "profiles",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "profiles",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "user_id",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "lesson_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "answers",
     "data_type": "jsonb",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "score",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "max_score",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "time_spent_seconds",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "started_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "completed_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_attempts",
     "column_name": "created_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "lesson_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "question_text",
     "data_type": "text",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "question_type",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "'multiple_choice'::text",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "options",
     "data_type": "jsonb",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "correct_answer",
     "data_type": "text",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "explanation",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "difficulty",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "'medium'::text",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "points",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "10",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "order_index",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "created_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions",
     "column_name": "updated_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": "now()",
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "lesson_id",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "question_text",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "options",
     "data_type": "jsonb",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "correct_answer",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "explanation",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "difficulty",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "points",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "order_index",
     "data_type": "integer",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "created_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "quiz_questions_backup",
     "column_name": "updated_at",
     "data_type": "timestamp with time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "user_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "lesson_id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "status",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "'not_started'::character varying",
+    "character_maximum_length": 255
   },
   {
     "table_name": "student_progress",
     "column_name": "completion_percentage",
     "data_type": "numeric",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "'0'::numeric",
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "quiz_score",
     "data_type": "numeric",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "time_spent_seconds",
     "data_type": "integer",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "0",
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "completed_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "student_progress",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "id",
     "data_type": "uuid",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "user_id",
     "data_type": "uuid",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "employee_id",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "full_name",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "email",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "email_verified_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "password",
     "data_type": "character varying",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "phone",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "school_name",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "department",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "subject_specialization",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "bio",
     "data_type": "text",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "avatar_url",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 255
   },
   {
     "table_name": "teacher",
     "column_name": "is_active",
     "data_type": "boolean",
-    "is_nullable": "NO"
+    "is_nullable": "NO",
+    "column_default": "true",
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "remember_token",
     "data_type": "character varying",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": 100
   },
   {
     "table_name": "teacher",
     "column_name": "created_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   },
   {
     "table_name": "teacher",
     "column_name": "updated_at",
     "data_type": "timestamp without time zone",
-    "is_nullable": "YES"
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
   }
 ]

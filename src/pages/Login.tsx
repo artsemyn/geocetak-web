@@ -40,6 +40,7 @@ export default function Login() {
   const [fullName, setFullName] = useState('')
   const [schoolName, setSchoolName] = useState('')
   const [gradeLevel, setGradeLevel] = useState('')
+  const [classCode, setClassCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -65,7 +66,7 @@ export default function Login() {
     setError('')
 
     try {
-      await signUp(email, password, fullName, schoolName, gradeLevel)
+      await signUp(email, password, fullName, schoolName, gradeLevel, classCode)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -206,6 +207,16 @@ export default function Login() {
                   <MenuItem value="9">Kelas 9</MenuItem>
                 </Select>
               </FormControl>
+              <TextField
+                fullWidth
+                label="Kode Kelas (Opsional)"
+                value={classCode}
+                onChange={(e) => setClassCode(e.target.value.toUpperCase())}
+                margin="normal"
+                disabled={loading}
+                placeholder="Contoh: GEO-7A"
+                helperText="Masukkan kode kelas jika guru Anda memberikannya"
+              />
               <TextField
                 fullWidth
                 label="Password"
