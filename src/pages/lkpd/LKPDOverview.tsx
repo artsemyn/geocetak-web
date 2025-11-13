@@ -19,7 +19,8 @@ import {
   Avatar,
   Stepper,
   Step,
-  StepLabel
+  StepLabel,
+  Snackbar
 } from '@mui/material';
 import {
   ArrowBack,
@@ -31,7 +32,8 @@ import {
   DesignServices,
   Build,
   Science,
-  Psychology
+  Psychology,
+  Lock
 } from '@mui/icons-material';
 import Navbar from '../../components/Navbar';
 import type { LKPDData } from '../../types/lkpd.types';
@@ -42,6 +44,7 @@ interface StageCardProps {
   description: string;
   isCompleted: boolean;
   isCurrent: boolean;
+  isLocked: boolean;
   onClick: () => void;
 }
 
@@ -51,6 +54,7 @@ const StageCard: React.FC<StageCardProps> = ({
   description,
   isCompleted,
   isCurrent,
+  isLocked,
   onClick,
 }) => {
   const stageIcons: { [key: number]: JSX.Element } = {
@@ -77,50 +81,75 @@ const StageCard: React.FC<StageCardProps> = ({
     <Card
       sx={{
         height: '100%',
-        border: isCurrent ? `3px solid ${color}` : isCompleted ? '2px solid #27AE60' : '1px solid #E0E0E0',
-        boxShadow: isCurrent ? 6 : isCompleted ? 3 : 1,
+        border: isLocked
+          ? '1px solid #BDBDBD'
+          : isCurrent
+          ? `3px solid ${color}`
+          : isCompleted
+          ? '2px solid #27AE60'
+          : '1px solid #E0E0E0',
+        boxShadow: isLocked ? 0 : isCurrent ? 6 : isCompleted ? 3 : 1,
         transition: 'all 0.3s',
         transform: isCurrent ? 'scale(1.02)' : 'scale(1)',
-        '&:hover': {
-          boxShadow: 8,
-          transform: 'translateY(-4px)'
-        },
-        background: isCurrent
+        opacity: isLocked ? 0.6 : 1,
+        cursor: isLocked ? 'not-allowed' : 'pointer',
+        '&:hover': isLocked
+          ? {}
+          : {
+              boxShadow: 8,
+              transform: 'translateY(-4px)'
+            },
+        background: isLocked
+          ? '#F5F5F5'
+          : isCurrent
           ? `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`
           : isCompleted
           ? 'linear-gradient(135deg, #27AE6015 0%, #27AE6005 100%)'
-          : 'white'
+          : 'white',
+        position: 'relative'
       }}
     >
-      <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
+      <CardActionArea onClick={isLocked ? undefined : onClick} disabled={isLocked} sx={{ height: '100%' }}>
         <CardContent sx={{ p: 3 }}>
           <Box display="flex" alignItems="flex-start" gap={2}>
             <Avatar
               sx={{
-                bgcolor: isCurrent ? color : isCompleted ? '#27AE60' : 'grey.300',
+                bgcolor: isLocked ? 'grey.400' : isCurrent ? color : isCompleted ? '#27AE60' : 'grey.300',
                 width: 56,
                 height: 56
               }}
             >
-              {stageIcons[stage]}
+              {isLocked ? <Lock sx={{ fontSize: 30 }} /> : stageIcons[stage]}
             </Avatar>
             <Box flexGrow={1}>
               <Box display="flex" alignItems="center" gap={1} mb={0.5}>
-                <Typography variant="h6" fontWeight="bold" color="textPrimary">
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  color={isLocked ? 'textSecondary' : 'textPrimary'}
+                >
                   TAHAP {stage}
                 </Typography>
-                {isCompleted && (
+                {isLocked && (
+                  <Chip label="Terkunci" size="small" sx={{ bgcolor: '#BDBDBD', color: 'white', fontSize: '0.7rem' }} />
+                )}
+                {isCompleted && !isLocked && (
                   <CheckCircle sx={{ color: '#27AE60', fontSize: 20 }} />
                 )}
-                {isCurrent && (
+                {isCurrent && !isLocked && (
                   <FiberManualRecord sx={{ color: color, fontSize: 16 }} />
                 )}
               </Box>
-              <Typography variant="subtitle2" fontWeight="600" color="textSecondary" gutterBottom>
+              <Typography
+                variant="subtitle2"
+                fontWeight="600"
+                color={isLocked ? 'textSecondary' : 'textSecondary'}
+                gutterBottom
+              >
                 {title}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                {description}
+                {isLocked ? `Selesaikan Tahap ${stage - 1} terlebih dahulu` : description}
               </Typography>
             </Box>
           </Box>
@@ -143,6 +172,8 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
   const { assignmentId } = useParams<{ assignmentId: string }>();
   const [projectData, setProjectData] = useState<LKPDData | null>(data || null);
   const [loading, setLoading] = useState(!data);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     if (!data) {
@@ -200,7 +231,23 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
     },
   ];
 
+  // Check if stage is unlocked
+  const isStageUnlocked = (stage: number): boolean => {
+    if (stage === 1) return true; // Stage 1 always unlocked
+
+    const prevStage = stage - 1;
+    const prevStageData = projectData?.[`stage${prevStage}` as keyof LKPDData];
+    return !!(prevStageData as any)?.completed_at;
+  };
+
   const handleStageClick = (stage: number) => {
+    // Check if stage is unlocked
+    if (!isStageUnlocked(stage)) {
+      setSnackbarMessage(`Selesaikan Tahap ${stage - 1} terlebih dahulu untuk membuka Tahap ${stage}`);
+      setSnackbarOpen(true);
+      return;
+    }
+
     if (onSelectStage) {
       onSelectStage(stage);
     } else {
@@ -335,6 +382,7 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
               const isCompleted = projectData?.project.current_stage! > s.stage ||
                 (projectData?.[`stage${s.stage}` as keyof LKPDData] as any)?.completed_at;
               const isCurrent = currentStage === s.stage;
+              const isLocked = !isStageUnlocked(s.stage);
 
               return (
                 <Grid item xs={12} md={6} lg={4} key={s.stage}>
@@ -344,6 +392,7 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
                     description={s.description}
                     isCompleted={isCompleted}
                     isCurrent={isCurrent}
+                    isLocked={isLocked}
                     onClick={() => handleStageClick(s.stage)}
                   />
                 </Grid>
@@ -409,6 +458,15 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
           </Typography>
         </Alert>
       </Container>
+
+      {/* Snackbar for locked stage notification */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };

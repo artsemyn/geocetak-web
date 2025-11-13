@@ -1,5 +1,18 @@
 // src/pages/lkpd/Stage4Build.tsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  Chip
+} from '@mui/material';
+import { Build } from '@mui/icons-material';
+import { StageLayout } from '../../components/lkpd/StageLayout';
+import { FileUpload } from '../../components/lkpd/FileUpload';
 import { useLKPDSection } from '@/hooks/useLKPDSection';
 import type { Stage4Data } from '@/types/lkpd.types';
 
@@ -10,8 +23,7 @@ interface Props {
 
 export function Stage4Build({ onBack, onNext }: Props) {
   const { lkpdData, autoSave, updateStage } = useLKPDSection();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [formData, setFormData] = useState<Stage4Data>({
     challenges: '',
   });
@@ -39,59 +51,20 @@ export function Stage4Build({ onBack, onNext }: Props) {
     return () => clearTimeout(timer);
   }, [formData, autoSave]);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.name.toLowerCase().endsWith('.stl')) {
-      alert('Hanya file .STL yang diperbolehkan!');
-      return;
-    }
-
-    // Validate file size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
-      alert('Ukuran file maksimal 50MB!');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
+  const handleFileChange = (fileData: { file: string; fileName: string } | null) => {
+    if (fileData) {
       setFormData({
         ...formData,
         stl_file: {
-          name: file.name,
-          size: file.size,
-          url: reader.result as string, // For local storage, nanti ganti dengan Supabase URL
+          name: fileData.fileName,
+          size: (fileData.file.length * 3) / 4, // Estimate size from base64
+          url: fileData.file,
           uploaded_at: new Date().toISOString(),
         },
       });
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleRemoveFile = () => {
-    setFormData({ ...formData, stl_file: undefined });
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    } else {
+      setFormData({ ...formData, stl_file: undefined });
     }
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-  };
-
-  const formatDate = (isoString: string): string => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   const handleSubmit = () => {
@@ -107,160 +80,143 @@ export function Stage4Build({ onBack, onNext }: Props) {
   const isValid = !!formData.stl_file && formData.challenges.length >= 10;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center text-4xl">
-              🟥
-            </div>
-            <div>
-              <div className="text-sm text-red-600 font-semibold">TAHAP 4 dari 6</div>
-              <h1 className="text-3xl font-bold text-gray-800">Create / Build</h1>
-              <p className="text-gray-600">Membuat Model dan Mencetak 3D</p>
-            </div>
-          </div>
+    <StageLayout
+      stageNumber={4}
+      title="Create / Build"
+      icon={<Build />}
+      color="#F39C12"
+      onBack={onBack}
+      onNext={handleSubmit}
+      isValid={isValid}
+      autoSaveStatus={autoSaveStatus}
+    >
+      <Box sx={{ '& > *': { mb: 4 } }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          🏗️ Upload File STL
+        </Typography>
 
-          {/* Auto-save Status */}
-          {autoSaveStatus === 'saved' && (
-            <div className="flex items-center gap-2 mt-4 text-green-600 text-sm">
-              <span>✓</span>
-              <span>Tersimpan otomatis</span>
-            </div>
-          )}
-          {autoSaveStatus === 'saving' && (
-            <div className="flex items-center gap-2 mt-4 text-red-600 text-sm">
-              <div className="animate-spin w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full" />
-              <span>Menyimpan...</span>
-            </div>
-          )}
-        </div>
+        {/* File Upload */}
+        <Box>
+          <FileUpload
+            file={formData.stl_file?.url || null}
+            fileName={formData.stl_file?.name || null}
+            onChange={handleFileChange}
+            acceptedFormats=".stl"
+            maxSizeMB={50}
+            label="📤 Upload File STL dari Tinkercad"
+            helperText="Upload file STL yang sudah kamu export dari Tinkercad. Maksimal 50MB."
+            required
+          />
+        </Box>
 
-        {/* Content */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">🏗️ Upload File STL</h2>
-          
-          {/* File Upload Section */}
-          <div className="mb-8">
-            <label className="block text-gray-800 font-semibold mb-3">
-              📤 Upload File STL dari Tinkercad <span className="text-red-500">*</span>
-            </label>
+        {/* Instructions */}
+        <Alert severity="info" icon="💡">
+          <Typography variant="body2" fontWeight="600" gutterBottom>
+            Cara export STL dari Tinkercad:
+          </Typography>
+          <List dense sx={{ m: 0, p: 0 }}>
+            <ListItem sx={{ px: 0, py: 0.5 }}>
+              <ListItemText
+                primary={
+                  <Typography variant="body2">
+                    <strong>1.</strong> Klik "Export" di menu atas
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem sx={{ px: 0, py: 0.5 }}>
+              <ListItemText
+                primary={
+                  <Typography variant="body2">
+                    <strong>2.</strong> Pilih format ".STL"
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem sx={{ px: 0, py: 0.5 }}>
+              <ListItemText
+                primary={
+                  <Typography variant="body2">
+                    <strong>3.</strong> Download file ke komputer
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem sx={{ px: 0, py: 0.5 }}>
+              <ListItemText
+                primary={
+                  <Typography variant="body2">
+                    <strong>4.</strong> Upload file tersebut di sini
+                  </Typography>
+                }
+              />
+            </ListItem>
+          </List>
+        </Alert>
 
-            {!formData.stl_file ? (
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-red-500 transition-all">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".stl"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-                <div className="text-6xl mb-4">📁</div>
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="mb-3 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
-                >
-                  Pilih File .STL
-                </button>
-                <p className="text-sm text-gray-600 mb-1">Format: .STL only (max 50MB)</p>
-              </div>
-            ) : (
-              <div className="border-2 border-green-500 rounded-xl p-6 bg-green-50">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="text-5xl">✓</div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800 text-lg mb-1">
-                        {formData.stl_file.name}
-                      </p>
-                      <p className="text-sm text-gray-600 mb-1">
-                        Ukuran: {formatFileSize(formData.stl_file.size)}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Uploaded at: {formatDate(formData.stl_file.uploaded_at)}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleRemoveFile}
-                    className="ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all text-sm font-medium"
-                  >
-                    Hapus
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+        {/* Challenges */}
+        <Box>
+          <Typography variant="h6" fontWeight="600" gutterBottom>
+            🔧 Apa tantangan atau hambatan yang kamu temui saat membuat design ini?{' '}
+            <span style={{ color: '#E74C3C' }}>*</span>
+          </Typography>
+          <TextField
+            multiline
+            rows={5}
+            fullWidth
+            value={formData.challenges}
+            onChange={(e) => setFormData({ ...formData, challenges: e.target.value })}
+            placeholder="Contoh: Sulit mengatur ketebalan dinding agar tidak terlalu tipis. Sempat kesulitan menggabungkan dua bentuk geometri..."
+            variant="outlined"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: '#F39C12',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#F39C12',
+                  borderWidth: 2
+                }
+              }
+            }}
+          />
+          <Typography variant="caption" color="textSecondary" display="block" mt={1}>
+            {formData.challenges.length} karakter (minimal 10)
+          </Typography>
+        </Box>
 
-          {/* Instructions */}
-          <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-xl">
-            <h3 className="font-semibold text-blue-900 mb-3">💡 Cara export STL dari Tinkercad:</h3>
-            <ol className="text-sm text-blue-800 space-y-2">
-              <li className="flex items-start gap-2">
-                <span className="font-bold min-w-[1.5rem]">1.</span>
-                <span>Klik "Export" di menu atas</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold min-w-[1.5rem]">2.</span>
-                <span>Pilih format ".STL"</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold min-w-[1.5rem]">3.</span>
-                <span>Download file ke komputer</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold min-w-[1.5rem]">4.</span>
-                <span>Upload file tersebut di sini</span>
-              </li>
-            </ol>
-          </div>
-
-          {/* Challenges */}
-          <div className="mb-8">
-            <label className="block text-gray-800 font-semibold mb-2">
-              🔧 Apa tantangan atau hambatan yang kamu temui saat membuat design ini? <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              value={formData.challenges}
-              onChange={(e) => setFormData({ ...formData, challenges: e.target.value })}
-              className="w-full h-32 p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
-              placeholder="Contoh: Sulit mengatur ketebalan dinding agar tidak terlalu tipis. Sempat kesulitan menggabungkan dua bentuk geometri..."
+        {/* STEAM Tags */}
+        <Box
+          sx={{
+            p: 2.5,
+            bgcolor: 'linear-gradient(135deg, #F39C1210 0%, #F39C1205 100%)',
+            borderRadius: 2,
+            border: '1px solid #F39C1220'
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+            <Typography variant="body1" fontWeight="600" color="textSecondary">
+              Tag STEAM aktif:
+            </Typography>
+            <Chip
+              label="⚙️ Engineering"
+              sx={{
+                bgcolor: 'white',
+                fontWeight: 'medium',
+                boxShadow: 1
+              }}
             />
-            <div className="text-sm text-gray-500 mt-1">
-              {formData.challenges.length} karakter (minimal 10)
-            </div>
-          </div>
-
-          {/* STEAM Tags */}
-          <div className="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gradient-to-r from-red-50 to-rose-50 rounded-xl">
-            <span className="font-semibold text-gray-700">Tag STEAM aktif:</span>
-            <span className="bg-white px-3 py-1 rounded-lg text-sm font-medium shadow-sm">⚙️ Engineering</span>
-            <span className="bg-white px-3 py-1 rounded-lg text-sm font-medium shadow-sm">💻 Technology</span>
-          </div>
-
-          {/* Navigation */}
-          <div className="flex justify-between items-center pt-6 border-t">
-            <button
-              onClick={onBack}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all flex items-center gap-2"
-            >
-              <span>←</span> Kembali ke Overview
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={!isValid}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
-                isValid
-                  ? 'bg-gradient-to-r from-red-500 to-rose-600 text-white hover:shadow-lg'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Simpan & Lanjut <span>→</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            <Chip
+              label="💻 Technology"
+              sx={{
+                bgcolor: 'white',
+                fontWeight: 'medium',
+                boxShadow: 1
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </StageLayout>
   );
 }
