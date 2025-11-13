@@ -1,7 +1,39 @@
-// src/components/lkpd/LKPDOverview.tsx
+// src/pages/lkpd/LKPDOverview.tsx
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Container,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardActionArea,
+  Grid,
+  LinearProgress,
+  Chip,
+  Paper,
+  Button,
+  Alert,
+  CircularProgress,
+  Avatar,
+  Stepper,
+  Step,
+  StepLabel
+} from '@mui/material';
+import {
+  ArrowBack,
+  CheckCircle,
+  RadioButtonUnchecked,
+  FiberManualRecord,
+  EmojiObjects,
+  Lightbulb,
+  DesignServices,
+  Build,
+  Science,
+  Psychology
+} from '@mui/icons-material';
+import Navbar from '../../components/Navbar';
 import type { LKPDData } from '../../types/lkpd.types';
 
 interface StageCardProps {
@@ -21,35 +53,80 @@ const StageCard: React.FC<StageCardProps> = ({
   isCurrent,
   onClick,
 }) => {
-  const stageIcons = ['🎯', '💡', '📐', '🏗️', '🧪', '💭'];
-  const icon = stageIcons[stage - 1] || '📋';
+  const stageIcons: { [key: number]: JSX.Element } = {
+    1: <EmojiObjects sx={{ fontSize: 40 }} />,
+    2: <Lightbulb sx={{ fontSize: 40 }} />,
+    3: <DesignServices sx={{ fontSize: 40 }} />,
+    4: <Build sx={{ fontSize: 40 }} />,
+    5: <Science sx={{ fontSize: 40 }} />,
+    6: <Psychology sx={{ fontSize: 40 }} />,
+  };
+
+  const stageColors: { [key: number]: string } = {
+    1: '#4A90E2',
+    2: '#E74C3C',
+    3: '#27AE60',
+    4: '#F39C12',
+    5: '#9B59B6',
+    6: '#1ABC9C',
+  };
+
+  const color = stageColors[stage] || '#4A90E2';
 
   return (
-    <button
-      onClick={onClick}
-      className={`
-        w-full max-w-xs p-6 rounded-lg border-2 transition-all duration-200
-        ${isCurrent 
-          ? 'border-blue-500 bg-blue-50 shadow-lg transform scale-105' 
+    <Card
+      sx={{
+        height: '100%',
+        border: isCurrent ? `3px solid ${color}` : isCompleted ? '2px solid #27AE60' : '1px solid #E0E0E0',
+        boxShadow: isCurrent ? 6 : isCompleted ? 3 : 1,
+        transition: 'all 0.3s',
+        transform: isCurrent ? 'scale(1.02)' : 'scale(1)',
+        '&:hover': {
+          boxShadow: 8,
+          transform: 'translateY(-4px)'
+        },
+        background: isCurrent
+          ? `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`
           : isCompleted
-          ? 'border-green-500 bg-green-50 hover:shadow-md'
-          : 'border-gray-300 bg-white hover:shadow-md hover:border-gray-400'
-        }
-      `}
+          ? 'linear-gradient(135deg, #27AE6015 0%, #27AE6005 100%)'
+          : 'white'
+      }}
     >
-      <div className="flex items-start gap-4">
-        <div className="text-3xl">{icon}</div>
-        <div className="text-left flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-bold text-lg">TAHAP {stage}</h3>
-            {isCompleted && <span className="text-green-600 font-bold">✓</span>}
-            {isCurrent && <span className="text-blue-600 font-bold">→</span>}
-          </div>
-          <p className="text-sm font-semibold text-gray-700">{title}</p>
-          <p className="text-xs text-gray-600 mt-1">{description}</p>
-        </div>
-      </div>
-    </button>
+      <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box display="flex" alignItems="flex-start" gap={2}>
+            <Avatar
+              sx={{
+                bgcolor: isCurrent ? color : isCompleted ? '#27AE60' : 'grey.300',
+                width: 56,
+                height: 56
+              }}
+            >
+              {stageIcons[stage]}
+            </Avatar>
+            <Box flexGrow={1}>
+              <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+                <Typography variant="h6" fontWeight="bold" color="textPrimary">
+                  TAHAP {stage}
+                </Typography>
+                {isCompleted && (
+                  <CheckCircle sx={{ color: '#27AE60', fontSize: 20 }} />
+                )}
+                {isCurrent && (
+                  <FiberManualRecord sx={{ color: color, fontSize: 16 }} />
+                )}
+              </Box>
+              <Typography variant="subtitle2" fontWeight="600" color="textSecondary" gutterBottom>
+                {title}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {description}
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
 
@@ -58,9 +135,9 @@ interface LKPDOverviewProps {
   onSelectStage?: (stage: number) => void;
 }
 
-export const LKPDOverview: React.FC<LKPDOverviewProps> = ({ 
-  data, 
-  onSelectStage 
+export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
+  data,
+  onSelectStage
 }) => {
   const navigate = useNavigate();
   const { assignmentId } = useParams<{ assignmentId: string }>();
@@ -138,147 +215,201 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4" />
-          <p className="text-gray-600">Memuat...</p>
-        </div>
-      </div>
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Navbar />
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Box textAlign="center">
+            <CircularProgress size={60} sx={{ mb: 2 }} />
+            <Typography variant="body1" color="textSecondary">
+              Memuat...
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="max-w-6xl mx-auto">
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f5f5f5' }}>
+      <Navbar />
+
+      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
         {/* Header */}
-        <div className="mb-8">
-          <button
+        <Box mb={4}>
+          <Button
             onClick={handleBackToDashboard}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-4 font-medium"
+            startIcon={<ArrowBack />}
+            sx={{ mb: 2 }}
+            variant="text"
+            color="primary"
           >
-            ← Kembali ke Dashboard
-          </button>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            OVERVIEW: 6 TAHAPAN LKPD
-          </h1>
-          <p className="text-gray-600">
+            Kembali ke Dashboard
+          </Button>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            6 TAHAPAN LKPD STEM
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
             {projectData?.project.title || 'Proyek Pembelajaran'}
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
         {/* Progress Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-lg font-bold mb-4">Kemajuan Proyek</h2>
-          
-          {/* Progress bar */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">
-                Progress: {completedStages}/{totalStages} Selesai
-              </span>
-              <span className="text-sm font-bold text-gray-700">
-                {progressPercent}%
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
+        <Paper sx={{ p: 3, mb: 4 }} elevation={2}>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
+            📊 Kemajuan Proyek
+          </Typography>
 
-          {/* Stage indicators */}
-          <div className="flex justify-between items-center gap-2">
+          {/* Progress bar */}
+          <Box mb={3}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+              <Typography variant="body2" fontWeight="medium" color="textSecondary">
+                Progress: {completedStages}/{totalStages} Tahap Selesai
+              </Typography>
+              <Typography variant="body2" fontWeight="bold" color="textPrimary">
+                {progressPercent}%
+              </Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={progressPercent}
+              sx={{
+                height: 10,
+                borderRadius: 5,
+                bgcolor: 'grey.200',
+                '& .MuiLinearProgress-bar': {
+                  background: 'linear-gradient(90deg, #27AE60 0%, #2ECC71 100%)',
+                  borderRadius: 5
+                }
+              }}
+            />
+          </Box>
+
+          {/* Stage Stepper */}
+          <Stepper activeStep={currentStage - 1} alternativeLabel>
             {stages.map((s) => {
               const isCompleted = projectData?.project.current_stage! > s.stage ||
                 (projectData?.[`stage${s.stage}` as keyof LKPDData] as any)?.completed_at;
-              const isCurrent = currentStage === s.stage;
-              
+
               return (
-                <div key={s.stage} className="flex flex-col items-center flex-1">
-                  <div
-                    className={`
-                      w-10 h-10 rounded-full flex items-center justify-center font-bold text-white
-                      transition-all duration-200
-                      ${isCurrent 
-                        ? 'bg-blue-500 ring-2 ring-blue-300 ring-offset-2' 
-                        : isCompleted 
-                        ? 'bg-green-500' 
-                        : 'bg-gray-300'
-                      }
-                    `}
+                <Step key={s.stage} completed={isCompleted}>
+                  <StepLabel
+                    StepIconComponent={() => (
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          bgcolor: isCompleted ? '#27AE60' : currentStage === s.stage ? '#4A90E2' : 'grey.300',
+                          fontSize: '0.9rem',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {isCompleted ? <CheckCircle sx={{ fontSize: 20 }} /> : s.stage}
+                      </Avatar>
+                    )}
                   >
-                    {isCompleted ? '✓' : s.stage}
-                  </div>
-                  <span className="text-xs text-center mt-1 font-medium text-gray-700">
-                    T{s.stage}
-                  </span>
-                </div>
+                    <Typography variant="caption" fontWeight="600">
+                      T{s.stage}
+                    </Typography>
+                  </StepLabel>
+                </Step>
               );
             })}
-          </div>
-        </div>
+          </Stepper>
+        </Paper>
 
         {/* Stages Grid */}
-        <div className="mb-8">
-          <h2 className="text-lg font-bold mb-6 text-gray-800">
+        <Box mb={4}>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
             Pilih tahap yang ingin dikerjakan:
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          </Typography>
+
+          <Grid container spacing={3} mt={1}>
             {stages.map((s) => {
               const isCompleted = projectData?.project.current_stage! > s.stage ||
                 (projectData?.[`stage${s.stage}` as keyof LKPDData] as any)?.completed_at;
               const isCurrent = currentStage === s.stage;
 
               return (
-                <StageCard
-                  key={s.stage}
-                  stage={s.stage}
-                  title={s.title}
-                  description={s.description}
-                  isCompleted={isCompleted}
-                  isCurrent={isCurrent}
-                  onClick={() => handleStageClick(s.stage)}
-                />
+                <Grid item xs={12} md={6} lg={4} key={s.stage}>
+                  <StageCard
+                    stage={s.stage}
+                    title={s.title}
+                    description={s.description}
+                    isCompleted={isCompleted}
+                    isCurrent={isCurrent}
+                    onClick={() => handleStageClick(s.stage)}
+                  />
+                </Grid>
               );
             })}
-          </div>
-        </div>
+          </Grid>
+        </Box>
 
         {/* Project Summary */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-bold mb-4">📊 Ringkasan Proyek</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-2xl font-bold text-blue-600">6</p>
-              <p className="text-sm text-gray-600">Total Tahapan</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">{completedStages}</p>
-              <p className="text-sm text-gray-600">Selesai</p>
-            </div>
-            <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <p className="text-2xl font-bold text-yellow-600">{totalStages - completedStages}</p>
-              <p className="text-sm text-gray-600">Tersisa</p>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <p className="text-2xl font-bold text-purple-600">{progressPercent}%</p>
-              <p className="text-sm text-gray-600">Progres</p>
-            </div>
-          </div>
-        </div>
+        <Paper sx={{ p: 3, mb: 4 }} elevation={2}>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
+            📋 Ringkasan Proyek
+          </Typography>
+          <Grid container spacing={2} mt={1}>
+            <Grid item xs={6} md={3}>
+              <Card sx={{ textAlign: 'center', p: 2, bgcolor: '#4A90E215' }}>
+                <Typography variant="h4" fontWeight="bold" color="#4A90E2">
+                  {totalStages}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Total Tahapan
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={3}>
+              <Card sx={{ textAlign: 'center', p: 2, bgcolor: '#27AE6015' }}>
+                <Typography variant="h4" fontWeight="bold" color="#27AE60">
+                  {completedStages}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Selesai
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={3}>
+              <Card sx={{ textAlign: 'center', p: 2, bgcolor: '#F39C1215' }}>
+                <Typography variant="h4" fontWeight="bold" color="#F39C12">
+                  {totalStages - completedStages}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Tersisa
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={6} md={3}>
+              <Card sx={{ textAlign: 'center', p: 2, bgcolor: '#9B59B615' }}>
+                <Typography variant="h4" fontWeight="bold" color="#9B59B6">
+                  {progressPercent}%
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Progress
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+        </Paper>
 
         {/* Info Alert */}
-        <div className="mt-8 bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
-          <p className="text-sm text-amber-800">
-            <strong>💡 Tips:</strong> Kerjakan tahapan secara berurutan untuk hasil terbaik. 
+        <Alert severity="info" icon={<EmojiObjects />} sx={{ fontWeight: 500 }}>
+          <Typography variant="body2">
+            <strong>💡 Tips:</strong> Kerjakan tahapan secara berurutan untuk hasil terbaik.
             Setiap tahapan akan tersimpan otomatis saat kamu pindah ke tahapan berikutnya.
-          </p>
-        </div>
-      </div>
-    </div>
+          </Typography>
+        </Alert>
+      </Container>
+    </Box>
   );
 };
 

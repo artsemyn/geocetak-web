@@ -90,5 +90,5 @@ export default function LKPDViewer() {
     }
   };
 
-  return <div className="min-h-screen">{renderView()}</div>;
+  return <div>{renderView()}</div>;
 }
