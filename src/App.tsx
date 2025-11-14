@@ -16,7 +16,8 @@ import MyModels from './pages/MyModels'
 import PracticeQuestions from './pages/PracticeQuestions'
 import ChatBotPage from './pages/ChatBotPage'
 import Profile from './pages/Profile'
-import { LKPDWorkspace } from './components/lkpd/LKPDWorkspace'
+import LKPDViewer from '@/pages/lkpd/LKPDViewer';
+
 
 const theme = createTheme({
   palette: {
@@ -81,7 +82,7 @@ const AssignmentRouter: React.FC = () => {
 
   // Error state
   if (error || !assignment) {
-    return <Navigate to="/assessment" replace />
+    return <Navigate to="/lkpd" replace />
   }
 
   // Route based on assignment type
@@ -134,8 +135,8 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/modules" element={<Modules />} />
               <Route path="/module/:moduleSlug" element={<LearningModule />} />
-              <Route path="/assessment" element={<LKPDWorkspace />} />
               <Route path="/assignment/:assignmentId" element={<AssignmentRouter />} />
+              <Route path="/lkpd" element={<LKPDViewer />} />
               <Route path="/three-editor" element={<ThreeEditor />} />
               <Route path="/my-models" element={<MyModels />} />
               <Route path="/chatbot" element={<ChatBotPage />} />

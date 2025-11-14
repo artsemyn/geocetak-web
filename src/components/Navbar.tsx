@@ -158,16 +158,16 @@ export default function Navbar({
                 <Button
                   color="inherit"
                   startIcon={<Assignment />}
-                  onClick={() => navigate('/assessment')}
+                  onClick={() => navigate('/lkpd')}
                   sx={{
                     color: 'white',
-                    backgroundColor: location.pathname === '/assessment' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    backgroundColor: location.pathname === '/lkpd' ? 'rgba(255,255,255,0.1)' : 'transparent',
                     '&:hover': {
                       backgroundColor: 'rgba(255,255,255,0.1)'
                     }
                   }}
                 >
-                  Assessment
+                  LKPD
                 </Button>
                 <Button
                   color="inherit"
@@ -302,9 +302,9 @@ export default function Navbar({
               <School sx={{ mr: 2 }} />
               Modul
             </MenuItem>
-            <MenuItem onClick={() => handleNavigate('/assessment')}>
+            <MenuItem onClick={() => handleNavigate('/LKPD')}>
               <Assignment sx={{ mr: 2 }} />
-              Assessment
+              Student Worksheet
             </MenuItem>
             <MenuItem onClick={() => handleNavigate('/three-editor')}>
               <Build sx={{ mr: 2 }} />
