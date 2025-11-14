@@ -68,6 +68,15 @@ export class QuizStorageService {
 
       if (error) {
         console.error('Storage upload error:', error)
+        
+        // Handle bucket not found error specifically
+        if (error.message?.includes('Bucket not found') || error.message?.includes('bucket_not_found')) {
+          return {
+            success: false,
+            error: `Bucket 'assignment-files' tidak ditemukan. Pastikan bucket sudah dibuat di Supabase Storage dan memiliki permission yang benar.`
+          }
+        }
+        
         return {
           success: false,
           error: `Gagal mengupload ${file.name}: ${error.message}`
@@ -100,6 +109,13 @@ export class QuizStorageService {
         .remove([filePath])
 
       if (error) {
+        // Handle bucket not found error specifically
+        if (error.message?.includes('Bucket not found') || error.message?.includes('bucket_not_found')) {
+          return {
+            success: false,
+            error: `Bucket 'assignment-files' tidak ditemukan. Pastikan bucket sudah dibuat di Supabase Storage.`
+          }
+        }
         return { success: false, error: error.message }
       }
       return { success: true }

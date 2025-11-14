@@ -204,6 +204,33 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     })))
   }
 
+  const handleRemoveUploadedFile = async (questionId: string, fileIndex: number) => {
+    const current = essayAnswers.get(questionId)
+    if (!current || !current.uploadedFiles) return
+
+    const fileToRemove = current.uploadedFiles[fileIndex]
+    
+    try {
+      // Remove file from storage
+      await QuizStorageService.deleteQuizPhoto(fileToRemove.filePath)
+      
+      // Update state
+      const newUploadedFiles = current.uploadedFiles.filter((_, index) => index !== fileIndex)
+      setEssayAnswers(new Map(essayAnswers.set(questionId, {
+        ...current,
+        uploadedFiles: newUploadedFiles
+      })))
+    } catch (error) {
+      console.error('Error removing file:', error)
+      alert('Gagal menghapus file')
+    }
+  }
+
+  const handlePreviewFile = (fileUrl: string, fileName: string) => {
+    // Open file in new tab for preview
+    window.open(fileUrl, '_blank')
+  }
+
   const handleSubmit = async () => {
     if (!userId) {
       alert('Anda harus login untuk menyimpan hasil quiz')
@@ -324,6 +351,14 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     ).length >= essayCount
 
     return mcAnswered && essayAnswered
+  }
+
+  const getAnsweredQuestionsCount = () => {
+    const mcAnswered = answers.size
+    const essayAnswered = Array.from(essayAnswers.values()).filter(
+      ans => ans.text.trim().length > 0 || (ans.uploadedFiles && ans.uploadedFiles.length > 0)
+    ).length
+    return mcAnswered + essayAnswered
   }
 
   if (loading && questions.length === 0) {
@@ -532,20 +567,78 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                               component="span"
                               startIcon={<AttachFile />}
                               size="small"
+                              disabled={uploadingFiles.has(question.id)}
                             >
-                              Lampirkan File
+                              {uploadingFiles.has(question.id) ? 'Mengupload...' : 
+                               (essayAnswer?.uploadedFiles && essayAnswer.uploadedFiles.length > 0 ? 'Tambah File' : 'Lampirkan File')}
                             </Button>
                           </label>
+                          {uploadingFiles.has(question.id) && (
+                            <LinearProgress sx={{ mt: 1 }} />
+                          )}
                         </Box>
                       )}
 
-                      {/* File List */}
-                      {essayAnswer && essayAnswer.files.length > 0 && (
+                      {/* Uploaded Files List */}
+                      {essayAnswer && essayAnswer.uploadedFiles && essayAnswer.uploadedFiles.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            File yang dilampirkan:
+                          </Typography>
+                          <List dense>
+                            {essayAnswer.uploadedFiles.map((file, index) => (
+                              <ListItem 
+                                key={index}
+                                sx={{ 
+                                  bgcolor: 'background.paper',
+                                  border: 1,
+                                  borderColor: 'divider',
+                                  borderRadius: 1,
+                                  mb: 1,
+                                  '&:hover': {
+                                    bgcolor: 'action.hover',
+                                    cursor: 'pointer'
+                                  }
+                                }}
+                                onClick={() => handlePreviewFile(file.url, file.fileName)}
+                              >
+                                <Description sx={{ mr: 1, color: 'primary.main' }} />
+                                <ListItemText 
+                                  primary={file.fileName} 
+                                  secondary="Klik untuk melihat file"
+                                  primaryTypographyProps={{
+                                    fontWeight: 'medium',
+                                    color: 'primary.main'
+                                  }}
+                                />
+                                {!submitted && (
+                                  <ListItemSecondaryAction>
+                                    <IconButton
+                                      edge="end"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleRemoveUploadedFile(question.id, index)
+                                      }}
+                                      size="small"
+                                      sx={{ color: 'error.main' }}
+                                    >
+                                      <Delete />
+                                    </IconButton>
+                                  </ListItemSecondaryAction>
+                                )}
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Box>
+                      )}
+
+                      {/* Local Files List (files being uploaded) */}
+                      {essayAnswer && essayAnswer.files && essayAnswer.files.length > 0 && (
                         <List dense sx={{ mt: 1 }}>
                           {essayAnswer.files.map((file, index) => (
                             <ListItem key={index}>
-                              <Description sx={{ mr: 1 }} />
-                              <ListItemText primary={file.name} secondary={`${(file.size / 1024).toFixed(1)} KB`} />
+                              <CloudUpload sx={{ mr: 1, color: 'warning.main' }} />
+                              <ListItemText primary={file.name} secondary={`${(file.size / 1024).toFixed(1)} KB - Sedang diupload...`} />
                               {!submitted && (
                                 <ListItemSecondaryAction>
                                   <IconButton
@@ -620,7 +713,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
           >
             {loading ? 'Menyimpan...' : isAllQuestionsAnswered()
               ? 'Submit Quiz'
-              : `Jawab semua soal (${answers.size + Array.from(essayAnswers.values()).filter(ans => ans.text.trim().length > 0).length}/${questions.length})`}
+              : `Jawab semua soal (${getAnsweredQuestionsCount()}/${questions.length})`}
           </Button>
         </Box>
       )}
@@ -629,11 +722,11 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       {!submitted && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2" color="text.secondary" textAlign="center">
-            {answers.size + Array.from(essayAnswers.values()).filter(ans => ans.text.trim().length > 0).length} dari {questions.length} soal terjawab
+            {getAnsweredQuestionsCount()} dari {questions.length} soal terjawab
           </Typography>
           <LinearProgress
             variant="determinate"
-            value={((answers.size + Array.from(essayAnswers.values()).filter(ans => ans.text.trim().length > 0).length) / questions.length) * 100}
+            value={(getAnsweredQuestionsCount() / questions.length) * 100}
             sx={{ mt: 1 }}
           />
         </Box>
