@@ -67,14 +67,18 @@ export function Stage2Imagine({ onBack, onNext }: Props) {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (formData.sketch_images.length === 0 || !formData.design_description) {
       alert('Mohon upload minimal 1 gambar dan isi deskripsi!');
       return;
     }
 
-    updateStage(2, formData);
-    onNext();
+    try {
+      await updateStage(2, formData);
+      onNext();
+    } catch (error) {
+      console.error('Failed to update stage:', error);
+    }
   };
 
   const isValid = formData.sketch_images.length > 0 && formData.design_description.length >= 20;

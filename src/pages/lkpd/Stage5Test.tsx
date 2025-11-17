@@ -81,14 +81,18 @@ export function Stage5Test({ onBack, onNext }: Props) {
     return () => clearTimeout(timer);
   }, [formData, autoSave]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.strengths || !formData.weaknesses || formData.result_photos.length === 0) {
       alert('Mohon lengkapi analisis dan upload minimal 1 foto!');
       return;
     }
 
-    updateStage(5, formData);
-    onNext();
+    try {
+      await updateStage(5, formData);
+      onNext();
+    } catch (error) {
+      console.error('Failed to update stage:', error);
+    }
   };
 
   const isValid = formData.strengths.length >= 20 &&

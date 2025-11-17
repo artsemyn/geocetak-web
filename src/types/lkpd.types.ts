@@ -74,3 +74,29 @@ export interface LKPDData {
   stage5?: Stage5Data;
   stage6?: Stage6Data;
 }
+
+// Database Types
+export interface LKPDSubmission {
+  id: string;
+  student_id: string;
+  title: string;
+  project_type: 'cylinder' | 'hemisphere' | 'cone' | 'composite';
+  project_data: LKPDData;
+  current_stage: 1 | 2 | 3 | 4 | 5 | 6;
+  completed_stages: number[];
+  is_completed: boolean;
+  started_at: string;
+  completed_at: string | null;
+  submitted_at: string | null;
+  last_auto_save: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// File Upload Types
+export interface FileUploadResult {
+  url: string;
+  path: string;
+  name: string;
+  size: number;
+}

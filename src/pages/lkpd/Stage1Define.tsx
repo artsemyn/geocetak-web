@@ -46,13 +46,18 @@ export function Stage1Define({ onBack, onNext }: Props) {
     return () => clearTimeout(timer);
   }, [formData, autoSave]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.project_goal || !formData.shape_importance) {
       alert('Mohon lengkapi semua field!');
       return;
     }
-    updateStage(1, formData);
-    onNext();
+
+    try {
+      await updateStage(1, formData);
+      onNext();
+    } catch (error) {
+      console.error('Failed to update stage:', error);
+    }
   };
 
   const isValid = formData.project_goal.length >= 10 && formData.shape_importance.length >= 10;

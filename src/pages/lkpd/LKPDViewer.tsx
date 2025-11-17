@@ -15,7 +15,7 @@ type ViewType = 'overview' | 'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5
 export default function LKPDViewer() {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<ViewType>('overview');
-  const { lkpdData, initializeProject } = useLKPDSection();
+  const { lkpdData, initializeProject, submitProject } = useLKPDSection();
 
   useEffect(() => {
     // Redirect to dashboard on mount (when user tries to access dashboard view)
@@ -118,7 +118,10 @@ export default function LKPDViewer() {
         return (
           <Stage6Reflect
             onBack={() => setCurrentView('overview')}
-            onComplete={() => setCurrentView('success')}
+            onComplete={async () => {
+              await submitProject();
+              setCurrentView('success');
+            }}
           />
         );
 

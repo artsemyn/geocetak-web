@@ -67,14 +67,18 @@ export function Stage4Build({ onBack, onNext }: Props) {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.stl_file || !formData.challenges) {
       alert('Mohon upload file STL dan isi tantangan yang dihadapi!');
       return;
     }
 
-    updateStage(4, formData);
-    onNext();
+    try {
+      await updateStage(4, formData);
+      onNext();
+    } catch (error) {
+      console.error('Failed to update stage:', error);
+    }
   };
 
   const isValid = !!formData.stl_file && formData.challenges.length >= 10;

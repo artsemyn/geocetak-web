@@ -36,6 +36,7 @@ import {
   Lock
 } from '@mui/icons-material';
 import Navbar from '../../components/Navbar';
+import { useLKPDSection } from '../../hooks/useLKPDSection';
 import type { LKPDData } from '../../types/lkpd.types';
 
 interface StageCardProps {
@@ -170,33 +171,26 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
 }) => {
   const navigate = useNavigate();
   const { assignmentId } = useParams<{ assignmentId: string }>();
-  const [projectData, setProjectData] = useState<LKPDData | null>(data || null);
-  const [loading, setLoading] = useState(!data);
+  const { lkpdData, isLoading, initializeProject, getProgress } = useLKPDSection();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  // Use data prop if provided, otherwise use from hook
+  const projectData = data || lkpdData;
+  const loading = data ? false : isLoading;
+
+  // Initialize project if no data exists
   useEffect(() => {
-    if (!data) {
-      // Load project data from localStorage or API
-      const storedData = localStorage.getItem(`lkpd_${assignmentId}`);
-      if (storedData) {
-        try {
-          setProjectData(JSON.parse(storedData));
-        } catch (error) {
-          console.error('Error loading project data:', error);
-        }
-      }
-      setLoading(false);
+    if (!data && !lkpdData && !isLoading) {
+      initializeProject();
     }
-  }, [assignmentId, data]);
+  }, [data, lkpdData, isLoading, initializeProject]);
 
-  const completedStages = projectData ? Object.keys(projectData).filter(
-    key => key.startsWith('stage') && (projectData[key as keyof LKPDData] as any)?.completed_at
-  ).length : 0;
-
+  const progress = getProgress();
+  const completedStages = progress.completed;
   const currentStage = projectData?.project.current_stage || 1;
   const totalStages = 6;
-  const progressPercent = Math.round((completedStages / totalStages) * 100);
+  const progressPercent = progress.percentage;
 
   const stages = [
     {

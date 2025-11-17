@@ -74,9 +74,13 @@ export function Stage6Reflect({ onBack, onComplete }: Props) {
     setShowConfirmModal(true);
   };
 
-  const handleFinalSubmit = () => {
-    updateStage(6, formData);
-    onComplete();
+  const handleFinalSubmit = async () => {
+    try {
+      await updateStage(6, formData);
+      onComplete();
+    } catch (error) {
+      console.error('Failed to update stage:', error);
+    }
   };
 
   const isValid = countWords(formData.learning_reflection) >= 50 &&
