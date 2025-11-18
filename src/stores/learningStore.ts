@@ -61,9 +61,10 @@ interface LearningState {
   resetStore: () => void
 
   // Tab tracking actions
-  trackTabVisit: (moduleId: string, tabIndex: number) => void
+  trackTabVisit: (moduleId: string, tabIndex: number) => Promise<void>
   getModuleTabProgress: (moduleId: string) => ModuleTabProgress | undefined
   getModuleProgressPercentage: (moduleId: string) => number
+  loadTabProgressFromDatabase: () => Promise<void>
 }
 
 export const useLearningStore = create<LearningState>((set, get) => ({
@@ -83,13 +84,81 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
   showNetAnimation: false,
 
-  // Tab tracking state - load from localStorage
+  // Tab tracking state - load from localStorage initially
   moduleTabProgress: JSON.parse(localStorage.getItem('moduleTabProgress') || '[]'),
 
+  // Load tab progress from database
+  loadTabProgressFromDatabase: async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Fetch student progress from database
+      const { data, error } = await supabase
+        .from('student_progress')
+        .select('module_id, completion_percentage, last_accessed_at')
+        .eq('user_id', user.id)
+        .not('module_id', 'is', null)
+
+      if (error) {
+        console.error('Error loading tab progress from database:', error)
+        return
+      }
+
+      if (data && data.length > 0) {
+        // Convert database data to ModuleTabProgress format
+        const dbProgress: ModuleTabProgress[] = data.map(item => {
+          const percentage = item.completion_percentage || 0
+          const tabCount = Math.round((percentage / 100) * 5) // Reverse calculate tab count
+          const visitedTabs = Array.from({ length: tabCount }, (_, i) => i) // [0, 1, 2, ...]
+
+          return {
+            moduleId: item.module_id!,
+            visitedTabs,
+            lastVisitedAt: item.last_accessed_at || new Date().toISOString()
+          }
+        })
+
+        // Merge with localStorage data (keep whichever is more recent)
+        const localProgress = get().moduleTabProgress
+        const mergedProgress: ModuleTabProgress[] = []
+
+        // Add all DB progress
+        dbProgress.forEach(dbItem => {
+          const localItem = localProgress.find(l => l.moduleId === dbItem.moduleId)
+
+          if (localItem) {
+            // If local has more tabs visited, use local; otherwise use DB
+            const useLocal = localItem.visitedTabs.length > dbItem.visitedTabs.length
+            mergedProgress.push(useLocal ? localItem : dbItem)
+          } else {
+            mergedProgress.push(dbItem)
+          }
+        })
+
+        // Add local progress that's not in DB
+        localProgress.forEach(localItem => {
+          if (!dbProgress.find(db => db.moduleId === localItem.moduleId)) {
+            mergedProgress.push(localItem)
+          }
+        })
+
+        set({ moduleTabProgress: mergedProgress })
+        localStorage.setItem('moduleTabProgress', JSON.stringify(mergedProgress))
+        console.log('✅ Loaded and merged tab progress from database')
+      }
+    } catch (error) {
+      console.error('Error loading tab progress:', error)
+    }
+  },
+
   // Tab tracking functions
-  trackTabVisit: (moduleId: string, tabIndex: number) => {
+  trackTabVisit: async (moduleId: string, tabIndex: number) => {
     const currentProgress = get().moduleTabProgress
     const existingModule = currentProgress.find(m => m.moduleId === moduleId)
+
+    // Check if this is a new tab visit (for XP calculation)
+    const isNewTabVisit = existingModule ? !existingModule.visitedTabs.includes(tabIndex) : true
 
     let updatedProgress: ModuleTabProgress[]
 
@@ -119,6 +188,92 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     // Save to state and localStorage
     set({ moduleTabProgress: updatedProgress })
     localStorage.setItem('moduleTabProgress', JSON.stringify(updatedProgress))
+
+    // Sync to database and update gamification
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const moduleProgressData = updatedProgress.find(m => m.moduleId === moduleId)
+      if (!moduleProgressData) return
+
+      const completionPercentage = Math.round((moduleProgressData.visitedTabs.length / 5) * 100)
+      const isModuleCompleted = completionPercentage === 100
+
+      // Upsert to student_progress table
+      const { error: progressError } = await supabase
+        .from('student_progress')
+        .upsert({
+          user_id: user.id,
+          module_id: moduleId,
+          lesson_id: moduleId,
+          status: isModuleCompleted ? 'completed' : 'in_progress',
+          completion_percentage: completionPercentage,
+          last_accessed_at: new Date().toISOString(),
+          completed_at: isModuleCompleted ? new Date().toISOString() : null
+        })
+
+      if (progressError) {
+        console.error('Error syncing tab progress to database:', progressError)
+        return
+      }
+
+      console.log('✅ Tab progress synced to database:', moduleId, completionPercentage + '%')
+
+      // ========================================
+      // GAMIFICATION UPDATE - Award XP & Update Level
+      // ========================================
+      if (isNewTabVisit) {
+        // Get current gamification data
+        const { data: gamification, error: gamificationError } = await supabase
+          .from('gamification')
+          .select('*')
+          .eq('user_id', user.id)
+          .single()
+
+        if (gamificationError || !gamification) {
+          console.error('Error fetching gamification:', gamificationError)
+          return
+        }
+
+        // Calculate XP earned
+        let xpEarned = 10 // 10 XP per tab visited
+        if (isModuleCompleted) {
+          xpEarned += 50 // Bonus 50 XP for completing entire module
+        }
+
+        // Calculate new XP and level
+        const newTotalXp = (gamification.total_xp || 0) + xpEarned
+        const newLevel = Math.floor(newTotalXp / 500) + 1
+
+        // Update gamification table
+        const { error: updateError } = await supabase
+          .from('gamification')
+          .update({
+            total_xp: newTotalXp,
+            level: newLevel
+          })
+          .eq('user_id', user.id)
+
+        if (updateError) {
+          console.error('Error updating gamification:', updateError)
+        } else {
+          console.log(`🎮 Gamification updated! +${xpEarned} XP. Total: ${newTotalXp} XP, Level: ${newLevel}`)
+        }
+
+        // Update streak (check if user has been active today)
+        await get().updateStreak()
+
+        // Check and award badges
+        await get().checkAndAwardBadges()
+
+        // Refresh user stats to update UI
+        await get().fetchUserStats()
+      }
+
+    } catch (error) {
+      console.error('Error syncing to database:', error)
+    }
   },
 
   getModuleTabProgress: (moduleId: string) => {
@@ -129,8 +284,8 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     const moduleProgress = get().moduleTabProgress.find(m => m.moduleId === moduleId)
     if (!moduleProgress) return 0
 
-    // Total 6 tabs: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz, Latihan
-    const totalTabs = 6
+    // Total 5 tabs: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz
+    const totalTabs = 5
     const visitedCount = moduleProgress.visitedTabs.length
 
     return Math.round((visitedCount / totalTabs) * 100)

@@ -52,13 +52,15 @@ export default function Modules() {
     fetchModules,
     fetchUserStats,
     getModuleProgressPercentage,
-    getModuleTabProgress
+    getModuleTabProgress,
+    loadTabProgressFromDatabase
   } = useLearningStore()
 
   useEffect(() => {
     fetchModules()
     fetchUserStats()
-  }, [fetchModules, fetchUserStats])
+    loadTabProgressFromDatabase() // Load progress from database
+  }, [fetchModules, fetchUserStats, loadTabProgressFromDatabase])
 
   // Calculate module progress based on visited tabs
   const getModuleProgress = (moduleId: string | number) => {
@@ -66,7 +68,7 @@ export default function Modules() {
     const percentage = getModuleProgressPercentage(id)
     const tabProgress = getModuleTabProgress(id)
     const completed = tabProgress?.visitedTabs.length || 0
-    const total = 6 // Total 6 tabs per module: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz, Latihan
+    const total = 5 // Total 5 tabs per module: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz
     return { completed, total, percentage }
   }
 

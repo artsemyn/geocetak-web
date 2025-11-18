@@ -824,26 +824,6 @@ export default function LearningModule() {
                     } : {}
                   }}
                 />
-                <Tab
-                  icon={<Assignment />}
-                  label="Latihan"
-                  iconPosition="start"
-                  sx={{
-                    '& .MuiTab-iconWrapper': {
-                      marginRight: 1
-                    },
-                    position: 'relative',
-                    '&::after': tabProgress?.visitedTabs.includes(5) ? {
-                      content: '"✓"',
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      fontSize: '12px',
-                      color: '#27AE60',
-                      fontWeight: 'bold'
-                    } : {}
-                  }}
-                />
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}><ConceptLesson /></TabPanel>
@@ -851,7 +831,6 @@ export default function LearningModule() {
             <TabPanel value={tabValue} index={2}><NetLesson /></TabPanel>
             <TabPanel value={tabValue} index={3}><FormulaLesson /></TabPanel>
             <TabPanel value={tabValue} index={4}><QuizLesson /></TabPanel>
-            <TabPanel value={tabValue} index={5}><AssignmentLesson /></TabPanel>
           </Card>
         </Grid>
 
