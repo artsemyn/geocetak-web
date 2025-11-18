@@ -210,13 +210,23 @@ export interface StudentProgress {
   id: string
   user_id: string
   lesson_id: string
+  module_id?: string | null
   status: string
-  completion_percentage: number
-  quiz_score: number | null
-  time_spent_seconds: number
+  completion_percentage?: number
+  score?: number
+  quiz_score?: number | null
+  time_spent_seconds?: number
   completed_at: string | null
-  created_at: string
-  updated_at: string
+  last_accessed_at?: string
+  created_at?: string
+  updated_at?: string
+  // Computed fields added at runtime
+  lesson_title?: string | null
+  xp_earned?: number
+  lesson?: {
+    title?: string
+    xp_reward?: number
+  }
 }
 
 // For backward compatibility and computed user stats
@@ -433,13 +443,23 @@ export interface StudentProgress {
   id: string
   user_id: string
   lesson_id: string
+  module_id?: string | null
   status: string
-  completion_percentage: number
-  quiz_score: number | null
-  time_spent_seconds: number
+  completion_percentage?: number
+  score?: number
+  quiz_score?: number | null
+  time_spent_seconds?: number
   completed_at: string | null
-  created_at: string
-  updated_at: string
+  last_accessed_at?: string
+  created_at?: string
+  updated_at?: string
+  // Computed fields added at runtime
+  lesson_title?: string | null
+  xp_earned?: number
+  lesson?: {
+    title?: string
+    xp_reward?: number
+  }
 }
 
 // For backward compatibility and computed user stats

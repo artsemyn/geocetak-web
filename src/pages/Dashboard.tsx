@@ -1,5 +1,5 @@
 // src/pages/Dashboard.tsx
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Grid,
@@ -29,7 +29,9 @@ import {
 } from '@mui/icons-material'
 import { useAuthStore } from '../stores/authStore'
 import { useLearningStore } from '../stores/learningStore'
+import { supabase } from '../services/supabase'
 import Navbar from '../components/Navbar'
+import ProgressTracker from '../components/learning/ProgressTracker'
 
 // Module icons mapping
 const moduleIcons = {
@@ -52,29 +54,84 @@ export default function Dashboard() {
     modules,
     userStats,
     progress,
+    lessons,
     loading,
     fetchModules,
-    fetchUserStats
+    fetchUserStats,
+    fetchProgress,
+    fetchRecentActivity,
+    fetchLessons
   } = useLearningStore()
 
   useEffect(() => {
-    fetchModules()
-    fetchUserStats()
-  }, [fetchModules, fetchUserStats])
+    const fetchData = async () => {
+      // First fetch modules
+      await fetchModules()
 
-  // Calculate module progress
-  const getModuleProgress = (moduleId: number) => {
-    // This would calculate based on actual lessons completed
-    // For now, return dummy data
-    const completed = Math.floor(Math.random() * 6) + 1
-    const total = 6 // Assuming 6 lessons per module
-    return { completed, total, percentage: (completed / total) * 100 }
+      // Wait a bit and get modules from state after fetch completes
+      const allModules = useLearningStore.getState().modules
+      console.log('📚 Modules loaded:', allModules.length, allModules.map(m => ({ id: m.id, title: m.title })))
+
+      // Fetch user data
+      await fetchUserStats()
+
+      // Fetch user progress
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        console.log('👤 User authenticated:', user.id)
+        await fetchProgress(user.id)
+        await fetchRecentActivity()
+
+        const currentProgress = useLearningStore.getState().progress
+        console.log('📈 Progress loaded:', currentProgress.length, currentProgress)
+      }
+
+      // Fetch all lessons for each module for progress calculation
+      if (allModules && allModules.length > 0) {
+        for (const module of allModules) {
+          await fetchLessons(module.id)
+        }
+        const allLessons = useLearningStore.getState().lessons
+        console.log('📖 All lessons loaded:', allLessons.length, allLessons.map(l => ({ id: l.id, module_id: l.module_id, title: l.title })))
+      }
+    }
+
+    fetchData()
+  }, [fetchModules, fetchUserStats, fetchProgress, fetchRecentActivity, fetchLessons])
+
+  // Calculate module progress based on real data
+  const getModuleProgress = (moduleId: string) => {
+    // Get lessons for this module
+    const moduleLessons = lessons.filter(l => l.module_id === moduleId)
+    const totalLessons = moduleLessons.length || 6 // Fallback to 6
+
+    // Get completed lessons from progress
+    const completedLessons = progress.filter(p =>
+      moduleLessons.some(l => l.id === p.lesson_id) &&
+      p.status === 'completed'
+    ).length
+
+    // Debug logging
+    console.log(`Module ${moduleId} progress:`, {
+      totalLessons: moduleLessons.length,
+      moduleLessonIds: moduleLessons.map(l => l.id),
+      totalProgress: progress.length,
+      progressLessonIds: progress.map(p => p.lesson_id),
+      completed: completedLessons,
+      fallbackUsed: moduleLessons.length === 0
+    })
+
+    return {
+      completed: completedLessons,
+      total: totalLessons,
+      percentage: totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0
+    }
   }
 
-  const getModuleStatus = (moduleId: number) => {
-    const progress = getModuleProgress(moduleId)
-    if (progress.completed === progress.total) return 'completed'
-    if (progress.completed > 0) return 'in-progress'
+  const getModuleStatus = (moduleId: string) => {
+    const moduleProgress = getModuleProgress(moduleId)
+    if (moduleProgress.completed === moduleProgress.total && moduleProgress.total > 0) return 'completed'
+    if (moduleProgress.completed > 0) return 'in-progress'
     return 'not-started'
   }
 
@@ -199,6 +256,35 @@ export default function Dashboard() {
         </Grid>
       </Grid>
 
+      {/* Progress Tracker */}
+      <Grid container spacing={3} mb={4}>
+        <Grid item xs={12} lg={6}>
+          <ProgressTracker />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          {/* Placeholder for future features like Recent Activity or Achievements */}
+          <Card sx={{ height: '100%' }}>
+            <CardContent>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Tips Belajar 💡
+              </Typography>
+              <Typography variant="body2" color="textSecondary" paragraph>
+                • Selesaikan pelajaran setiap hari untuk menjaga streak Anda
+              </Typography>
+              <Typography variant="body2" color="textSecondary" paragraph>
+                • Interaksi dengan model 3D untuk pemahaman yang lebih baik
+              </Typography>
+              <Typography variant="body2" color="textSecondary" paragraph>
+                • Kumpulkan XP untuk naik level dan buka badge
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                • Jangan lupa kerjakan latihan soal di setiap modul
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
       {/* Learning Modules */}
       <Typography variant="h5" fontWeight="bold" gutterBottom mb={3}>
         Modul Pembelajaran 📚
@@ -249,7 +335,7 @@ export default function Dashboard() {
                     </Typography>
                     <Box flexGrow={1}>
                       <Typography variant="h6" fontWeight="bold">
-                        {module.name}
+                        {module.title}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
                         {module.description}
@@ -367,7 +453,7 @@ export default function Dashboard() {
                     </Typography>
                   </Box>
                   <Typography variant="body2" color="textSecondary">
-                    {new Date(item.completed_at).toLocaleDateString()}
+                    {item.completed_at ? new Date(item.completed_at).toLocaleDateString() : 'Baru saja'}
                   </Typography>
                 </Box>
               ))}

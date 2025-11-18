@@ -1,7 +1,27 @@
-// src/pages/SuccessPage.tsx
-
+// src/pages/lkpd/SuccessPage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Avatar,
+  Divider,
+  Stack,
+  Chip
+} from '@mui/material';
+import {
+  CheckCircle,
+  Home,
+  List,
+  Email,
+  Star,
+  Lock
+} from '@mui/icons-material';
+import Navbar from '../../components/Navbar';
 
 interface SuccessPageProps {
   assignmentId?: string;
@@ -34,6 +54,14 @@ export const SuccessPage: React.FC<SuccessPageProps> = ({
         pointer-events: none;
         animation: fall 3s ease-out forwards;
         z-index: 9999;
+      }
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
       }
     `;
     document.head.appendChild(style);
@@ -83,120 +111,222 @@ export const SuccessPage: React.FC<SuccessPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Success Container */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
-          {/* Header with gradient */}
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-8 text-center">
-            {/* Animated checkmark */}
-            <div className="flex justify-center mb-4">
-              <div className="animate-bounce">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-5xl text-green-500">✓</span>
-                </div>
-              </div>
-            </div>
-            
-            <h1 className="text-3xl font-bold text-white mb-2">
-              🎉 Selamat! 🎊
-            </h1>
-            <p className="text-green-100 text-lg font-semibold">
-              LKPD Berhasil Dikumpulkan
-            </p>
-          </div>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f5f5f5' }}>
+      <Navbar />
 
-          {/* Content */}
-          <div className="p-8 text-center">
-            {/* Message */}
-            <p className="text-gray-700 text-lg mb-2">
-              LKPD kamu sudah berhasil dikumpulkan!
-            </p>
-            <p className="text-gray-600 text-sm mb-6">
-              Guru akan menilai dalam beberapa hari.
-            </p>
+      <Container maxWidth="sm" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', py: 4 }}>
+        <Box sx={{ width: '100%' }}>
+          {/* Success Container */}
+          <Card
+            elevation={4}
+            sx={{
+              overflow: 'visible',
+              transition: 'all 0.3s',
+              '&:hover': {
+                boxShadow: 8
+              }
+            }}
+          >
+            {/* Header with gradient */}
+            <Box
+              sx={{
+                background: 'linear-gradient(135deg, #27AE60 0%, #2ECC71 100%)',
+                p: 4,
+                textAlign: 'center'
+              }}
+            >
+              {/* Animated checkmark */}
+              <Box display="flex" justifyContent="center" mb={2}>
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    bgcolor: 'white',
+                    animation: 'bounce 2s infinite'
+                  }}
+                >
+                  <CheckCircle sx={{ fontSize: 50, color: '#27AE60' }} />
+                </Avatar>
+              </Box>
 
-            {/* Details Card */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-left">
-              {projectTitle && (
-                <div className="mb-3 pb-3 border-b border-green-200">
-                  <p className="text-xs font-semibold text-gray-600">PROYEK</p>
-                  <p className="text-sm font-medium text-gray-800">{projectTitle}</p>
-                </div>
-              )}
+              <Typography variant="h4" fontWeight="bold" color="white" gutterBottom>
+                🎉 Selamat! 🎊
+              </Typography>
+              <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                LKPD Berhasil Dikumpulkan
+              </Typography>
+            </Box>
 
-              <div className="mb-3 pb-3 border-b border-green-200">
-                <p className="text-xs font-semibold text-gray-600">STATUS</p>
-                <p className="text-sm font-medium text-green-600 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 bg-green-600 rounded-full"></span>
-                  Dikumpulkan
-                </p>
-              </div>
+            {/* Content */}
+            <CardContent sx={{ p: 4 }}>
+              {/* Message */}
+              <Typography variant="body1" textAlign="center" color="textPrimary" gutterBottom>
+                LKPD kamu sudah berhasil dikumpulkan!
+              </Typography>
+              <Typography variant="body2" textAlign="center" color="textSecondary" mb={3}>
+                Guru akan menilai dalam beberapa hari.
+              </Typography>
 
-              <div>
-                <p className="text-xs font-semibold text-gray-600">WAKTU PENGUMPULAN</p>
-                <p className="text-sm font-medium text-gray-800">{displayedTime}</p>
-              </div>
-            </div>
+              {/* Details Card */}
+              <Card sx={{ bgcolor: '#27AE6010', border: '1px solid #27AE6040', mb: 3 }}>
+                <CardContent>
+                  {projectTitle && (
+                    <>
+                      <Box mb={2}>
+                        <Typography variant="caption" fontWeight="bold" color="textSecondary">
+                          PROYEK
+                        </Typography>
+                        <Typography variant="body2" fontWeight="medium" color="textPrimary">
+                          {projectTitle}
+                        </Typography>
+                      </Box>
+                      <Divider sx={{ mb: 2 }} />
+                    </>
+                  )}
 
-            {/* Info Messages */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                <span className="text-xl flex-shrink-0">📧</span>
-                <p className="text-xs text-gray-700 text-left">
-                  Notifikasi feedback akan dikirim ke emailmu saat guru selesai menilai
-                </p>
-              </div>
+                  <Box mb={2}>
+                    <Typography variant="caption" fontWeight="bold" color="textSecondary">
+                      STATUS
+                    </Typography>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          bgcolor: '#27AE60',
+                          borderRadius: '50%'
+                        }}
+                      />
+                      <Typography variant="body2" fontWeight="medium" color="#27AE60">
+                        Dikumpulkan
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ mb: 2 }} />
 
-              <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
-                <span className="text-xl flex-shrink-0">⭐</span>
-                <p className="text-xs text-gray-700 text-left">
-                  Kerja kerasmu akan dievaluasi dengan rubrik penilaian yang telah ditetapkan
-                </p>
-              </div>
+                  <Box>
+                    <Typography variant="caption" fontWeight="bold" color="textSecondary">
+                      WAKTU PENGUMPULAN
+                    </Typography>
+                    <Typography variant="body2" fontWeight="medium" color="textPrimary">
+                      {displayedTime}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
 
-              <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg">
-                <span className="text-xl flex-shrink-0">🔒</span>
-                <p className="text-xs text-gray-700 text-left">
-                  LKPD yang sudah dikumpulkan tidak bisa diedit lagi
-                </p>
-              </div>
-            </div>
+              {/* Info Messages */}
+              <Stack spacing={2} mb={3}>
+                <Card sx={{ bgcolor: '#E3F2FD', border: '1px solid #90CAF9' }}>
+                  <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                    <Box display="flex" alignItems="start" gap={2}>
+                      <Email sx={{ color: '#1976D2', fontSize: 24, flexShrink: 0 }} />
+                      <Typography variant="body2" color="textPrimary">
+                        Notifikasi feedback akan dikirim ke emailmu saat guru selesai menilai
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
 
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <button
-                onClick={handleBackToDashboard}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
-              >
-                🏠 Kembali ke Dashboard
-              </button>
+                <Card sx={{ bgcolor: '#F3E5F5', border: '1px solid #CE93D8' }}>
+                  <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                    <Box display="flex" alignItems="start" gap={2}>
+                      <Star sx={{ color: '#9C27B0', fontSize: 24, flexShrink: 0 }} />
+                      <Typography variant="body2" color="textPrimary">
+                        Kerja kerasmu akan dievaluasi dengan rubrik penilaian yang telah ditetapkan
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
 
-              <button
-                onClick={handleBackToLKPDList}
-                className="w-full bg-gray-100 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-200 transition-all duration-200 active:scale-95"
-              >
-                📋 Lihat Daftar LKPD
-              </button>
-            </div>
-          </div>
+                <Card sx={{ bgcolor: '#FFF3E0', border: '1px solid #FFB74D' }}>
+                  <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                    <Box display="flex" alignItems="start" gap={2}>
+                      <Lock sx={{ color: '#F57C00', fontSize: 24, flexShrink: 0 }} />
+                      <Typography variant="body2" color="textPrimary">
+                        LKPD yang sudah dikumpulkan tidak bisa diedit lagi
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Stack>
 
-          {/* Footer */}
-          <div className="bg-gray-50 px-8 py-4 text-center border-t border-gray-200">
-            <p className="text-xs text-gray-500">
-              Submission ID: <span className="font-mono text-gray-700">{id}</span>
-            </p>
-          </div>
-        </div>
+              {/* Action Buttons */}
+              <Stack spacing={2}>
+                <Button
+                  onClick={handleBackToDashboard}
+                  variant="contained"
+                  size="large"
+                  startIcon={<Home />}
+                  sx={{
+                    background: 'linear-gradient(135deg, #27AE60 0%, #2ECC71 100%)',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    py: 1.5,
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #229954 0%, #27AE60 100%)',
+                      boxShadow: 4
+                    }
+                  }}
+                >
+                  Kembali ke Dashboard
+                </Button>
 
-        {/* Additional Info */}
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>
-            ✨ Terima kasih telah mengerjakan LKPD dengan sepenuh hati! ✨
-          </p>
-        </div>
-      </div>
-    </div>
+                <Button
+                  onClick={handleBackToLKPDList}
+                  variant="outlined"
+                  size="large"
+                  startIcon={<List />}
+                  sx={{
+                    borderColor: '#BDBDBD',
+                    color: 'textPrimary',
+                    fontWeight: 'bold',
+                    py: 1.5,
+                    '&:hover': {
+                      borderColor: '#9E9E9E',
+                      bgcolor: '#F5F5F5'
+                    }
+                  }}
+                >
+                  Lihat Daftar LKPD
+                </Button>
+              </Stack>
+            </CardContent>
+
+            {/* Footer */}
+            <Box
+              sx={{
+                bgcolor: '#F5F5F5',
+                px: 4,
+                py: 2,
+                textAlign: 'center',
+                borderTop: '1px solid #E0E0E0'
+              }}
+            >
+              <Typography variant="caption" color="textSecondary">
+                Submission ID:{' '}
+                <Chip
+                  label={id}
+                  size="small"
+                  sx={{
+                    fontFamily: 'monospace',
+                    fontSize: '0.7rem',
+                    height: 20
+                  }}
+                />
+              </Typography>
+            </Box>
+          </Card>
+
+          {/* Additional Info */}
+          <Box mt={3} textAlign="center">
+            <Typography variant="body2" color="textSecondary">
+              ✨ Terima kasih telah mengerjakan LKPD dengan sepenuh hati! ✨
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

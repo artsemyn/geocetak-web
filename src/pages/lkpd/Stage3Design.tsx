@@ -1,5 +1,18 @@
 // src/pages/lkpd/Stage3Design.tsx
 import { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Chip,
+  Alert
+} from '@mui/material';
+import { DesignServices, OpenInNew } from '@mui/icons-material';
+import { StageLayout } from '../../components/lkpd/StageLayout';
 import { useLKPDSection } from '@/hooks/useLKPDSection';
 import type { Stage3Data } from '@/types/lkpd.types';
 
@@ -10,7 +23,7 @@ interface Props {
 
 export function Stage3Design({ onBack, onNext }: Props) {
   const { lkpdData, autoSave, updateStage } = useLKPDSection();
-  
+
   const [formData, setFormData] = useState<Stage3Data>({
     tinkercad_url: '',
     diameter: 0,
@@ -68,194 +81,271 @@ export function Stage3Design({ onBack, onNext }: Props) {
   const isValid = formData.diameter > 0 && formData.height > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center text-4xl">
-              🟩
-            </div>
-            <div>
-              <div className="text-sm text-green-600 font-semibold">TAHAP 3 dari 6</div>
-              <h1 className="text-3xl font-bold text-gray-800">Plan & Design</h1>
-              <p className="text-gray-600">Merancang Desain Digital</p>
-            </div>
-          </div>
+    <StageLayout
+      stageNumber={3}
+      title="Plan & Design"
+      icon={<DesignServices />}
+      color="#27AE60"
+      onBack={onBack}
+      onNext={handleSubmit}
+      isValid={isValid}
+      autoSaveStatus={autoSaveStatus}
+    >
+      <Box sx={{ '& > *': { mb: 4 } }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          🖥️ Buat Model 3D di Tinkercad
+        </Typography>
 
-          {/* Auto-save Status */}
-          {autoSaveStatus === 'saved' && (
-            <div className="flex items-center gap-2 mt-4 text-green-600 text-sm">
-              <span>✓</span>
-              <span>Tersimpan otomatis</span>
-            </div>
-          )}
-          {autoSaveStatus === 'saving' && (
-            <div className="flex items-center gap-2 mt-4 text-green-600 text-sm">
-              <div className="animate-spin w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full" />
-              <span>Menyimpan...</span>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">🖥️ Buat Model 3D di Tinkercad</h2>
-          
-          {/* Tinkercad Section */}
-          <div className="mb-8 p-6 bg-green-50 border-2 border-green-200 rounded-xl">
-            <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        {/* Tinkercad Section */}
+        <Card
+          sx={{
+            bgcolor: '#27AE6015',
+            border: '2px solid #27AE6040',
+            borderRadius: 2
+          }}
+        >
+          <CardContent>
+            <Typography variant="h6" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               🔗 Link ke Tinkercad
-            </h3>
-            <a id="tinkercad-link"
+            </Typography>
+
+            <Button
+              id="tinkercad-link"
+              variant="contained"
               href="https://www.tinkercad.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all mb-4"
+              endIcon={<OpenInNew />}
+              sx={{
+                bgcolor: '#27AE60',
+                mb: 2,
+                '&:hover': {
+                  bgcolor: '#229954'
+                }
+              }}
             >
               🚀 Buka Tinkercad di Tab Baru
-            </a>
+            </Button>
 
-            <div className="bg-white p-4 rounded-lg">
-              <p className="text-sm font-semibold text-gray-700 mb-2">💡 Tips:</p>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Login dengan akun Google/email</li>
-                <li>• Buat project baru</li>
-                <li>• Gunakan basic shapes untuk membuat design</li>
-                <li>• Jangan lupa save projectmu!</li>
-              </ul>
-            </div>
+            <Alert severity="info" icon="💡" sx={{ mb: 2 }}>
+              <Typography variant="body2" fontWeight="600" gutterBottom>
+                Tips:
+              </Typography>
+              <Box component="ul" sx={{ m: 0, pl: 2 }}>
+                <li>Login dengan akun Google/email</li>
+                <li>Buat project baru</li>
+                <li>Gunakan basic shapes untuk membuat design</li>
+                <li>Jangan lupa save projectmu!</li>
+              </Box>
+            </Alert>
 
             {/* Optional: Tinkercad URL Input */}
-            <div className="mt-4">
-              <label className="block text-sm text-gray-700 mb-2">
+            <Box>
+              <Typography variant="body2" fontWeight="600" gutterBottom>
                 Link Tinkercad Project (optional):
-              </label>
-              <input
+              </Typography>
+              <TextField
                 type="url"
+                fullWidth
                 value={formData.tinkercad_url}
                 onChange={(e) => setFormData({ ...formData, tinkercad_url: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="https://www.tinkercad.com/things/..."
+                variant="outlined"
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: '#27AE60',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#27AE60',
+                      borderWidth: 2
+                    }
+                  }
+                }}
               />
-            </div>
-          </div>
+            </Box>
+          </CardContent>
+        </Card>
 
-          {/* Dimension Inputs */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-gray-800 mb-4">📐 Isi Ukuran Desainmu:</h3>
-            
-            <div className="space-y-6 bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl">
+        {/* Dimension Inputs */}
+        <Box>
+          <Typography variant="h6" fontWeight="600" gutterBottom>
+            📐 Isi Ukuran Desainmu:
+          </Typography>
+
+          <Box
+            sx={{
+              p: 3,
+              bgcolor: '#27AE6010',
+              borderRadius: 2,
+              border: '1px solid #27AE6030'
+            }}
+          >
+            <Grid container spacing={3}>
               {/* Diameter */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  Diameter (d): <span className="text-red-500">*</span>
-                </label>
-                <div className="flex items-center gap-4">
-                  <input
+              <Grid item xs={12} md={6}>
+                <Typography variant="body1" fontWeight="600" gutterBottom>
+                  Diameter (d): <span style={{ color: '#E74C3C' }}>*</span>
+                </Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <TextField
                     type="number"
-                    step="0.1"
-                    min="0"
+                    inputProps={{ step: 0.1, min: 0 }}
                     value={formData.diameter || ''}
                     onChange={(e) => handleDiameterChange(e.target.value)}
-                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
                     placeholder="0.0"
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#27AE60',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#27AE60',
+                          borderWidth: 2
+                        }
+                      }
+                    }}
                   />
-                  <span className="text-gray-600 font-medium min-w-[3rem]">cm</span>
-                </div>
-              </div>
+                  <Typography variant="body1" fontWeight="medium" sx={{ minWidth: '3rem' }}>
+                    cm
+                  </Typography>
+                </Box>
+              </Grid>
 
               {/* Radius (auto-calculated) */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
+              <Grid item xs={12} md={6}>
+                <Typography variant="body1" fontWeight="600" gutterBottom>
                   Jari-jari (r):
-                </label>
-                <div className="flex items-center gap-4">
-                  <input
+                </Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <TextField
                     type="number"
                     value={formData.radius || ''}
-                    readOnly
-                    className="flex-1 p-3 border border-gray-300 rounded-lg bg-gray-50 text-lg cursor-not-allowed"
                     placeholder="(auto: d/2)"
+                    fullWidth
+                    variant="outlined"
+                    disabled
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        bgcolor: '#F5F5F5'
+                      }
+                    }}
                   />
-                  <span className="text-gray-600 font-medium min-w-[3rem]">cm</span>
-                </div>
-                <p className="text-sm text-gray-500 mt-1">Otomatis dihitung: diameter ÷ 2</p>
-              </div>
+                  <Typography variant="body1" fontWeight="medium" sx={{ minWidth: '3rem' }}>
+                    cm
+                  </Typography>
+                </Box>
+                <Typography variant="caption" color="textSecondary" display="block" mt={0.5}>
+                  Otomatis dihitung: diameter ÷ 2
+                </Typography>
+              </Grid>
 
               {/* Height */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  Tinggi (t): <span className="text-red-500">*</span>
-                </label>
-                <div className="flex items-center gap-4">
-                  <input
+              <Grid item xs={12} md={6}>
+                <Typography variant="body1" fontWeight="600" gutterBottom>
+                  Tinggi (t): <span style={{ color: '#E74C3C' }}>*</span>
+                </Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <TextField
                     type="number"
-                    step="0.1"
-                    min="0"
+                    inputProps={{ step: 0.1, min: 0 }}
                     value={formData.height || ''}
                     onChange={(e) => handleHeightChange(e.target.value)}
-                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
                     placeholder="0.0"
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#27AE60',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#27AE60',
+                          borderWidth: 2
+                        }
+                      }
+                    }}
                   />
-                  <span className="text-gray-600 font-medium min-w-[3rem]">cm</span>
-                </div>
-              </div>
-            </div>
+                  <Typography variant="body1" fontWeight="medium" sx={{ minWidth: '3rem' }}>
+                    cm
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
 
-            {/* Preview Dimensions */}
-            {isValid && (
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm font-semibold text-blue-900 mb-2">📊 Preview Ukuran:</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="text-blue-700">Diameter:</span>
-                    <span className="font-bold text-blue-900 ml-2">{formData.diameter} cm</span>
-                  </div>
-                  <div>
-                    <span className="text-blue-700">Radius:</span>
-                    <span className="font-bold text-blue-900 ml-2">{formData.radius.toFixed(2)} cm</span>
-                  </div>
-                  <div>
-                    <span className="text-blue-700">Tinggi:</span>
-                    <span className="font-bold text-blue-900 ml-2">{formData.height} cm</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Preview Dimensions */}
+          {isValid && (
+            <Card sx={{ mt: 3, bgcolor: '#E3F2FD', border: '1px solid #90CAF9' }}>
+              <CardContent>
+                <Typography variant="body2" fontWeight="600" color="#1976D2" gutterBottom>
+                  📊 Preview Ukuran:
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="#1976D2">
+                      Diameter: <strong>{formData.diameter} cm</strong>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="#1976D2">
+                      Radius: <strong>{formData.radius.toFixed(2)} cm</strong>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="#1976D2">
+                      Tinggi: <strong>{formData.height} cm</strong>
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          )}
+        </Box>
 
-          {/* STEAM Tags */}
-          <div className="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
-            <span className="font-semibold text-gray-700">Tag STEAM aktif:</span>
-            <span className="bg-white px-3 py-1 rounded-lg text-sm font-medium shadow-sm">💻 Technology</span>
-            <span className="bg-white px-3 py-1 rounded-lg text-sm font-medium shadow-sm">➗ Mathematics</span>
-            <span className="bg-white px-3 py-1 rounded-lg text-sm font-medium shadow-sm">⚙️ Engineering</span>
-          </div>
-
-          {/* Navigation */}
-          <div className="flex justify-between items-center pt-6 border-t">
-            <button
-              onClick={onBack}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all flex items-center gap-2"
-            >
-              <span>←</span> Kembali ke Overview
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={!isValid}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
-                isValid
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Simpan & Lanjut <span>→</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    );
-}   
+        {/* STEAM Tags */}
+        <Box
+          sx={{
+            p: 2.5,
+            bgcolor: 'linear-gradient(135deg, #27AE6010 0%, #27AE6005 100%)',
+            borderRadius: 2,
+            border: '1px solid #27AE6020'
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+            <Typography variant="body1" fontWeight="600" color="textSecondary">
+              Tag STEAM aktif:
+            </Typography>
+            <Chip
+              label="💻 Technology"
+              sx={{
+                bgcolor: 'white',
+                fontWeight: 'medium',
+                boxShadow: 1
+              }}
+            />
+            <Chip
+              label="➗ Mathematics"
+              sx={{
+                bgcolor: 'white',
+                fontWeight: 'medium',
+                boxShadow: 1
+              }}
+            />
+            <Chip
+              label="⚙️ Engineering"
+              sx={{
+                bgcolor: 'white',
+                fontWeight: 'medium',
+                boxShadow: 1
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </StageLayout>
+  );
+}

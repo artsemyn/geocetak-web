@@ -40,7 +40,7 @@ import Navbar from '../components/Navbar'
 
 export default function Profile() {
   const { user, profile, fetchProfile } = useAuthStore()
-  const { userStats } = useLearningStore()
+  const { userStats, fetchUserStats } = useLearningStore()
 
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -65,7 +65,10 @@ export default function Profile() {
     } else if (user) {
       fetchProfile()
     }
-  }, [profile, user])
+
+    // Fetch user stats
+    fetchUserStats()
+  }, [profile, user, fetchUserStats])
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))

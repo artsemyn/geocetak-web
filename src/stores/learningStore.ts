@@ -18,6 +18,13 @@ interface GeometryParams {
   slantHeight?: number
 }
 
+// Tab tracking interface
+interface ModuleTabProgress {
+  moduleId: string
+  visitedTabs: number[] // Array of tab indices that have been visited
+  lastVisitedAt: string
+}
+
 interface LearningState {
   modules: Module[]
   currentModule: Module | null
@@ -33,6 +40,9 @@ interface LearningState {
   geometryParams: GeometryParams
   showNetAnimation: boolean
 
+  // Tab tracking state
+  moduleTabProgress: ModuleTabProgress[]
+
   // Actions
   fetchModules: () => Promise<void>
   setCurrentModule: (moduleId: string) => Promise<void>
@@ -45,7 +55,16 @@ interface LearningState {
   fetchStudentProfile: () => Promise<void>
   fetchAchievements: () => Promise<void>
   fetchProgress: (userId: string) => Promise<void>
+  updateStreak: () => Promise<void>
+  checkAndAwardBadges: () => Promise<void>
+  fetchRecentActivity: () => Promise<void>
   resetStore: () => void
+
+  // Tab tracking actions
+  trackTabVisit: (moduleId: string, tabIndex: number) => Promise<void>
+  getModuleTabProgress: (moduleId: string) => ModuleTabProgress | undefined
+  getModuleProgressPercentage: (moduleId: string) => number
+  loadTabProgressFromDatabase: () => Promise<void>
 }
 
 export const useLearningStore = create<LearningState>((set, get) => ({
@@ -64,6 +83,213 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     height: 10
   },
   showNetAnimation: false,
+
+  // Tab tracking state - load from localStorage initially
+  moduleTabProgress: JSON.parse(localStorage.getItem('moduleTabProgress') || '[]'),
+
+  // Load tab progress from database
+  loadTabProgressFromDatabase: async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Fetch student progress from database
+      const { data, error } = await supabase
+        .from('student_progress')
+        .select('module_id, completion_percentage, last_accessed_at')
+        .eq('user_id', user.id)
+        .not('module_id', 'is', null)
+
+      if (error) {
+        console.error('Error loading tab progress from database:', error)
+        return
+      }
+
+      if (data && data.length > 0) {
+        // Convert database data to ModuleTabProgress format
+        const dbProgress: ModuleTabProgress[] = data.map(item => {
+          const percentage = item.completion_percentage || 0
+          const tabCount = Math.round((percentage / 100) * 5) // Reverse calculate tab count
+          const visitedTabs = Array.from({ length: tabCount }, (_, i) => i) // [0, 1, 2, ...]
+
+          return {
+            moduleId: item.module_id!,
+            visitedTabs,
+            lastVisitedAt: item.last_accessed_at || new Date().toISOString()
+          }
+        })
+
+        // Merge with localStorage data (keep whichever is more recent)
+        const localProgress = get().moduleTabProgress
+        const mergedProgress: ModuleTabProgress[] = []
+
+        // Add all DB progress
+        dbProgress.forEach(dbItem => {
+          const localItem = localProgress.find(l => l.moduleId === dbItem.moduleId)
+
+          if (localItem) {
+            // If local has more tabs visited, use local; otherwise use DB
+            const useLocal = localItem.visitedTabs.length > dbItem.visitedTabs.length
+            mergedProgress.push(useLocal ? localItem : dbItem)
+          } else {
+            mergedProgress.push(dbItem)
+          }
+        })
+
+        // Add local progress that's not in DB
+        localProgress.forEach(localItem => {
+          if (!dbProgress.find(db => db.moduleId === localItem.moduleId)) {
+            mergedProgress.push(localItem)
+          }
+        })
+
+        set({ moduleTabProgress: mergedProgress })
+        localStorage.setItem('moduleTabProgress', JSON.stringify(mergedProgress))
+        console.log('✅ Loaded and merged tab progress from database')
+      }
+    } catch (error) {
+      console.error('Error loading tab progress:', error)
+    }
+  },
+
+  // Tab tracking functions
+  trackTabVisit: async (moduleId: string, tabIndex: number) => {
+    const currentProgress = get().moduleTabProgress
+    const existingModule = currentProgress.find(m => m.moduleId === moduleId)
+
+    // Check if this is a new tab visit (for XP calculation)
+    const isNewTabVisit = existingModule ? !existingModule.visitedTabs.includes(tabIndex) : true
+
+    let updatedProgress: ModuleTabProgress[]
+
+    if (existingModule) {
+      // Add tab to visited tabs if not already visited
+      const visitedTabs = existingModule.visitedTabs.includes(tabIndex)
+        ? existingModule.visitedTabs
+        : [...existingModule.visitedTabs, tabIndex].sort((a, b) => a - b)
+
+      updatedProgress = currentProgress.map(m =>
+        m.moduleId === moduleId
+          ? { ...m, visitedTabs, lastVisitedAt: new Date().toISOString() }
+          : m
+      )
+    } else {
+      // Create new module progress entry
+      updatedProgress = [
+        ...currentProgress,
+        {
+          moduleId,
+          visitedTabs: [tabIndex],
+          lastVisitedAt: new Date().toISOString()
+        }
+      ]
+    }
+
+    // Save to state and localStorage
+    set({ moduleTabProgress: updatedProgress })
+    localStorage.setItem('moduleTabProgress', JSON.stringify(updatedProgress))
+
+    // Sync to database and update gamification
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const moduleProgressData = updatedProgress.find(m => m.moduleId === moduleId)
+      if (!moduleProgressData) return
+
+      const completionPercentage = Math.round((moduleProgressData.visitedTabs.length / 5) * 100)
+      const isModuleCompleted = completionPercentage === 100
+
+      // Upsert to student_progress table
+      const { error: progressError } = await supabase
+        .from('student_progress')
+        .upsert({
+          user_id: user.id,
+          module_id: moduleId,
+          lesson_id: moduleId,
+          status: isModuleCompleted ? 'completed' : 'in_progress',
+          completion_percentage: completionPercentage,
+          last_accessed_at: new Date().toISOString(),
+          completed_at: isModuleCompleted ? new Date().toISOString() : null
+        })
+
+      if (progressError) {
+        console.error('Error syncing tab progress to database:', progressError)
+        return
+      }
+
+      console.log('✅ Tab progress synced to database:', moduleId, completionPercentage + '%')
+
+      // ========================================
+      // GAMIFICATION UPDATE - Award XP & Update Level
+      // ========================================
+      if (isNewTabVisit) {
+        // Get current gamification data
+        const { data: gamification, error: gamificationError } = await supabase
+          .from('gamification')
+          .select('*')
+          .eq('user_id', user.id)
+          .single()
+
+        if (gamificationError || !gamification) {
+          console.error('Error fetching gamification:', gamificationError)
+          return
+        }
+
+        // Calculate XP earned
+        let xpEarned = 10 // 10 XP per tab visited
+        if (isModuleCompleted) {
+          xpEarned += 50 // Bonus 50 XP for completing entire module
+        }
+
+        // Calculate new XP and level
+        const newTotalXp = (gamification.total_xp || 0) + xpEarned
+        const newLevel = Math.floor(newTotalXp / 500) + 1
+
+        // Update gamification table
+        const { error: updateError } = await supabase
+          .from('gamification')
+          .update({
+            total_xp: newTotalXp,
+            level: newLevel
+          })
+          .eq('user_id', user.id)
+
+        if (updateError) {
+          console.error('Error updating gamification:', updateError)
+        } else {
+          console.log(`🎮 Gamification updated! +${xpEarned} XP. Total: ${newTotalXp} XP, Level: ${newLevel}`)
+        }
+
+        // Update streak (check if user has been active today)
+        await get().updateStreak()
+
+        // Check and award badges
+        await get().checkAndAwardBadges()
+
+        // Refresh user stats to update UI
+        await get().fetchUserStats()
+      }
+
+    } catch (error) {
+      console.error('Error syncing to database:', error)
+    }
+  },
+
+  getModuleTabProgress: (moduleId: string) => {
+    return get().moduleTabProgress.find(m => m.moduleId === moduleId)
+  },
+
+  getModuleProgressPercentage: (moduleId: string) => {
+    const moduleProgress = get().moduleTabProgress.find(m => m.moduleId === moduleId)
+    if (!moduleProgress) return 0
+
+    // Total 5 tabs: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz
+    const totalTabs = 5
+    const visitedCount = moduleProgress.visitedTabs.length
+
+    return Math.round((visitedCount / totalTabs) * 100)
+  },
 
   fetchModules: async () => {
     set({ loading: true })
@@ -400,61 +626,102 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     set({ showNetAnimation: !get().showNetAnimation })
   },
 
-  completeLesson: async (lessonId: number, score = 0) => {
-    const currentStudent = get().currentStudent
-    if (!currentStudent) return
-
-    const lesson = get().lessons.find(l => l.id === lessonId)
-    const xpEarned = lesson?.xp_reward || (score >= 80 ? 100 : score >= 60 ? 75 : 50)
-
+  completeLesson: async (lessonId: string, score = 0) => {
     try {
-      // Record lesson completion
-      await supabase
-        .from('lesson_completions')
-        .upsert({
-          student_id: currentStudent.id,
-          lesson_id: lessonId,
-          completed_at: new Date().toISOString(),
-          score,
-          xp_earned: xpEarned,
-          time_spent: 0 // You can track this separately
-        })
-
-      // Update student XP
-      const newXp = (currentStudent.xp_points || 0) + xpEarned
-      await supabase
-        .from('students')
-        .update({
-          xp_points: newXp,
-          last_activity_date: new Date().toISOString().split('T')[0]
-        })
-        .eq('id', currentStudent.id)
-
-      // Update module progress
-      const moduleId = lesson?.module_id
-      if (moduleId) {
-        const { data: progress } = await supabase
-          .from('student_progress')
-          .select('*')
-          .eq('student_id', currentStudent.id)
-          .eq('module_id', moduleId)
-          .single()
-
-        const newXpEarned = (progress?.total_xp_earned || 0) + xpEarned
-
-        await supabase
-          .from('student_progress')
-          .upsert({
-            student_id: currentStudent.id,
-            module_id: moduleId,
-            current_lesson_id: lessonId,
-            total_xp_earned: newXpEarned,
-            last_accessed_at: new Date().toISOString()
-          })
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        console.log('No authenticated user found')
+        return
       }
 
+      const lesson = get().lessons.find(l => l.id === lessonId)
+      const xpEarned = lesson?.xp_reward || (score >= 80 ? 100 : score >= 60 ? 75 : 50)
+
+      // Record lesson completion in student_progress
+      const { error: progressError } = await supabase
+        .from('student_progress')
+        .upsert({
+          user_id: user.id,
+          lesson_id: lessonId,
+          module_id: lesson?.module_id || null,
+          status: 'completed',
+          score,
+          completed_at: new Date().toISOString(),
+          last_accessed_at: new Date().toISOString()
+        })
+
+      if (progressError) {
+        console.error('Error recording lesson completion:', progressError)
+        return
+      }
+
+      // Get current gamification data
+      const { data: gamification, error: gamificationError } = await supabase
+        .from('gamification')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (gamificationError || !gamification) {
+        console.error('Error fetching gamification:', gamificationError)
+        return
+      }
+
+      // Calculate new XP and level
+      const newTotalXp = (gamification.total_xp || 0) + xpEarned
+      const newLevel = Math.floor(newTotalXp / 500) + 1
+
+      // Update gamification table with new XP and level
+      const { error: updateError } = await supabase
+        .from('gamification')
+        .update({
+          total_xp: newTotalXp,
+          level: newLevel
+        })
+        .eq('user_id', user.id)
+
+      if (updateError) {
+        console.error('Error updating gamification:', updateError)
+        return
+      }
+
+      // Update local progress state
+      const currentProgress = get().progress
+      const existingProgressIndex = currentProgress.findIndex(
+        p => p.lesson_id === lessonId && p.user_id === user.id
+      )
+
+      const updatedProgressItem = {
+        id: existingProgressIndex >= 0 ? currentProgress[existingProgressIndex].id : crypto.randomUUID(),
+        user_id: user.id,
+        lesson_id: lessonId,
+        module_id: lesson?.module_id || null,
+        status: 'completed' as const,
+        score,
+        completed_at: new Date().toISOString(),
+        last_accessed_at: new Date().toISOString(),
+        lesson_title: lesson?.title || null,
+        xp_earned: xpEarned
+      }
+
+      if (existingProgressIndex >= 0) {
+        const newProgress = [...currentProgress]
+        newProgress[existingProgressIndex] = updatedProgressItem
+        set({ progress: newProgress })
+      } else {
+        set({ progress: [...currentProgress, updatedProgressItem] })
+      }
+
+      // Update streak (will check if needs update for today)
+      await get().updateStreak()
+
+      // Check and award badges
+      await get().checkAndAwardBadges()
+
+      // Refresh user stats to get latest data
       await get().fetchUserStats()
-      await get().fetchStudentProfile()
+
+      console.log(`Lesson completed! Earned ${xpEarned} XP. Total XP: ${newTotalXp}, Level: ${newLevel}`)
     } catch (error) {
       console.error('Error completing lesson:', error)
     }
@@ -462,25 +729,77 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
   fetchUserStats: async () => {
     try {
-      const currentStudent = get().currentStudent
-      if (!currentStudent) return
-
-      const level = Math.floor((currentStudent.xp_points || 0) / 500) + 1
-
-      // Create mock user stats
-      const mockUserStats = {
-        id: currentStudent.id,
-        total_xp: currentStudent.xp_points || 0,
-        level,
-        badges: [], // Empty badges for now
-        streak_days: currentStudent.streak_days || 0,
-        last_activity: currentStudent.last_activity_date || new Date().toISOString().split('T')[0]
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        console.log('No authenticated user found')
+        return
       }
 
-      console.log('Using mock user stats')
-      set({ userStats: mockUserStats })
+      // Fetch from gamification table
+      const { data: gamificationData, error } = await supabase
+        .from('gamification')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (error || !gamificationData) {
+        // Create initial gamification record if doesn't exist
+        console.log('Creating new gamification record for user:', user.id)
+        const { data: newData, error: insertError } = await supabase
+          .from('gamification')
+          .insert({
+            user_id: user.id,
+            total_xp: 0,
+            level: 1,
+            current_streak_days: 0,
+            longest_streak_days: 0,
+            last_activity_date: new Date().toISOString().split('T')[0],
+            badges_earned: []
+          })
+          .select()
+          .single()
+
+        if (insertError) {
+          console.error('Error creating gamification record:', insertError)
+          set({
+            userStats: {
+              id: user.id,
+              total_xp: 0,
+              level: 1,
+              badges: [],
+              streak_days: 0,
+              last_activity: new Date().toISOString().split('T')[0]
+            }
+          })
+          return
+        }
+
+        set({
+          userStats: {
+            id: newData.user_id,
+            total_xp: newData.total_xp,
+            level: newData.level,
+            badges: newData.badges_earned || [],
+            streak_days: newData.current_streak_days,
+            last_activity: newData.last_activity_date
+          }
+        })
+      } else {
+        // Use existing gamification data
+        console.log('Loaded gamification data for user:', user.id, gamificationData)
+        set({
+          userStats: {
+            id: gamificationData.user_id,
+            total_xp: gamificationData.total_xp,
+            level: gamificationData.level,
+            badges: gamificationData.badges_earned || [],
+            streak_days: gamificationData.current_streak_days,
+            last_activity: gamificationData.last_activity_date
+          }
+        })
+      }
     } catch (error) {
-      console.error('Error creating user stats:', error)
+      console.error('Error fetching user stats:', error)
       set({ userStats: null })
     }
   },
@@ -534,22 +853,203 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     }
   },
 
-  fetchProgress: async (studentId: number) => {
+  fetchProgress: async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('student_progress')
-        .select('*')
-        .eq('student_id', studentId)
+        .select(`
+          *,
+          lesson:lessons(
+            title,
+            xp_reward
+          )
+        `)
+        .eq('user_id', userId)
+        .eq('status', 'completed')
 
       if (error) {
         console.error('Error fetching progress:', error)
         set({ progress: [] })
       } else {
-        set({ progress: data || [] })
+        // Map the data to include lesson title and xp_earned
+        const progressWithDetails = (data || []).map(p => ({
+          ...p,
+          lesson_title: p.lesson?.title || null,
+          xp_earned: p.lesson?.xp_reward || 0
+        }))
+        set({ progress: progressWithDetails })
       }
     } catch (error) {
       console.error('Error fetching progress:', error)
       set({ progress: [] })
+    }
+  },
+
+  updateStreak: async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: gamification, error: fetchError } = await supabase
+        .from('gamification')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (fetchError || !gamification) {
+        console.error('Error fetching gamification for streak update:', fetchError)
+        return
+      }
+
+      const today = new Date().toISOString().split('T')[0]
+      const lastActivity = gamification.last_activity_date
+
+      let newStreak = gamification.current_streak_days
+
+      // Check if already updated today
+      if (lastActivity === today) {
+        console.log('Streak already updated today')
+        return
+      }
+
+      // Calculate new streak
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+
+      if (lastActivity === yesterday) {
+        // Continue streak
+        newStreak = gamification.current_streak_days + 1
+        console.log('Continuing streak:', newStreak)
+      } else if (!lastActivity || lastActivity < yesterday) {
+        // Reset streak
+        newStreak = 1
+        console.log('Resetting streak to 1')
+      }
+
+      // Update database
+      const { error: updateError } = await supabase
+        .from('gamification')
+        .update({
+          current_streak_days: newStreak,
+          longest_streak_days: Math.max(newStreak, gamification.longest_streak_days || 0),
+          last_activity_date: today
+        })
+        .eq('user_id', user.id)
+
+      if (updateError) {
+        console.error('Error updating streak:', updateError)
+        return
+      }
+
+      // Refresh user stats
+      await get().fetchUserStats()
+    } catch (error) {
+      console.error('Error updating streak:', error)
+    }
+  },
+
+  checkAndAwardBadges: async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const userStats = get().userStats
+      const progress = get().progress
+      if (!userStats) return
+
+      // Fetch all available badges
+      const { data: allBadges, error: badgesError } = await supabase
+        .from('badges')
+        .select('*')
+
+      if (badgesError || !allBadges) {
+        console.log('No badges available or error fetching badges:', badgesError)
+        return
+      }
+
+      const earnedBadgeIds = userStats.badges.map((b: any) => b.id || b)
+      const newBadges = []
+
+      for (const badge of allBadges) {
+        // Skip if already earned
+        if (earnedBadgeIds.includes(badge.id)) continue
+
+        let shouldAward = false
+
+        // Check requirements based on type
+        if (badge.requirement_type === 'xp' && userStats.total_xp >= badge.requirement_value) {
+          shouldAward = true
+        } else if (badge.requirement_type === 'streak' && userStats.streak_days >= badge.requirement_value) {
+          shouldAward = true
+        } else if (badge.requirement_type === 'lessons' && progress.length >= badge.requirement_value) {
+          shouldAward = true
+        } else if (badge.requirement_type === 'modules') {
+          // Count unique modules completed
+          const uniqueModules = new Set(progress.map((p: any) => p.module_id)).size
+          if (uniqueModules >= badge.requirement_value) {
+            shouldAward = true
+          }
+        }
+
+        if (shouldAward) {
+          newBadges.push(badge)
+          console.log('Awarding badge:', badge.name)
+        }
+      }
+
+      // Update gamification table with new badges
+      if (newBadges.length > 0) {
+        const updatedBadges = [...userStats.badges, ...newBadges]
+
+        const { error: updateError } = await supabase
+          .from('gamification')
+          .update({ badges_earned: updatedBadges })
+          .eq('user_id', user.id)
+
+        if (updateError) {
+          console.error('Error updating badges:', updateError)
+          return
+        }
+
+        // Refresh user stats
+        await get().fetchUserStats()
+      }
+    } catch (error) {
+      console.error('Error checking and awarding badges:', error)
+    }
+  },
+
+  fetchRecentActivity: async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase
+        .from('student_progress')
+        .select(`
+          *,
+          lesson:lessons(
+            title,
+            xp_reward
+          )
+        `)
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+        .order('completed_at', { ascending: false })
+        .limit(10)
+
+      if (error) {
+        console.error('Error fetching recent activity:', error)
+      } else {
+        // Map the data to include lesson details
+        const progressWithDetails = (data || []).map(p => ({
+          ...p,
+          lesson_title: p.lesson?.title || null,
+          xp_earned: p.lesson?.xp_reward || 0
+        }))
+        set({ progress: progressWithDetails })
+      }
+    } catch (error) {
+      console.error('Error fetching recent activity:', error)
     }
   },
 
@@ -568,7 +1068,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         radius: 5,
         height: 10
       },
-      showNetAnimation: false
+      showNetAnimation: false,
+      moduleTabProgress: []
     })
+    localStorage.removeItem('moduleTabProgress')
   }
 }))

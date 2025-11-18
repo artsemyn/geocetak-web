@@ -11,7 +11,7 @@ interface AuthState {
   userType: 'student' | 'teacher' | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, fullName: string, schoolName: string, gradeLevel: string) => Promise<void>
+  signUp: (email: string, password: string, fullName: string, schoolName: string, gradeLevel: string, classCode?: string) => Promise<void>
   signOut: () => Promise<void>
   fetchProfile: () => Promise<void>
   fetchUserData: () => Promise<void>
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     await get().fetchUserData()
   },
 
-  signUp: async (email: string, password: string, fullName: string, schoolName: string, gradeLevel: string) => {
+  signUp: async (email: string, password: string, fullName: string, schoolName: string, gradeLevel: string, classCode?: string) => {
     // Step 1: Create auth user
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -84,6 +84,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       if (gamificationError) {
         console.error('Error creating gamification record:', gamificationError)
+      }
+
+      // Step 4: Join classroom if class code is provided
+      if (classCode && classCode.trim() !== '') {
+        // Find classroom by class code
+        const { data: classroom, error: classroomError } = await supabase
+          .from('classrooms')
+          .select('id')
+          .eq('class_code', classCode.trim().toUpperCase())
+          .single()
+
+        if (classroomError || !classroom) {
+          console.error('Invalid class code:', classCode)
+          throw new Error('Kode kelas tidak valid. Silakan periksa kembali kode kelas Anda.')
+        }
+
+        // Add student to classroom_members
+        const { error: memberError } = await supabase
+          .from('classroom_members')
+          .insert({
+            classroom_id: classroom.id,
+            student_id: data.user.id,
+            joined_at: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+
+        if (memberError) {
+          console.error('Error joining classroom:', memberError)
+          throw new Error('Gagal bergabung ke kelas: ' + memberError.message)
+        }
+
+        console.log('Successfully joined classroom:', classroom.id)
       }
     }
 

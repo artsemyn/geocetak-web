@@ -50,25 +50,29 @@ export default function Modules() {
     progress,
     loading,
     fetchModules,
-    fetchUserStats
+    fetchUserStats,
+    getModuleProgressPercentage,
+    getModuleTabProgress,
+    loadTabProgressFromDatabase
   } = useLearningStore()
 
   useEffect(() => {
     fetchModules()
     fetchUserStats()
-  }, [fetchModules, fetchUserStats])
+    loadTabProgressFromDatabase() // Load progress from database
+  }, [fetchModules, fetchUserStats, loadTabProgressFromDatabase])
 
-  // Calculate module progress
-  const getModuleProgress = (moduleId: number) => {
-    // This would calculate based on actual lessons completed
-    // For now, return dummy data based on progress
-    const moduleProgress = progress.filter(p => p.lesson_id && p.lesson_id === moduleId)
-    const completed = moduleProgress.length
-    const total = 6 // Assuming 6 lessons per module
-    return { completed, total, percentage: (completed / total) * 100 }
+  // Calculate module progress based on visited tabs
+  const getModuleProgress = (moduleId: string | number) => {
+    const id = String(moduleId)
+    const percentage = getModuleProgressPercentage(id)
+    const tabProgress = getModuleTabProgress(id)
+    const completed = tabProgress?.visitedTabs.length || 0
+    const total = 5 // Total 5 tabs per module: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz
+    return { completed, total, percentage }
   }
 
-  const getModuleStatus = (moduleId: number) => {
+  const getModuleStatus = (moduleId: string | number) => {
     const moduleProgress = getModuleProgress(moduleId)
     if (moduleProgress.completed === moduleProgress.total) return 'completed'
     if (moduleProgress.completed > 0) return 'in-progress'
@@ -212,7 +216,7 @@ export default function Modules() {
                       </Typography>
                       <Box flexGrow={1}>
                         <Typography variant="h6" fontWeight="bold">
-                          {module.name}
+                          {module.title || (module as any).name}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
                           {module.description}
