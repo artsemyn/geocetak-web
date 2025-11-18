@@ -18,6 +18,13 @@ interface GeometryParams {
   slantHeight?: number
 }
 
+// Tab tracking interface
+interface ModuleTabProgress {
+  moduleId: string
+  visitedTabs: number[] // Array of tab indices that have been visited
+  lastVisitedAt: string
+}
+
 interface LearningState {
   modules: Module[]
   currentModule: Module | null
@@ -32,6 +39,9 @@ interface LearningState {
   // 3D Interaction State
   geometryParams: GeometryParams
   showNetAnimation: boolean
+
+  // Tab tracking state
+  moduleTabProgress: ModuleTabProgress[]
 
   // Actions
   fetchModules: () => Promise<void>
@@ -49,6 +59,11 @@ interface LearningState {
   checkAndAwardBadges: () => Promise<void>
   fetchRecentActivity: () => Promise<void>
   resetStore: () => void
+
+  // Tab tracking actions
+  trackTabVisit: (moduleId: string, tabIndex: number) => void
+  getModuleTabProgress: (moduleId: string) => ModuleTabProgress | undefined
+  getModuleProgressPercentage: (moduleId: string) => number
 }
 
 export const useLearningStore = create<LearningState>((set, get) => ({
@@ -67,6 +82,59 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     height: 10
   },
   showNetAnimation: false,
+
+  // Tab tracking state - load from localStorage
+  moduleTabProgress: JSON.parse(localStorage.getItem('moduleTabProgress') || '[]'),
+
+  // Tab tracking functions
+  trackTabVisit: (moduleId: string, tabIndex: number) => {
+    const currentProgress = get().moduleTabProgress
+    const existingModule = currentProgress.find(m => m.moduleId === moduleId)
+
+    let updatedProgress: ModuleTabProgress[]
+
+    if (existingModule) {
+      // Add tab to visited tabs if not already visited
+      const visitedTabs = existingModule.visitedTabs.includes(tabIndex)
+        ? existingModule.visitedTabs
+        : [...existingModule.visitedTabs, tabIndex].sort((a, b) => a - b)
+
+      updatedProgress = currentProgress.map(m =>
+        m.moduleId === moduleId
+          ? { ...m, visitedTabs, lastVisitedAt: new Date().toISOString() }
+          : m
+      )
+    } else {
+      // Create new module progress entry
+      updatedProgress = [
+        ...currentProgress,
+        {
+          moduleId,
+          visitedTabs: [tabIndex],
+          lastVisitedAt: new Date().toISOString()
+        }
+      ]
+    }
+
+    // Save to state and localStorage
+    set({ moduleTabProgress: updatedProgress })
+    localStorage.setItem('moduleTabProgress', JSON.stringify(updatedProgress))
+  },
+
+  getModuleTabProgress: (moduleId: string) => {
+    return get().moduleTabProgress.find(m => m.moduleId === moduleId)
+  },
+
+  getModuleProgressPercentage: (moduleId: string) => {
+    const moduleProgress = get().moduleTabProgress.find(m => m.moduleId === moduleId)
+    if (!moduleProgress) return 0
+
+    // Total 6 tabs: Konsep, Implementasi, Jaring-jaring, Rumus, Quiz, Latihan
+    const totalTabs = 6
+    const visitedCount = moduleProgress.visitedTabs.length
+
+    return Math.round((visitedCount / totalTabs) * 100)
+  },
 
   fetchModules: async () => {
     set({ loading: true })
@@ -845,7 +913,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         radius: 5,
         height: 10
       },
-      showNetAnimation: false
+      showNetAnimation: false,
+      moduleTabProgress: []
     })
+    localStorage.removeItem('moduleTabProgress')
   }
 }))

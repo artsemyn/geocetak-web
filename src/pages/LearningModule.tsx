@@ -500,8 +500,13 @@ export default function LearningModule() {
     setCurrentLesson,
     updateGeometryParams,
     toggleNetAnimation,
-    fetchModules
+    fetchModules,
+    trackTabVisit,
+    getModuleTabProgress
   } = useLearningStore()
+
+  // Get tab progress for visual indicators
+  const tabProgress = currentModule?.id ? getModuleTabProgress(currentModule.id) : undefined
 
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0)
   const [loadingTimeout, setLoadingTimeout] = useState(false)
@@ -548,7 +553,19 @@ export default function LearningModule() {
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
+
+    // Track tab visit when user changes tab
+    if (currentModule?.id) {
+      trackTabVisit(currentModule.id, newValue)
+    }
   }
+
+  // Track initial tab visit on mount
+  useEffect(() => {
+    if (currentModule?.id) {
+      trackTabVisit(currentModule.id, tabValue)
+    }
+  }, [currentModule?.id]) // Only run when module changes
 
   // Calculate formulas dinamis berdasarkan tipe modul
   const surfaceArea = calculateSurfaceAreaByType(moduleSlug || 'tabung', geometryParams.radius, geometryParams.height)
@@ -707,12 +724,126 @@ export default function LearningModule() {
           <Card>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={tabValue} onChange={handleTabChange} variant="fullWidth">
-                <Tab icon={<MenuBookRounded />} label="Konsep" />
-                <Tab icon={<ViewInAr />} label="Implementasi" />
-                <Tab icon={<Settings />} label="Jaring-jaring" />
-                <Tab icon={<Calculate />} label="Rumus" />
-                <Tab icon={<Quiz />} label="Quiz" />
-                <Tab icon={<Assignment />} label="Latihan" />
+                <Tab
+                  icon={<MenuBookRounded />}
+                  label="Konsep"
+                  iconPosition="start"
+                  sx={{
+                    '& .MuiTab-iconWrapper': {
+                      marginRight: 1
+                    },
+                    position: 'relative',
+                    '&::after': tabProgress?.visitedTabs.includes(0) ? {
+                      content: '"✓"',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      fontSize: '12px',
+                      color: '#27AE60',
+                      fontWeight: 'bold'
+                    } : {}
+                  }}
+                />
+                <Tab
+                  icon={<ViewInAr />}
+                  label="Implementasi"
+                  iconPosition="start"
+                  sx={{
+                    '& .MuiTab-iconWrapper': {
+                      marginRight: 1
+                    },
+                    position: 'relative',
+                    '&::after': tabProgress?.visitedTabs.includes(1) ? {
+                      content: '"✓"',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      fontSize: '12px',
+                      color: '#27AE60',
+                      fontWeight: 'bold'
+                    } : {}
+                  }}
+                />
+                <Tab
+                  icon={<Settings />}
+                  label="Jaring-jaring"
+                  iconPosition="start"
+                  sx={{
+                    '& .MuiTab-iconWrapper': {
+                      marginRight: 1
+                    },
+                    position: 'relative',
+                    '&::after': tabProgress?.visitedTabs.includes(2) ? {
+                      content: '"✓"',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      fontSize: '12px',
+                      color: '#27AE60',
+                      fontWeight: 'bold'
+                    } : {}
+                  }}
+                />
+                <Tab
+                  icon={<Calculate />}
+                  label="Rumus"
+                  iconPosition="start"
+                  sx={{
+                    '& .MuiTab-iconWrapper': {
+                      marginRight: 1
+                    },
+                    position: 'relative',
+                    '&::after': tabProgress?.visitedTabs.includes(3) ? {
+                      content: '"✓"',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      fontSize: '12px',
+                      color: '#27AE60',
+                      fontWeight: 'bold'
+                    } : {}
+                  }}
+                />
+                <Tab
+                  icon={<Quiz />}
+                  label="Quiz"
+                  iconPosition="start"
+                  sx={{
+                    '& .MuiTab-iconWrapper': {
+                      marginRight: 1
+                    },
+                    position: 'relative',
+                    '&::after': tabProgress?.visitedTabs.includes(4) ? {
+                      content: '"✓"',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      fontSize: '12px',
+                      color: '#27AE60',
+                      fontWeight: 'bold'
+                    } : {}
+                  }}
+                />
+                <Tab
+                  icon={<Assignment />}
+                  label="Latihan"
+                  iconPosition="start"
+                  sx={{
+                    '& .MuiTab-iconWrapper': {
+                      marginRight: 1
+                    },
+                    position: 'relative',
+                    '&::after': tabProgress?.visitedTabs.includes(5) ? {
+                      content: '"✓"',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      fontSize: '12px',
+                      color: '#27AE60',
+                      fontWeight: 'bold'
+                    } : {}
+                  }}
+                />
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}><ConceptLesson /></TabPanel>
