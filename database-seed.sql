@@ -102,7 +102,8 @@ VALUES (
         jsonb_build_object(
           'type', 'card',
           'title', '🔵 Sisi Alas dan Tutup',
-          'content', '<p>Dua lingkaran yang identik dan sejajar. Keduanya merupakan pusat dari tabung.</p>'
+          'content', '<p>Sisi alas dan sisi tutup tabung berbentuk dua lingkaran yang identik dan sejajar.
+Pusat tabung adalah titik pusat dari lingkaran alas dan lingkaran tutup tabung, yaitu titik yang berada tepat di tengah lingkaran.</p>'
         ),
         jsonb_build_object(
           'type', 'card',
