@@ -401,13 +401,16 @@ export default defineConfig({
 
 ---
 
-## 🤝 Contributing
+## 🤝 Berkontribusi
 
+Kami menyambut kontribusi Anda! Silakan lihat [Panduan Kontribusi](CONTRIBUTING.md) kami untuk detailnya. Dengan berpartisipasi, Anda setuju untuk mematuhi [Kode Etik](CODE_OF_CONDUCT.md) kami.
+
+### Alur Kerja Singkat (Workflow)
 1. Fork repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+2. Buat feature branch (`git checkout -b feature/FiturKeren`)
+3. Commit perubahan (`git commit -m 'Menambahkan FiturKeren'`)
+4. Push ke branch (`git push origin feature/FiturKeren`)
+5. Buka Pull Request
 
 ### Development Workflow
 ```bash
@@ -424,11 +427,7 @@ npm test
 
 ---
 
-## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
 
 ## 📞 Support
 
