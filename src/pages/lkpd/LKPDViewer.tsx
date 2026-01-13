@@ -15,14 +15,7 @@ type ViewType = 'overview' | 'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5
 export default function LKPDViewer() {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<ViewType>('overview');
-  const { lkpdData, initializeProject, submitProject } = useLKPDSection();
-
-  useEffect(() => {
-    // Redirect to dashboard on mount (when user tries to access dashboard view)
-    if (currentView === 'overview' && !lkpdData) {
-      initializeProject();
-    }
-  }, [currentView, lkpdData, initializeProject]);
+  const { lkpdData, submitProject } = useLKPDSection(); // Removed initializeProject as hook handles it
 
   // Check if stage is unlocked
   const isStageUnlocked = (stage: number): boolean => {

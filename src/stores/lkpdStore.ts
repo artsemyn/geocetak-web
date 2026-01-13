@@ -1,7 +1,7 @@
 // src/stores/lkpdStore.ts
 import { create } from 'zustand';
 import { supabase } from '@/services/supabase';
-import type { LKPDData, LKPDProject, Stage1Data, Stage2Data, Stage3Data, Stage4Data, Stage5Data, Stage6Data } from '@/types/lkpd.types';
+import type { LKPDData } from '@/types/lkpd.types';
 
 interface LKPDSubmission {
   id: string;
@@ -165,7 +165,7 @@ export const useLKPDStore = create<LKPDStore>((set, get) => ({
   updateStage: async (stage: number, data: any) => {
     const { currentProject, submissionId } = get();
 
-    console.log('updateStage called:', { stage, submissionId, hasProject: !!currentProject });
+
 
     if (!currentProject || !submissionId) {
       console.error('No current project or submission ID');
@@ -194,7 +194,7 @@ export const useLKPDStore = create<LKPDStore>((set, get) => ({
         last_auto_save: completedAt
       };
 
-      console.log('Updating to next stage:', nextStage);
+
 
       // Update database
       const { data: { user } } = await supabase.auth.getUser();
@@ -216,7 +216,7 @@ export const useLKPDStore = create<LKPDStore>((set, get) => ({
         completedStages.push(stage);
       }
 
-      console.log('Completed stages:', completedStages);
+
 
       const { error: updateError } = await supabase
         .from('lkpd_submissions')
@@ -233,7 +233,6 @@ export const useLKPDStore = create<LKPDStore>((set, get) => ({
         throw updateError;
       }
 
-      console.log('Stage updated successfully, setting local state');
       set({ currentProject: updatedProject });
 
     } catch (error: any) {

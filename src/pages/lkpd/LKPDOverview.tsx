@@ -85,10 +85,10 @@ const StageCard: React.FC<StageCardProps> = ({
         border: isLocked
           ? '1px solid #BDBDBD'
           : isCurrent
-          ? `3px solid ${color}`
-          : isCompleted
-          ? '2px solid #27AE60'
-          : '1px solid #E0E0E0',
+            ? `3px solid ${color}`
+            : isCompleted
+              ? '2px solid #27AE60'
+              : '1px solid #E0E0E0',
         boxShadow: isLocked ? 0 : isCurrent ? 6 : isCompleted ? 3 : 1,
         transition: 'all 0.3s',
         transform: isCurrent ? 'scale(1.02)' : 'scale(1)',
@@ -97,16 +97,16 @@ const StageCard: React.FC<StageCardProps> = ({
         '&:hover': isLocked
           ? {}
           : {
-              boxShadow: 8,
-              transform: 'translateY(-4px)'
-            },
+            boxShadow: 8,
+            transform: 'translateY(-4px)'
+          },
         background: isLocked
           ? '#F5F5F5'
           : isCurrent
-          ? `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`
-          : isCompleted
-          ? 'linear-gradient(135deg, #27AE6015 0%, #27AE6005 100%)'
-          : 'white',
+            ? `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`
+            : isCompleted
+              ? 'linear-gradient(135deg, #27AE6015 0%, #27AE6005 100%)'
+              : 'white',
         position: 'relative'
       }}
     >
@@ -171,20 +171,13 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
 }) => {
   const navigate = useNavigate();
   const { assignmentId } = useParams<{ assignmentId: string }>();
-  const { lkpdData, isLoading, initializeProject, getProgress } = useLKPDSection();
+  const { lkpdData, isLoading, error, getProgress } = useLKPDSection(); // Removed initializeProject from destructure as hook handles it
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   // Use data prop if provided, otherwise use from hook
   const projectData = data || lkpdData;
   const loading = data ? false : isLoading;
-
-  // Initialize project if no data exists
-  useEffect(() => {
-    if (!data && !lkpdData && !isLoading) {
-      initializeProject();
-    }
-  }, [data, lkpdData, isLoading, initializeProject]);
 
   const progress = getProgress();
   const completedStages = progress.completed;
@@ -253,6 +246,38 @@ export const LKPDOverview: React.FC<LKPDOverviewProps> = ({
   const handleBackToDashboard = () => {
     navigate('/dashboard');
   };
+
+  if (error) {
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Navbar />
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 3
+          }}
+        >
+          <Alert severity="error" sx={{ maxWidth: 500 }}>
+            <Typography variant="h6" gutterBottom>
+              Terjadi Kesalahan
+            </Typography>
+            <Typography variant="body2" paragraph>
+              {error}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              Kemungkinan database belum dikonfigurasi dengan benar. Hubungi admin untuk menjalankan script 'fix_rls_policies.sql'.
+            </Typography>
+            <Button variant="contained" color="primary" onClick={() => window.location.reload()}>
+              Coba Lagi
+            </Button>
+          </Alert>
+        </Box>
+      </Box>
+    );
+  }
 
   if (loading) {
     return (

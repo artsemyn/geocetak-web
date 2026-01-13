@@ -24,7 +24,7 @@ export class ModelExportService {
       const filePath = `${userId}/${timestamp}-${sanitizedFileName}`
 
       // Upload file to Supabase Storage bucket 'user-models'
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('user-models')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -63,7 +63,7 @@ export class ModelExportService {
 
       let stlFileUrl = ''
       let stlFilePath = ''
-      let fileSize = 0
+
 
       // If user provided an STL file, upload it to storage
       if (data.stlFile) {
@@ -75,13 +75,11 @@ export class ModelExportService {
 
         stlFileUrl = uploadResult.url
         stlFilePath = uploadResult.path
-        fileSize = data.stlFile.size
       } else {
         // Fallback: generate mock STL if no file provided (backward compatibility)
-        const stlContent = this.generateMockSTL(data.projectName, data.geometryParams)
+        // const stlContent = this.generateMockSTL(data.projectName, data.geometryParams)
         stlFileUrl = `https://storage.supabase.com/models/${user.id}/${data.projectName}.stl`
         stlFilePath = `${user.id}/${data.projectName}.stl`
-        fileSize = stlContent.length
       }
 
       // Save to export_jobs table
@@ -268,34 +266,13 @@ export class ModelExportService {
           })
       }
 
-      console.log(`Awarded ${xpReward} XP for model creation`)
+
     } catch (error) {
       console.error('Error awarding model creation XP:', error)
     }
   }
 
-  /**
-   * Generate mock STL content (for demonstration)
-   * In a real implementation, this would come from the Three.js editor
-   */
-  private static generateMockSTL(projectName: string, geometryParams: any): string {
-    const header = `solid ${projectName.replace(/\s+/g, '_')}\n`
-    const footer = `endsolid ${projectName.replace(/\s+/g, '_')}\n`
 
-    // Mock triangle data (this would be real STL triangles in production)
-    let triangles = ''
-    for (let i = 0; i < 10; i++) {
-      triangles += `  facet normal 0.0 0.0 1.0\n`
-      triangles += `    outer loop\n`
-      triangles += `      vertex ${i}.0 ${i}.0 0.0\n`
-      triangles += `      vertex ${i + 1}.0 ${i}.0 0.0\n`
-      triangles += `      vertex ${i}.0 ${i + 1}.0 0.0\n`
-      triangles += `    endloop\n`
-      triangles += `  endfacet\n`
-    }
-
-    return header + triangles + footer
-  }
 
   /**
    * Get model statistics for a user

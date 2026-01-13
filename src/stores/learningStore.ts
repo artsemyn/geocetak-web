@@ -145,7 +145,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
         set({ moduleTabProgress: mergedProgress })
         localStorage.setItem('moduleTabProgress', JSON.stringify(mergedProgress))
-        console.log('✅ Loaded and merged tab progress from database')
+        localStorage.setItem('moduleTabProgress', JSON.stringify(mergedProgress))
       }
     } catch (error) {
       console.error('Error loading tab progress:', error)
@@ -218,7 +218,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         return
       }
 
-      console.log('✅ Tab progress synced to database:', moduleId, completionPercentage + '%')
+
 
       // ========================================
       // GAMIFICATION UPDATE - Award XP & Update Level
@@ -258,7 +258,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         if (updateError) {
           console.error('Error updating gamification:', updateError)
         } else {
-          console.log(`🎮 Gamification updated! +${xpEarned} XP. Total: ${newTotalXp} XP, Level: ${newLevel}`)
+          // Gamification updated successfully
         }
 
         // Update streak (check if user has been active today)
@@ -341,7 +341,6 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         ]
         set({ modules: fallbackModules, loading: false })
       } else if (data && data.length > 0) {
-        console.log('✅ Modules loaded from database:', data.length, 'modules')
         set({ modules: data, loading: false })
       } else {
         console.warn('No modules found in database, using fallback')
@@ -499,7 +498,6 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         ]
         set({ lessons: fallbackLessons })
       } else if (data && data.length > 0) {
-        console.log('✅ Lessons loaded from database:', data.length, 'lessons for module', moduleId)
         set({ lessons: data })
       } else {
         console.warn('No lessons found in database, using fallback')
@@ -614,11 +612,11 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
 
   updateGeometryParams: (params: Partial<GeometryParams>) => {
-    set({ 
-      geometryParams: { 
-        ...get().geometryParams, 
-        ...params 
-      } 
+    set({
+      geometryParams: {
+        ...get().geometryParams,
+        ...params
+      }
     })
   },
 
@@ -720,8 +718,6 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
       // Refresh user stats to get latest data
       await get().fetchUserStats()
-
-      console.log(`Lesson completed! Earned ${xpEarned} XP. Total XP: ${newTotalXp}, Level: ${newLevel}`)
     } catch (error) {
       console.error('Error completing lesson:', error)
     }
@@ -744,7 +740,6 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
       if (error || !gamificationData) {
         // Create initial gamification record if doesn't exist
-        console.log('Creating new gamification record for user:', user.id)
         const { data: newData, error: insertError } = await supabase
           .from('gamification')
           .insert({
@@ -786,7 +781,6 @@ export const useLearningStore = create<LearningState>((set, get) => ({
         })
       } else {
         // Use existing gamification data
-        console.log('Loaded gamification data for user:', user.id, gamificationData)
         set({
           userStats: {
             id: gamificationData.user_id,

@@ -22,10 +22,10 @@ export const useLKPDSection = () => {
 
   // Load project on mount if not already loaded
   useEffect(() => {
-    if (!currentProject && !isLoading) {
+    if (!currentProject && !isLoading && !error) {
       loadProject();
     }
-  }, [currentProject, isLoading, loadProject]);
+  }, [currentProject, isLoading, error, loadProject]);
 
   return {
     lkpdData: currentProject,
