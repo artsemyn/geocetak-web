@@ -37,6 +37,7 @@ import {
 import { QuizQuestion } from '../../services/supabase'
 import {
   getQuizQuestions,
+  getQuizQuestionsByModule,
   saveQuizAttempt,
   getBestQuizAttempt,
   calculateQuizScore
@@ -45,7 +46,9 @@ import { supabase } from '../../services/supabase'
 import { QuizStorageService, QuizPhotoUploadResult } from '../../services/quizStroageService'
 
 interface QuizSectionProps {
-  lessonId: string
+  lessonId?: string
+  moduleId?: string
+  moduleSlug?: string
   onComplete?: (score: number, maxScore: number) => void
 }
 
@@ -55,7 +58,7 @@ interface EssayAnswer {
   uploadedFiles: { url: string; fileName: string; filePath: string }[]
 }
 
-export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }) => {
+export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, moduleId, moduleSlug, onComplete }) => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [loading, setLoading] = useState(true)
   const [answers, setAnswers] = useState<Map<string, string>>(new Map())
@@ -63,21 +66,23 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
   const [submitted, setSubmitted] = useState(false)
   const [score, setScore] = useState(0)
   const [maxScore, setMaxScore] = useState(0)
-  const [startTime] = useState(new Date().toISOString())
-  const [timeElapsed, setTimeElapsed] = useState(0)
+  const [quizResult, setQuizResult] = useState<{ score: number, maxScore: number, quizAnswers: any[] } | null>(null)
+
+  // Best attempt state
   const [bestAttempt, setBestAttempt] = useState<any>(null)
+
+  // Timer state
+  const [startTime] = useState<string>(new Date().toISOString())
+  const [timeElapsed, setTimeElapsed] = useState(0)
+
+  // Auth context for userId
   const [userId, setUserId] = useState<string | null>(null)
   const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set())
 
-  // Get current user
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      if (data.user) {
-        setUserId(data.user.id)
-      }
-    }
-    fetchUser()
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id || null)
+    })
   }, [])
 
   // Fetch quiz questions
@@ -85,7 +90,21 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     const fetchQuestions = async () => {
       try {
         setLoading(true)
-        const data = await getQuizQuestions(lessonId)
+        let data: QuizQuestion[] = []
+
+        // Prioritize slug, then ID, then lesson ID
+        // The service now handles both ID and Slug in the same function argument
+        const moduleIdentifier = moduleSlug || moduleId
+
+        if (moduleIdentifier) {
+          console.log('[QuizSection] Fetching by module Identifier (Slug/ID):', moduleIdentifier)
+          data = await getQuizQuestionsByModule(moduleIdentifier)
+        } else if (lessonId) {
+          console.log('[QuizSection] Fetching by lesson ID:', lessonId)
+          data = await getQuizQuestions(lessonId)
+        }
+
+        console.log('[QuizSection] Fetched questions:', data)
         setQuestions(data)
 
         // Initialize essay answers map
@@ -99,8 +118,14 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
 
         // Fetch best attempt if user is logged in
         if (userId) {
-          const best = await getBestQuizAttempt(userId, lessonId)
-          setBestAttempt(best)
+          // If using module mode, we might need a specific lessonId for best attempt.
+          // For now, if we loaded via module, we use the first question's lessonId or fallback
+          const targetLessonId = lessonId || (data.length > 0 ? data[0].lesson_id : null)
+
+          if (targetLessonId) {
+            const best = await getBestQuizAttempt(userId, targetLessonId)
+            setBestAttempt(best)
+          }
         }
       } catch (error) {
         console.error('Error loading quiz:', error)
@@ -109,10 +134,10 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       }
     }
 
-    if (lessonId) {
+    if (lessonId || moduleId || moduleSlug) {
       fetchQuestions()
     }
-  }, [lessonId, userId])
+  }, [lessonId, moduleId, moduleSlug, userId])
 
   // Timer
   useEffect(() => {
@@ -135,11 +160,12 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
 
   const handleFileSelect = async (questionId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    if (!files || files.length === 0 || !userId) return
+    // Removed strict userId check to allow fallback/local testing
+    if (!files || files.length === 0) return
 
     const current = essayAnswers.get(questionId) || { text: '', files: [], uploadedFiles: [] }
     const newFiles = Array.from(files)
-    
+
     // Validate files using QuizStorageService
     const validFiles: File[] = []
     for (const file of newFiles) {
@@ -153,6 +179,16 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
 
     if (validFiles.length === 0) return
 
+    // If no user ID or offline mode, just attach locally
+    if (!userId) {
+      console.warn('User not logged in, attaching files locally only.')
+      setEssayAnswers(new Map(essayAnswers.set(questionId, {
+        ...current,
+        files: [...current.files, ...validFiles]
+      })))
+      return
+    }
+
     // Set uploading state
     setUploadingFiles(prev => new Set([...prev, questionId]))
 
@@ -165,11 +201,16 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       const successfulUploads = uploadResults.filter(result => result.success)
       const failedUploads = uploadResults.filter(result => !result.success)
 
+      // If some uploads failed, add them to local files instead so user doesn't lose them
+      const failedFileObjects = validFiles.filter((_, index) => !uploadResults[index].success)
+
       if (failedUploads.length > 0) {
-        alert(`Gagal mengupload ${failedUploads.length} file: ${failedUploads.map(f => f.error).join(', ')}`)
+        console.warn(`Failed to upload ${failedUploads.length} files, keeping them as local attachments.`)
+        // Optional: alert user but still keep files
+        // alert(`Beberapa file gagal diupload: ${failedUploads.map(f => f.error).join(', ')}. File tetap tersimpan di browser.`)
       }
 
-      // Update state with uploaded files
+      // Update state with BOTH uploaded files AND local files (for those that failed upload)
       setEssayAnswers(new Map(essayAnswers.set(questionId, {
         ...current,
         uploadedFiles: [
@@ -179,11 +220,18 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
             fileName: result.fileName!,
             filePath: result.filePath!
           }))
-        ]
+        ],
+        files: [...current.files, ...failedFileObjects]
       })))
     } catch (error) {
       console.error('Error uploading files:', error)
-      alert('Terjadi kesalahan saat mengupload file')
+      alert('Terjadi kesalahan saat mengupload file, file akan disimpan secara lokal sementara.')
+
+      // Fallback: Add all to local files if global error
+      setEssayAnswers(new Map(essayAnswers.set(questionId, {
+        ...current,
+        files: [...current.files, ...validFiles]
+      })))
     } finally {
       setUploadingFiles(prev => {
         const newSet = new Set(prev)
@@ -209,11 +257,11 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     if (!current || !current.uploadedFiles) return
 
     const fileToRemove = current.uploadedFiles[fileIndex]
-    
+
     try {
       // Remove file from storage
       await QuizStorageService.deleteQuizPhoto(fileToRemove.filePath)
-      
+
       // Update state
       const newUploadedFiles = current.uploadedFiles.filter((_, index) => index !== fileIndex)
       setEssayAnswers(new Map(essayAnswers.set(questionId, {
@@ -242,11 +290,11 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
     try {
       // Prepare essay answers with already uploaded files
       const essayAnswersWithUrls = new Map<string, any>()
-      
+
       for (const [questionId, essayAnswer] of essayAnswers.entries()) {
         // Use already uploaded files URLs
         const fileUrls = essayAnswer.uploadedFiles?.map(file => file.url) || []
-        
+
         essayAnswersWithUrls.set(questionId, {
           text: essayAnswer.text,
           fileUrls,
@@ -257,7 +305,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       // Calculate score for multiple choice
       const mcQuestions = questions.filter(q => q.question_type === 'multiple_choice' || !q.question_type)
       const result = calculateQuizScore(mcQuestions, answers)
-      
+
       // Prepare complete answers object for storage
       const completeAnswers = {
         multipleChoice: result.quizAnswers,
@@ -268,16 +316,23 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
       setMaxScore(result.maxScore)
       setSubmitted(true)
 
+      // If lessonId not provided (module mode), derive from questions
+      const targetLessonId = lessonId || (questions.length > 0 ? questions[0].lesson_id : '')
+
+      if (!targetLessonId) {
+        throw new Error('No valid lesson ID found for saving attempt')
+      }
+
       console.log('Saving quiz attempt with data:', {
         userId,
-        lessonId,
+        lessonId: targetLessonId,
         answers: completeAnswers,
         score: result.score,
         maxScore: result.maxScore
       })
 
       const savedAttempt = await saveQuizAttempt(userId, {
-        lessonId,
+        lessonId: targetLessonId,
         answers: completeAnswers,
         score: result.score,
         maxScore: result.maxScore,
@@ -344,7 +399,7 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
   const isAllQuestionsAnswered = () => {
     const mcCount = questions.filter(q => q.question_type === 'multiple_choice' || !q.question_type).length
     const essayCount = questions.filter(q => q.question_type === 'essay').length
-    
+
     const mcAnswered = answers.size >= mcCount
     const essayAnswered = Array.from(essayAnswers.values()).filter(
       ans => ans.text.trim().length > 0 || (ans.uploadedFiles && ans.uploadedFiles.length > 0)
@@ -448,9 +503,9 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
           const isCorrect = submitted && (
             question.question_type === 'essay'
               ? question.acceptable_answers?.some(acceptable =>
-                  acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
-                  (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
-                )
+                acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
+                (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
+              )
               : selectedAnswer === question.correct_answer
           )
 
@@ -475,8 +530,8 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                         question.difficulty === 'easy'
                           ? 'success'
                           : question.difficulty === 'medium'
-                          ? 'warning'
-                          : 'error'
+                            ? 'warning'
+                            : 'error'
                       }
                       sx={{ mb: 2 }}
                     />
@@ -542,14 +597,14 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                           '& .MuiOutlinedInput-root': {
                             bgcolor: submitted
                               ? (question.acceptable_answers?.some(acceptable =>
-                                  acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
-                                  (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
-                                ) ? 'success.light' : 'error.light')
+                                acceptable.toLowerCase().replace(/[^a-z0-9.,]/g, '') ===
+                                (essayAnswer?.text || '').toLowerCase().replace(/[^a-z0-9.,]/g, '')
+                              ) ? 'success.light' : 'error.light')
                               : 'background.paper'
                           }
                         }}
                       />
-                      
+
                       {/* File Upload */}
                       {!submitted && (
                         <Box sx={{ mt: 2 }}>
@@ -569,8 +624,8 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                               size="small"
                               disabled={uploadingFiles.has(question.id)}
                             >
-                              {uploadingFiles.has(question.id) ? 'Mengupload...' : 
-                               (essayAnswer?.uploadedFiles && essayAnswer.uploadedFiles.length > 0 ? 'Tambah File' : 'Lampirkan File')}
+                              {uploadingFiles.has(question.id) ? 'Mengupload...' :
+                                (essayAnswer?.uploadedFiles && essayAnswer.uploadedFiles.length > 0 ? 'Tambah File' : 'Lampirkan File')}
                             </Button>
                           </label>
                           {uploadingFiles.has(question.id) && (
@@ -587,9 +642,9 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                           </Typography>
                           <List dense>
                             {essayAnswer.uploadedFiles.map((file, index) => (
-                              <ListItem 
+                              <ListItem
                                 key={index}
-                                sx={{ 
+                                sx={{
                                   bgcolor: 'background.paper',
                                   border: 1,
                                   borderColor: 'divider',
@@ -603,8 +658,8 @@ export const QuizSection: React.FC<QuizSectionProps> = ({ lessonId, onComplete }
                                 onClick={() => handlePreviewFile(file.url, file.fileName)}
                               >
                                 <Description sx={{ mr: 1, color: 'primary.main' }} />
-                                <ListItemText 
-                                  primary={file.fileName} 
+                                <ListItemText
+                                  primary={file.fileName}
                                   secondary="Klik untuk melihat file"
                                   primaryTypographyProps={{
                                     fontWeight: 'medium',

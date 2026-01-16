@@ -281,9 +281,9 @@ const calculateVolumeByType = (moduleSlug: string, radius: number, height: numbe
     case 'tabung':
       return Math.PI * radius * radius * height
     case 'kerucut':
-      return (1/3) * Math.PI * radius * radius * height
+      return (1 / 3) * Math.PI * radius * radius * height
     case 'bola':
-      return (4/3) * Math.PI * Math.pow(radius, 3)
+      return (4 / 3) * Math.PI * Math.pow(radius, 3)
     default:
       return Math.PI * radius * radius * height
   }
@@ -553,6 +553,64 @@ export default function LearningModule() {
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
+
+    // Map tab index to lesson type
+    const lessonTypeMap: Record<number, string> = {
+      0: 'concept',
+      1: 'implementation',
+      2: 'interactive',
+      3: 'formula',
+      4: 'quiz'
+    }
+
+    const targetType = lessonTypeMap[newValue]
+
+    console.log(`[LearningModule] Tab changed to ${newValue} (Target: ${targetType})`)
+    console.log('[LearningModule] Available lessons:', lessons.map(l => ({ id: l.id, type: l.lesson_type, slug: l.slug, title: l.title })))
+
+    if (targetType && lessons.length > 0) {
+      // Find lesson with matching type (case-insensitive)
+      let foundLesson = lessons.find(l =>
+        l.lesson_type?.toLowerCase() === targetType.toLowerCase()
+      )
+
+      // Fallback: search by slug or title if exact type match fails
+      if (!foundLesson) {
+        foundLesson = lessons.find(l =>
+          l.slug.toLowerCase().includes(targetType) ||
+          l.title.toLowerCase().includes(targetType)
+        )
+      }
+
+      if (foundLesson) {
+        console.log(`[LearningModule] Found matching lesson: ${foundLesson.title} (${foundLesson.id})`)
+        setCurrentLesson(foundLesson.id)
+      } else {
+        console.warn(`[LearningModule] No lesson found for type '${targetType}'`)
+
+        // Use default behavior for quiz: if strictly looking for quiz and none found, 
+        // DO NOT just stay on current lesson (which might be Concept).
+        // Try to find ANY lesson that looks like a quiz/evaluation
+        if (targetType === 'quiz') {
+          const potentialQuiz = lessons.find(l =>
+            l.slug.includes('evaluasi') ||
+            l.slug.includes('ujian') ||
+            l.slug.includes('test') ||
+            l.title.includes('Evaluasi')
+          )
+          if (potentialQuiz) {
+            console.log(`[LearningModule] Fallback: Found potential quiz lesson: ${potentialQuiz.title}`)
+            setCurrentLesson(potentialQuiz.id)
+          } else {
+            // CRITICAL: If still no quiz lesson found, we MUST try to use one if we are on the Quiz tab.
+            // But we cannot create a fake ID here because QuizSection needs a REAL lesson ID to fetch questions.
+            // If the user hasn't created a lesson for quiz, then there are no questions for it either.
+            // We will let the UI show "No questions" or similar.
+            // BUT, we should probably warn the user in the UI.
+          }
+        }
+      }
+    }
 
     // Track tab visit when user changes tab
     if (currentModule?.id) {
@@ -2394,19 +2452,29 @@ const FormulaLesson: React.FC = () => {
 }
 
 const QuizLesson: React.FC = () => {
-  const { currentLesson } = useLearningStore()
+  const { currentLesson, completeLesson, currentModule } = useLearningStore()
 
-  if (!currentLesson) {
-    return (
-      <Box>
-        <Alert severity="info">
-          Pilih lesson terlebih dahulu untuk melihat quiz
-        </Alert>
-      </Box>
-    )
+  // Note: We no longer strictly require `currentLesson` to be set for the quiz tab 
+  // because we are fetching by module ID. However, `currentLesson` logic in handleTabChange
+  // is still useful for tracking state.
+
+  const handleQuizComplete = (score: number, maxScore: number) => {
+    // If we have a currentLesson (e.g. from fallback or if one was found), complete it.
+    // If not, we might be in a "module-wide quiz" mode where we just award XP without completing a specific lesson.
+    // Ideally we should try to complete the lesson that corresponds to the quiz if known.
+    if (currentLesson) {
+      completeLesson(currentLesson.id, score)
+    }
   }
 
-  return <QuizSection lessonId={currentLesson.id} />
+  return (
+    <QuizSection
+      moduleId={currentModule?.id}
+      moduleSlug={currentModule?.slug}
+      lessonId={currentLesson?.id}
+      onComplete={handleQuizComplete}
+    />
+  )
 }
 
 const AssignmentLesson: React.FC = () => {

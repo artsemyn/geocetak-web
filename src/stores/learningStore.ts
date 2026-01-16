@@ -6,7 +6,7 @@ import {
   Lesson,
   Student,
   StudentProgress,
-  LessonCompletion,
+  LessonCompletion, 
   Achievement,
   StudentAchievement,
   UserStats
@@ -292,103 +292,21 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
 
   fetchModules: async () => {
-    set({ loading: true })
-
     try {
+      set({ loading: true })
+
+      console.log('[LearningStore] Fetching modules from Supabase...')
       const { data, error } = await supabase
         .from('modules')
         .select('*')
         .eq('is_published', true)
         .order('order_index')
 
-      if (error) {
-        console.warn('Database error, using fallback modules:', error.message)
-        // Fallback to static data if database fails
-        const fallbackModules = [
-          {
-            id: 'mod-1',
-            title: 'Tabung',
-            slug: 'tabung',
-            description: 'Modul ini membahas bentuk geometri tabung secara visual 3D, dilengkapi animasi interaktif, rumus volume dan luas permukaan, serta latihan soal berbasis masalah nyata',
-            icon_url: null,
-            order_index: 1,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'mod-2',
-            title: 'Kerucut',
-            slug: 'kerucut',
-            description: 'Modul ini menyajikan konsep kerucut dengan animasi interaktif, penjelasan garis pelukis, perhitungan volume, serta penerapan pada kehidupan sehari-hari',
-            icon_url: null,
-            order_index: 2,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'mod-3',
-            title: 'Bola',
-            slug: 'bola',
-            description: 'Modul ini mengajarkan konsep bola secara visual, meliputi simetri, jaring-jaring bola, perhitungan volume dan luas permukaan, serta penerapan dalam kehidupan sehari-hari',
-            icon_url: null,
-            order_index: 3,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ]
-        set({ modules: fallbackModules, loading: false })
-      } else if (data && data.length > 0) {
-        set({ modules: data, loading: false })
-      } else {
-        console.warn('No modules found in database, using fallback')
-        // Fallback if no data
-        const fallbackModules = [
-          {
-            id: 'mod-1',
-            title: 'Tabung',
-            slug: 'tabung',
-            description: 'Modul ini membahas bentuk geometri tabung secara visual 3D, dilengkapi animasi interaktif, rumus volume dan luas permukaan, serta latihan soal berbasis masalah nyata',
-            icon_url: null,
-            order_index: 1,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'mod-2',
-            title: 'Kerucut',
-            slug: 'kerucut',
-            description: 'Modul ini menyajikan konsep kerucut dengan animasi interaktif, penjelasan garis pelukis, perhitungan volume, serta penerapan pada kehidupan sehari-hari',
-            icon_url: null,
-            order_index: 2,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'mod-3',
-            title: 'Bola',
-            slug: 'bola',
-            description: 'Modul ini mengajarkan konsep bola secara visual, meliputi simetri, jaring-jaring bola, perhitungan volume dan luas permukaan, serta penerapan dalam kehidupan sehari-hari',
-            icon_url: null,
-            order_index: 3,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ]
-        set({ modules: fallbackModules, loading: false })
-      }
-    } catch (error) {
-      console.error('Failed to fetch modules:', error)
-      // Fallback on any error
       const fallbackModules = [
         {
-          id: 1,
+          id: '4ba28a6d-04b2-4a2f-8ca0-e48b75b19efd',
           name: 'Tabung',
+          title: 'Tabung',
           slug: 'tabung',
           description: 'Modul ini membahas bentuk geometri tabung secara visual 3D, dilengkapi animasi interaktif, rumus volume dan luas permukaan, serta latihan soal berbasis masalah nyata',
           icon_url: null,
@@ -399,8 +317,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
           updated_at: new Date().toISOString()
         },
         {
-          id: 2,
+          id: '30e22668-7150-4e07-8c43-a4e9468c3e2f',
           name: 'Kerucut',
+          title: 'Kerucut',
           slug: 'kerucut',
           description: 'Modul ini menyajikan konsep kerucut dengan animasi interaktif, penjelasan garis pelukis, perhitungan volume, serta penerapan pada kehidupan sehari-hari',
           icon_url: null,
@@ -411,8 +330,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
           updated_at: new Date().toISOString()
         },
         {
-          id: 3,
+          id: 'a5e50615-afaf-492b-ba89-7a1b09e4b03a',
           name: 'Bola',
+          title: 'Bola',
           slug: 'bola',
           description: 'Modul ini mengajarkan konsep bola secara visual, meliputi simetri, jaring-jaring bola, perhitungan volume dan luas permukaan, serta penerapan dalam kehidupan sehari-hari',
           icon_url: null,
@@ -423,7 +343,19 @@ export const useLearningStore = create<LearningState>((set, get) => ({
           updated_at: new Date().toISOString()
         }
       ]
-      set({ modules: fallbackModules, loading: false })
+
+      if (error) {
+        console.error('Error fetching modules:', error)
+        set({ modules: fallbackModules, loading: false })
+      } else if (data && data.length > 0) {
+        set({ modules: data, loading: false })
+      } else {
+        console.warn('No modules found in database, using fallback')
+        set({ modules: fallbackModules, loading: false })
+      }
+    } catch (error) {
+      console.error('Error fetching modules:', error)
+      set({ loading: false })
     }
   },
 
@@ -438,6 +370,115 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
 
   fetchLessons: async (moduleId: string) => {
+    // Helper to get fallback lessons based on module ID
+    const getFallbackLessons = (mid: string): Lesson[] => {
+      // Defined mapped lessons for specific modules
+      const lessonMap: Record<string, any[]> = {
+        '4ba28a6d-04b2-4a2f-8ca0-e48b75b19efd': [ // Tabung
+          { id: '32e025a0-3b15-4a8f-a7a6-e990a5b8c784', title: 'Konsep Dasar', slug: 'konsep-dasar', lesson_type: 'concept', order_index: 1 },
+          { id: 'd490346b-96a3-4b74-9473-61b5b38b0924', title: 'Rumus dan Perhitungan', slug: 'rumus-perhitungan', lesson_type: 'formula', order_index: 2 },
+          { id: 'dcd96a9a-8735-4d1d-b0fa-906b0ec4c685', title: 'Jaring-jaring 3D', slug: 'jaring-jaring', lesson_type: 'interactive', order_index: 3 }
+        ],
+        '30e22668-7150-4e07-8c43-a4e9468c3e2f': [ // Kerucut
+          { id: '1bfbcb59-36e6-4732-a5fd-cc4e3d58d40f', title: 'Konsep Dasar', slug: 'konsep-dasar', lesson_type: 'concept', order_index: 1 },
+          { id: 'f5e2f83e-b518-4859-b7c5-fede3c7d6d53', title: 'Rumus dan Perhitungan', slug: 'rumus-perhitungan', lesson_type: 'formula', order_index: 2 },
+          { id: '76c278f6-23d7-4b73-8ef2-73943ccb4af9', title: 'Jaring-jaring 3D', slug: 'jaring-jaring', lesson_type: 'interactive', order_index: 3 }
+        ],
+        'a5e50615-afaf-492b-ba89-7a1b09e4b03a': [ // Bola
+          { id: '3a12fd4d-4e6e-4974-90e1-1a44ea37649e', title: 'Konsep Dasar', slug: 'konsep-dasar', lesson_type: 'concept', order_index: 1 },
+          { id: 'ec43f654-5eaf-4494-abc7-6b47d0158994', title: 'Rumus dan Perhitungan', slug: 'rumus-perhitungan', lesson_type: 'formula', order_index: 2 },
+          { id: '92f9be24-eb1b-4e9a-a4db-9f1d77d83dbe', title: 'Jaring-jaring 3D', slug: 'jaring-jaring', lesson_type: 'interactive', order_index: 3 }
+        ]
+      }
+
+      if (lessonMap[mid]) {
+        return lessonMap[mid].map(l => ({
+          id: l.id,
+          module_id: mid,
+          title: l.title,
+          slug: l.slug,
+          order_index: l.order_index,
+          lesson_type: l.lesson_type,
+          content_markdown: null,
+          video_url: null,
+          scene_config: null,
+          xp_reward: 50,
+          estimated_duration_minutes: 20,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }))
+      }
+
+      // Generic Fallback
+      return [
+        {
+          id: '1',
+          module_id: mid,
+          title: 'Konsep Dasar',
+          slug: 'konsep-dasar',
+          order_index: 1,
+          lesson_type: 'concept',
+          content_markdown: null,
+          video_url: null,
+          scene_config: null,
+          xp_reward: 50,
+          estimated_duration_minutes: 15,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          module_id: mid,
+          title: 'Rumus dan Perhitungan',
+          slug: 'rumus-perhitungan',
+          order_index: 2,
+          lesson_type: 'formula',
+          content_markdown: null,
+          video_url: null,
+          scene_config: null,
+          xp_reward: 50,
+          estimated_duration_minutes: 20,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '3',
+          module_id: mid,
+          title: 'Jaring-jaring 3D',
+          slug: 'jaring-jaring',
+          order_index: 3,
+          lesson_type: 'interactive',
+          content_markdown: null,
+          video_url: null,
+          scene_config: null,
+          xp_reward: 50,
+          estimated_duration_minutes: 25,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '4',
+          module_id: mid,
+          title: 'Quiz Evaluasi',
+          slug: 'quiz-evaluasi',
+          order_index: 4,
+          lesson_type: 'quiz',
+          content_markdown: null,
+          video_url: null,
+          scene_config: null,
+          xp_reward: 100,
+          estimated_duration_minutes: 15,
+          is_published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ]
+    }
+
     try {
       const { data, error } = await supabase
         .from('lessons')
@@ -448,160 +489,16 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
       if (error) {
         console.warn('Database error, using fallback lessons:', error.message)
-        // Fallback to static data
-        const fallbackLessons = [
-          {
-            id: 1,
-            module_id: moduleId,
-            title: 'Konsep Dasar',
-            slug: 'konsep-dasar',
-            order_index: 1,
-            lesson_type: 'concept',
-            content_data: null,
-            interactive_config: null,
-            xp_reward: 50,
-            estimated_duration: 15,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 2,
-            module_id: moduleId,
-            title: 'Rumus dan Perhitungan',
-            slug: 'rumus-perhitungan',
-            order_index: 2,
-            lesson_type: 'formula',
-            content_data: null,
-            interactive_config: null,
-            xp_reward: 50,
-            estimated_duration: 20,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 3,
-            module_id: moduleId,
-            title: 'Jaring-jaring 3D',
-            slug: 'jaring-jaring',
-            order_index: 3,
-            lesson_type: 'interactive',
-            content_data: null,
-            interactive_config: null,
-            xp_reward: 50,
-            estimated_duration: 25,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ]
-        set({ lessons: fallbackLessons })
+        set({ lessons: getFallbackLessons(moduleId) })
       } else if (data && data.length > 0) {
         set({ lessons: data })
       } else {
         console.warn('No lessons found in database, using fallback')
-        // Fallback if no data
-        const fallbackLessons = [
-          {
-            id: 1,
-            module_id: moduleId,
-            title: 'Konsep Dasar',
-            slug: 'konsep-dasar',
-            order_index: 1,
-            lesson_type: 'concept',
-            content_data: null,
-            interactive_config: null,
-            xp_reward: 50,
-            estimated_duration: 15,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 2,
-            module_id: moduleId,
-            title: 'Rumus dan Perhitungan',
-            slug: 'rumus-perhitungan',
-            order_index: 2,
-            lesson_type: 'formula',
-            content_data: null,
-            interactive_config: null,
-            xp_reward: 50,
-            estimated_duration: 20,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 3,
-            module_id: moduleId,
-            title: 'Jaring-jaring 3D',
-            slug: 'jaring-jaring',
-            order_index: 3,
-            lesson_type: 'interactive',
-            content_data: null,
-            interactive_config: null,
-            xp_reward: 50,
-            estimated_duration: 25,
-            is_published: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ]
-        set({ lessons: fallbackLessons })
+        set({ lessons: getFallbackLessons(moduleId) })
       }
     } catch (error) {
       console.error('Failed to fetch lessons:', error)
-      // Fallback on any error
-      const fallbackLessons = [
-        {
-          id: 1,
-          module_id: moduleId,
-          title: 'Konsep Dasar',
-          slug: 'konsep-dasar',
-          order_index: 1,
-          lesson_type: 'concept',
-          content_data: null,
-          interactive_config: null,
-          xp_reward: 50,
-          estimated_duration: 15,
-          is_published: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: 2,
-          module_id: moduleId,
-          title: 'Rumus dan Perhitungan',
-          slug: 'rumus-perhitungan',
-          order_index: 2,
-          lesson_type: 'formula',
-          content_data: null,
-          interactive_config: null,
-          xp_reward: 50,
-          estimated_duration: 20,
-          is_published: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: 3,
-          module_id: moduleId,
-          title: 'Jaring-jaring 3D',
-          slug: 'jaring-jaring',
-          order_index: 3,
-          lesson_type: 'interactive',
-          content_data: null,
-          interactive_config: null,
-          xp_reward: 50,
-          estimated_duration: 25,
-          is_published: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-      ]
-      set({ lessons: fallbackLessons })
+      set({ lessons: getFallbackLessons(moduleId) })
     }
   },
 
@@ -907,7 +804,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       }
 
       // Calculate new streak
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]!
 
       if (lastActivity === yesterday) {
         // Continue streak
