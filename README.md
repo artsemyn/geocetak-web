@@ -239,6 +239,28 @@ const surfaceArea = 2 * Math.PI * radius * (radius + height)
 const volume = Math.PI * Math.pow(radius, 2) * height
 ```
 
+Note: Net animation/view rendering includes a toggle; sphere modules currently skip the net animation view and show the 3D model instead.
+
+### Tabs & Quiz behavior (updated)
+The learning module includes improved tab-to-lesson mapping and quiz handling:
+- Tabs map to lesson types (Konsep/Concept, Implementasi/Implementation, Jaring-jaring/Interactive, Rumus/Formula, Quiz).
+- When a user switches tabs the app tries to select a lesson with a matching `lesson_type` (case-insensitive). If not found it falls back to searching lesson `slug` or `title` for matching keywords.
+- For the Quiz tab there is an additional fallback that scans for lessons whose slug/title indicate an evaluation (e.g. `evaluasi`, `ujian`, `test`).
+- The Quiz component (QuizSection) is called with module context and an optional lesson id. The component is now invoked as:
+
+```tsx
+<QuizSection
+  moduleId={currentModule?.id}
+  moduleSlug={currentModule?.slug}
+  lessonId={currentLesson?.id}
+  onComplete={handleQuizComplete}
+/>
+```
+
+and the module attempts to call `completeLesson(lessonId, score)` when a quiz is completed. This makes the quiz more robust when the exact lesson id is not present (module-wide quizzes supported).
+
+---
+
 ### Gamification System
 - **XP Calculation**: Dinamis berdasarkan performance
 - **Level System**: 500 XP per level
@@ -426,8 +448,6 @@ npm test
 ```
 
 ---
-
-
 
 ## 📞 Support
 
