@@ -63,7 +63,7 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
               min: 1,
               max: 10,
               step: 0.1,
-              unit: 'satuan',
+              unit: 'cm',
               color: 'primary' as const
             },
             {
@@ -72,12 +72,12 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
               min: 2,
               max: 15,
               step: 0.1,
-              unit: 'satuan',
+              unit: 'cm',
               color: 'secondary' as const
             }
           ]
         }
-      
+
       case 'cone':
         return {
           title: 'Parameter Kerucut',
@@ -88,7 +88,7 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
               min: 1,
               max: 10,
               step: 0.1,
-              unit: 'satuan',
+              unit: 'cm',
               color: 'primary' as const
             },
             {
@@ -97,12 +97,12 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
               min: 2,
               max: 15,
               step: 0.1,
-              unit: 'satuan',
+              unit: 'cm',
               color: 'secondary' as const
             }
           ]
         }
-      
+
       case 'sphere':
         return {
           title: 'Parameter Bola',
@@ -113,7 +113,7 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
               min: 1,
               max: 10,
               step: 0.1,
-              unit: 'satuan',
+              unit: 'cm',
               color: 'primary' as const
             }
           ]
@@ -178,7 +178,7 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
                 Nilai Terhitung
               </Typography>
               <Typography variant="body2">
-                Garis Pelukis (s) = {calculations.slantHeight?.toFixed(2)} satuan
+                Garis Pelukis (s) = {calculations.slantHeight?.toFixed(2)} cm
               </Typography>
               <Typography variant="caption" color="textSecondary">
                 Dihitung dengan rumus: s = √(r² + t²)
@@ -247,7 +247,7 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
                   {calculations.substitution?.surfaceArea}
                 </Typography>
                 <Typography variant="h6" fontWeight="bold">
-                  L = {calculations.surfaceArea.toFixed(2)} satuan²
+                  L = {calculations.surfaceArea.toFixed(2)} cm²
                 </Typography>
               </Paper>
             </Grid>
@@ -283,7 +283,7 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
                   {calculations.substitution?.volume}
                 </Typography>
                 <Typography variant="h6" fontWeight="bold">
-                  V = {calculations.volume.toFixed(2)} satuan³
+                  V = {calculations.volume.toFixed(2)} cm³
                 </Typography>
               </Paper>
             </Grid>
@@ -291,6 +291,9 @@ export default function ParameterControls({ geometryType }: ParameterControlsPro
 
           {/* Additional Info */}
           <Box mt={2}>
+            <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+              ℹ️ Keterangan: Nilai π (pi) yang digunakan adalah 3.14 (pembulatan).
+            </Typography>
             <Typography variant="caption" color="textSecondary" display="block">
               💡 Tip: Ubah parameter di atas untuk melihat bagaimana rumus berubah secara real-time!
             </Typography>

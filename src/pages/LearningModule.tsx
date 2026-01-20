@@ -716,7 +716,7 @@ export default function LearningModule() {
               <Typography variant="h6" fontWeight="bold">🎛️ Kontrol Interaktif</Typography>
               <Divider sx={{ my: 2 }} />
               <Box sx={{ px: 1 }}>
-                <Typography gutterBottom>Jari-jari (r): {geometryParams.radius.toFixed(1)}</Typography>
+                <Typography gutterBottom>Jari-jari (r): {geometryParams.radius.toFixed(1)} cm</Typography>
                 <Slider
                   value={geometryParams.radius}
                   onChange={handleParameterChange('radius')}
@@ -727,7 +727,7 @@ export default function LearningModule() {
 
                 {moduleSlug !== 'bola' && (
                   <>
-                    <Typography gutterBottom>Tinggi (t): {geometryParams.height.toFixed(1)}</Typography>
+                    <Typography gutterBottom>Tinggi (t): {geometryParams.height.toFixed(1)} cm</Typography>
                     <Slider
                       value={geometryParams.height}
                       onChange={handleParameterChange('height')}
@@ -761,7 +761,7 @@ export default function LearningModule() {
                   Luas Permukaan (L)
                 </Typography>
                 <Typography variant="body2" sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 1, borderRadius: 1, fontSize: '0.8rem' }}>
-                  {geometryInfo.surfaceFormula} = {surfaceArea.toFixed(2)} satuan²
+                  {geometryInfo.surfaceFormula} = {surfaceArea.toFixed(2)} cm²
                 </Typography>
               </Box>
 
@@ -770,7 +770,13 @@ export default function LearningModule() {
                   Volume (V)
                 </Typography>
                 <Typography variant="body2" sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 1, borderRadius: 1, fontSize: '0.8rem' }}>
-                  {geometryInfo.volumeFormula} = {volume.toFixed(2)} satuan³
+                  {geometryInfo.volumeFormula} = {volume.toFixed(2)} cm³
+                </Typography>
+              </Box>
+
+              <Box mt={2}>
+                <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                  ℹ️ Keterangan: Nilai π (pi) yang digunakan adalah 3.14 (pembulatan).
                 </Typography>
               </Box>
             </CardContent>
@@ -1096,24 +1102,24 @@ const ConceptLesson: React.FC = () => {
     switch (moduleSlug) {
       case 'tabung':
         return [
-          { title: "Sisi Alas dan Tutup", desc: "Dua lingkaran yang identik dan sejajar. Keduanya merupakan pusat dari tabung.", icon: "🔵" },
-          { title: "Selimut Tabung", desc: "Sisi lengkung yang menghubungkan alas dan tutup. Jika dibuka, akan berbentuk persegi panjang.", icon: "🔄" },
           { title: "Jari-jari (r)", desc: "Jarak dari titik pusat lingkaran (alas/tutup) ke tepi lingkaran.", icon: "📏" },
-          { title: "Tinggi (t)", desc: "Jarak tegak lurus antara bidang alas dan tutup tabung.", icon: "📐" }
+          { title: "Tinggi (t)", desc: "Jarak tegak lurus antara bidang alas dan tutup tabung.", icon: "📐" },
+          { title: "Sisi Alas dan Tutup", desc: "Dua lingkaran yang identik dan sejajar. Pusat lingkaran ini merupakan pusat dari alas/tutup tabung.", icon: "🔵" },
+          { title: "Selimut Tabung", desc: "Sisi lengkung yang menghubungkan alas dan tutup. Jika dibuka, akan berbentuk persegi panjang.", icon: "🔄" }
         ]
       case 'kerucut':
         return [
-          { title: "Alas Kerucut", desc: "Lingkaran yang menjadi dasar kerucut.", icon: "🔵" },
-          { title: "Selimut Kerucut", desc: "Sisi lengkung yang menghubungkan alas dengan titik puncak. Jika dibuka, akan berbentuk juring lingkaran.", icon: "🌙" },
           { title: "Jari-jari (r)", desc: "Jarak dari titik pusat alas ke tepi lingkaran alas.", icon: "📏" },
           { title: "Tinggi (t)", desc: "Jarak tegak lurus dari alas ke titik puncak kerucut.", icon: "📐" },
-          { title: "Garis Pelukis (s)", desc: "Jarak dari tepi alas ke titik puncak kerucut. s = √(r² + t²)", icon: "📏" }
+          { title: "Garis Pelukis (s)", desc: "Jarak dari tepi alas ke titik puncak kerucut. s = √(r² + t²)", icon: "📏" },
+          { title: "Alas Kerucut", desc: "Lingkaran yang menjadi dasar kerucut dengan pusat lingkaran sebagai titik tengahnya.", icon: "🔵" },
+          { title: "Selimut Kerucut", desc: "Sisi lengkung yang menghubungkan alas dengan titik puncak. Jika dibuka, akan berbentuk juring lingkaran.", icon: "🌙" }
         ]
       case 'bola':
         return [
-          { title: "Pusat Bola", desc: "Titik yang berada tepat di tengah bola, berjarak sama ke semua titik di permukaan.", icon: "🎯" },
           { title: "Jari-jari (r)", desc: "Jarak dari pusat bola ke sembarang titik di permukaan bola.", icon: "📏" },
           { title: "Diameter (d)", desc: "Jarak terpanjang antara dua titik di permukaan bola yang melalui pusat. d = 2r", icon: "📐" },
+          { title: "Pusat Bola", desc: "Titik yang berada tepat di tengah bola, berjarak sama ke semua titik di permukaan.", icon: "🎯" },
           { title: "Permukaan Bola", desc: "Seluruh sisi lengkung bola yang membentuk bidang sferis.", icon: "🌐" }
         ]
       default:
