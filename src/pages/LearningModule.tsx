@@ -2221,21 +2221,6 @@ const FormulaLesson: React.FC = () => {
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} md={6}>
               <Paper variant="outlined" sx={{ p: 3, height: '100%' }}>
-                <Typography variant="h6" color="info.dark" fontWeight="bold" gutterBottom>
-                  Volume {geometryInfo.name}
-                </Typography>
-                <Typography paragraph sx={{ fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  {explanation.volumeExplanation}
-                </Typography>
-                <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1, textAlign: 'center' }}>
-                  <Typography variant="h6" sx={{ fontFamily: 'monospace' }}>
-                    {geometryInfo.volumeFormula}
-                  </Typography>
-                </Box>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Paper variant="outlined" sx={{ p: 3, height: '100%' }}>
                 <Typography variant="h6" color="warning.dark" fontWeight="bold" gutterBottom>
                   Luas Permukaan {geometryInfo.name}
                 </Typography>
@@ -2245,6 +2230,21 @@ const FormulaLesson: React.FC = () => {
                 <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1, textAlign: 'center' }}>
                   <Typography variant="h6" sx={{ fontFamily: 'monospace' }}>
                     {geometryInfo.surfaceFormula}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Paper variant="outlined" sx={{ p: 3, height: '100%' }}>
+                <Typography variant="h6" color="info.dark" fontWeight="bold" gutterBottom>
+                  Volume {geometryInfo.name}
+                </Typography>
+                <Typography paragraph sx={{ fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  {explanation.volumeExplanation}
+                </Typography>
+                <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1, textAlign: 'center' }}>
+                  <Typography variant="h6" sx={{ fontFamily: 'monospace' }}>
+                    {geometryInfo.volumeFormula}
                   </Typography>
                 </Box>
               </Paper>
